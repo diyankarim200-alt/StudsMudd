@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Studs Mudd | True Cross-Device Scouting Platform</title>
+    <title>Studs Mudd | Google Sheets Powered Scouting Platform</title>
     <style>
         * {
             margin: 0;
@@ -287,6 +287,11 @@
             50% { opacity: 0.5; transform: scale(1.2); }
             100% { opacity: 1; transform: scale(1); }
         }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #ff9999;
+        }
         hr {
             border-color: #dc2626;
             margin: 1rem 0;
@@ -305,50 +310,48 @@
 <body>
 <div class="studs-container" id="appRoot"></div>
 <div class="sync-status" id="syncStatus">
-    <span class="live-indicator"></span> Live cross-device sync ACTIVE
+    <span class="live-indicator"></span> Connected to Google Sheets
 </div>
 
 <script>
-    // ========== GOOGLE SHEETS WEB APP URL ==========
+    // ========== YOUR GOOGLE SHEETS WEB APP URL ==========
+    // REPLACE WITH YOUR DEPLOYED WEB APP URL
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw7sClfkxYR27eTuS4mrk3iZ1IPZzktXaP4eC7R5Pmish4Dij5at9_GPdOaMfFBni9u/exec";
     
-    // Storage keys
-    const STORAGE_USERS = "studsmudd_users_crossdevice";
-    const STORAGE_PLAYER_PROFILES = "studsmudd_players_crossdevice";
-    const LAST_SYNC_KEY = "studsmudd_last_sync";
+    // Storage keys (only for auth and local cache)
+    const STORAGE_USERS = "studsmudd_users_googlesheet";
     
-    // ========== CROSS-DEVICE SYNC FUNCTIONS ==========
+    // ========== GOOGLE SHEETS API FUNCTIONS ==========
     
-    // Force refresh from Google Sheets (pull data)
-    async function pullDataFromGoogleSheets() {
+    // Fetch all players from Google Sheets (for scouts)
+    async function fetchPlayersFromGoogleSheets() {
         try {
-            updateSyncStatus("🔄 Pulling latest data from cloud...", "info");
+            updateSyncStatus("🔄 Fetching players from Google Sheets...", "info");
             
-            // Try to fetch data from Google Sheets (you'll need to add a doGet() in Apps Script)
-            // For now, we'll rely on localStorage events, but this is a backup
+            const response = await fetch(GOOGLE_SHEET_URL, {
+                method: 'GET',
+                mode: 'cors'
+            });
             
-            // Dispatch event to notify all tabs
-            triggerLocalSync();
+            if (!response.ok) throw new Error("Network error");
             
-            updateSyncStatus("✅ Synced with cloud storage", "success");
-            renderApp(); // Refresh UI
-            return true;
+            const data = await response.json();
+            
+            if (data.success && data.players) {
+                updateSyncStatus(`✅ Loaded ${data.players} players from Google Sheets`, "success");
+                return data.players;
+            } else {
+                throw new Error(data.error || "No data");
+            }
         } catch (error) {
-            console.error("Pull error:", error);
-            return false;
+            console.error("Fetch error:", error);
+            updateSyncStatus("⚠️ Could not connect to Google Sheets - check URL", "error");
+            return [];
         }
     }
     
-    // Trigger sync across all tabs/devices
-    function triggerLocalSync() {
-        // This triggers the storage event which all tabs listen to
-        const syncSignal = { timestamp: Date.now(), action: "sync" };
-        localStorage.setItem(LAST_SYNC_KEY, JSON.stringify(syncSignal));
-        setTimeout(() => localStorage.removeItem(LAST_SYNC_KEY), 100);
-    }
-    
-    // Send data to Google Sheets (backup)
-    async function backupToGoogleSheets(userData, eventType = "signup") {
+    // Send data to Google Sheets (for signups and profile updates)
+    async function sendToGoogleSheets(userData, eventType) {
         try {
             const payload = {
                 eventType: eventType,
@@ -363,10 +366,10 @@
                 body: JSON.stringify(payload)
             });
             
-            console.log("📤 Backed up to Google Sheets:", eventType);
+            console.log(`📤 Sent to Google Sheets: ${eventType}`);
             return true;
         } catch (error) {
-            console.warn("Backup error (non-critical):", error);
+            console.warn("Send error:", error);
             return false;
         }
     }
@@ -377,36 +380,20 @@
             statusDiv.innerHTML = message;
             statusDiv.style.background = type === "error" ? "#3e1212" : type === "info" ? "#2a3a1a" : "#1a3a1a";
             setTimeout(() => {
-                statusDiv.innerHTML = '<span class="live-indicator"></span> Live cross-device sync ACTIVE';
+                statusDiv.innerHTML = '<span class="live-indicator"></span> Connected to Google Sheets';
                 statusDiv.style.background = "#0a0101";
             }, 3000);
         }
     }
     
-    // ========== INITIALIZE DEFAULT DATA ==========
+    // ========== INITIALIZE DEFAULT DATA (only for testing) ==========
     function initData() {
         if (!localStorage.getItem(STORAGE_USERS)) {
             const defaultUsers = [
-                { id: "scout_demo_1", username: "talent_scout", password: "redscout", role: "scout", createdAt: new Date().toISOString() },
-                { id: "player_demo_1", username: "mbappe_star", password: "player123", role: "player", createdAt: new Date().toISOString() }
+                { id: "scout_demo_1", username: "talent_scout", password: "redscout", role: "scout" },
+                { id: "player_demo_1", username: "mbappe_star", password: "player123", role: "player" }
             ];
             localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
-        }
-        
-        if (!localStorage.getItem(STORAGE_PLAYER_PROFILES)) {
-            const defaultProfiles = [
-                { 
-                    userId: "player_demo_1", 
-                    fullName: "Kylian Mbappé", 
-                    position: "Forward / LW", 
-                    club: "Real Madrid",
-                    age: "24",
-                    contactEmail: "kylian.m@proagent.com",
-                    contactPhone: "+33 6 12 34 56 78",
-                    bio: "Explosive pace, clinical finisher, big game mentality."
-                }
-            ];
-            localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(defaultProfiles));
         }
     }
     
@@ -428,7 +415,7 @@
         renderApp();
     }
     
-    // ========== AUTHENTICATION WITH CROSS-DEVICE SYNC ==========
+    // ========== AUTHENTICATION (using localStorage + Google Sheets) ==========
     function signUp(username, password, role) {
         const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
         
@@ -454,40 +441,21 @@
         users.push(newUser);
         localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
         
-        // Create empty profile for players
-        if (role === "player") {
-            let profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-            profiles.push({
-                userId: newId,
-                fullName: username,
-                position: "Not specified",
-                club: "Free Agent",
-                age: "--",
-                contactEmail: "",
-                contactPhone: "",
-                bio: "New player on the platform. Update your contact info!"
-            });
-            localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
-        }
-        
-        // CRITICAL: Trigger sync to all devices
-        triggerLocalSync();
-        
-        // Backup to Google Sheets
+        // Send to Google Sheets (without password if player, but we send for completeness)
         const userDataForSheet = {
             userId: newId,
             username: username,
-            password: password,
+            password: password,  // Stored in sheet but NOT shown to scouts
             role: role,
-            fullName: role === "player" ? username : "N/A",
-            position: "N/A",
-            club: "N/A",
-            age: "N/A",
+            fullName: role === "player" ? username : "",
+            position: "",
+            club: "",
+            age: "",
             contactEmail: "",
             contactPhone: "",
             bio: "New user signed up"
         };
-        backupToGoogleSheets(userDataForSheet, "signup");
+        sendToGoogleSheets(userDataForSheet, "signup");
         
         return { success: true, user: newUser };
     }
@@ -504,101 +472,22 @@
         setCurrentUser(null);
     }
     
-    // ========== PLAYER PROFILE WITH CROSS-DEVICE SYNC ==========
-    function getAllPlayerProfiles() {
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
-        const players = users.filter(u => u.role === "player");
-        const profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-        
-        return players.map(player => {
-            const profile = profiles.find(p => p.userId === player.id);
-            if (profile) {
-                return {
-                    userId: player.id,
-                    username: player.username,
-                    ...profile
-                };
-            } else {
-                return {
-                    userId: player.id,
-                    username: player.username,
-                    fullName: player.username,
-                    position: "Unknown",
-                    club: "Unknown",
-                    age: "--",
-                    contactEmail: "Not provided",
-                    contactPhone: "Not provided",
-                    bio: "No bio yet."
-                };
-            }
-        });
-    }
-    
-    function getMyPlayerProfile(userId) {
-        const profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-        return profiles.find(p => p.userId === userId) || null;
-    }
-    
-    function updatePlayerProfile(userId, updatedData) {
-        let profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-        const index = profiles.findIndex(p => p.userId === userId);
-        
-        if (index !== -1) {
-            profiles[index] = { ...profiles[index], ...updatedData };
-            localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
-            
-            // CRITICAL: Trigger sync to all devices
-            triggerLocalSync();
-            
-            // Backup to Google Sheets
-            const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
-            const user = users.find(u => u.id === userId);
-            
-            if (user && user.role === "player") {
-                const profileData = {
-                    userId: userId,
-                    username: user.username,
-                    password: user.password,
-                    role: user.role,
-                    fullName: updatedData.fullName || profiles[index].fullName,
-                    position: updatedData.position || profiles[index].position,
-                    club: updatedData.club || profiles[index].club,
-                    age: updatedData.age || profiles[index].age,
-                    contactEmail: updatedData.contactEmail || profiles[index].contactEmail,
-                    contactPhone: updatedData.contactPhone || profiles[index].contactPhone,
-                    bio: updatedData.bio || profiles[index].bio
-                };
-                backupToGoogleSheets(profileData, "profile_update");
-            }
-            
-            return true;
-        }
-        return false;
-    }
-    
-    // ========== MANUAL EXPORT ==========
-    function exportToCSV() {
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
-        const profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-        
-        let csvContent = "Timestamp,User ID,Username,Password,Role,Full Name,Position,Club,Age,Contact Email,Contact Phone,Bio\n";
-        
-        users.forEach(user => {
-            const profile = profiles.find(p => p.userId === user.id) || {};
-            csvContent += `"${new Date().toISOString()}","${user.id}","${user.username}","${user.password}","${user.role}","${profile.fullName || ""}","${profile.position || ""}","${profile.club || ""}","${profile.age || ""}","${profile.contactEmail || ""}","${profile.contactPhone || ""}","${(profile.bio || "").replace(/"/g, '""')}"\n`;
-        });
-        
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.setAttribute("download", `studsmudd_export_${new Date().toISOString().slice(0,19)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        updateSyncStatus("📊 CSV exported!", "success");
+    // ========== PLAYER PROFILE (update and sync to Google Sheets) ==========
+    async function updatePlayerProfileToSheets(userId, username, profileData) {
+        const sheetData = {
+            userId: userId,
+            username: username,
+            password: "",  // Don't send password on updates
+            role: "player",
+            fullName: profileData.fullName,
+            position: profileData.position,
+            club: profileData.club,
+            age: profileData.age,
+            contactEmail: profileData.contactEmail,
+            contactPhone: profileData.contactPhone,
+            bio: profileData.bio
+        };
+        await sendToGoogleSheets(sheetData, "profile_update");
     }
     
     function escapeHtml(str) {
@@ -616,6 +505,8 @@
     let authTab = "login";
     let authErrorMsg = "";
     let signupRole = "player";
+    let cachedPlayers = [];
+    let isLoadingPlayers = false;
     
     function showAuthModal(initialTab = "login", error = "") {
         authModalActive = true;
@@ -657,7 +548,7 @@
         }
     }
     
-    function renderApp() {
+    async function renderApp() {
         const root = document.getElementById("appRoot");
         const currentUser = getCurrentUser();
         
@@ -666,17 +557,17 @@
                 <div class="header">
                     <div class="logo">
                         <h1>◉ STUD$ MUDD ◉</h1>
-                        <p>true cross-device scouting platform</p>
+                        <p>powered by Google Sheets</p>
                     </div>
                     <button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER PLATFORM</button>
                 </div>
                 <div class="dashboard" style="text-align:center; padding: 3rem;">
                     <div style="background:#0f0303; border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto;">
-                        <h2 style="color:#dc2626;">🌐 True Cross-Device Platform</h2>
-                        <p style="margin:1rem 0; color:#cd9f9f;">🔴 <strong>Players sign up on ANY device</strong> → Scouts see them INSTANTLY on ANY other device!</p>
+                        <h2 style="color:#dc2626;">📊 Google Sheets Powered Platform</h2>
+                        <p style="margin:1rem 0; color:#cd9f9f;">🔴 <strong>All player data is stored in Google Sheets</strong><br>Scouts see real-time data directly from the spreadsheet!</p>
                         <div style="background:#2e0a0a; border-radius:1rem; padding:1rem; margin:1rem 0;">
                             <p style="color:#ffbb77;">✅ <strong>How it works:</strong></p>
-                            <p style="color:#b77; font-size:0.85rem;">• Data syncs across ALL devices in real-time<br>• Google Sheets backup for permanent storage<br>• No refresh needed - automatic updates!</p>
+                            <p style="color:#b77; font-size:0.85rem;">• Players sign up → Data saved to Google Sheets<br>• Scouts login → Fetch live data from Google Sheets<br>• Passwords are stored but NEVER shown to scouts</p>
                         </div>
                         <button id="joinNowBtn" class="btn-outline" style="margin-top:1rem;">+ Sign up as Player / Scout</button>
                     </div>
@@ -694,23 +585,30 @@
         const isPlayer = currentUser.role === "player";
         
         if (isScout) {
-            const playersList = getAllPlayerProfiles();
+            // SCOUT: Fetch players directly from Google Sheets
+            if (!isLoadingPlayers) {
+                isLoadingPlayers = true;
+                cachedPlayers = await fetchPlayersFromGoogleSheets();
+                isLoadingPlayers = false;
+            }
+            
+            const playersList = cachedPlayers;
+            
             root.innerHTML = `
                 <div class="header">
                     <div class="logo">
                         <h1>🔍 STUD$ MUDD · SCOUT MODE</h1>
-                        <p>live talent pool | cross-device sync</p>
+                        <p>live data from Google Sheets</p>
                     </div>
                     <div class="user-panel">
                         <span class="user-greeting">👁️ ${escapeHtml(currentUser.username)}</span>
                         <span class="role-badge">SCOUT</span>
-                        <button id="refreshBtn" class="refresh-btn">🔄 Force Sync</button>
-                        <button id="exportCSVBtn" class="export-btn">📊 Export CSV</button>
+                        <button id="refreshBtn" class="refresh-btn">🔄 Refresh from Sheets</button>
                         <button id="logoutBtn" class="logout-btn">LEAVE</button>
                     </div>
                 </div>
                 <div class="dashboard">
-                    <div class="section-title">📋 PLAYER DIRECTORY (${playersList.length} players) <span style="font-size:0.7rem;">⚡ auto-refreshes across devices</span></div>
+                    <div class="section-title">📋 PLAYER DIRECTORY (${playersList.length} players) <span style="font-size:0.7rem;">📊 Source: Google Sheets</span></div>
                     <div class="players-grid">
                         ${playersList.map(player => `
                             <div class="player-card">
@@ -719,45 +617,35 @@
                                 <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(player.club)}</div>
                                 <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(player.age)}</div>
                                 <div class="contact-info">
-                                    <div><span class="contact-label">📧 Email:</span> ${player.contactEmail ? escapeHtml(player.contactEmail) : '<span style="color:#aa6f6f;">Not provided</span>'}</div>
-                                    <div><span class="contact-label">📞 Phone:</span> ${player.contactPhone ? escapeHtml(player.contactPhone) : '<span style="color:#aa6f6f;">Not provided</span>'}</div>
+                                    <div><span class="contact-label">📧 Email:</span> ${escapeHtml(player.contactEmail)}</div>
+                                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(player.contactPhone)}</div>
                                 </div>
                                 <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(player.bio?.substring(0, 120) || "No bio")}</div>
-                                <div class="scout-tag">🔴 scout access | full contact visible</div>
+                                <div class="scout-tag">🔴 data from Google Sheets</div>
                             </div>
                         `).join('')}
-                        ${playersList.length === 0 ? '<div class="empty-state">✨ No players registered yet. When players sign up on ANY device, they appear here instantly!</div>' : ''}
+                        ${playersList.length === 0 ? '<div class="empty-state">✨ No players yet. When players sign up, they appear here instantly!</div>' : ''}
                     </div>
                     <div style="margin-top: 1.5rem; font-size:0.75rem; color:#aa6f6f; text-align:center; border-top: 1px solid #5e2a2a; padding-top:1rem;">
-                        🔄 <strong>Cross-device active</strong> — When a player signs up on another device/laptop/phone, they appear here automatically within 1 second!
-                        <br>💡 Test: Open this page in another browser tab, sign up as a new player, then watch this tab update instantly!
+                        📊 <strong>Powered by Google Sheets</strong> — All player data is stored in your spreadsheet. Scouts see live data directly from the sheet!
+                        <br>🔒 Passwords are stored in the sheet but <strong>NEVER shown to scouts</strong>.
                     </div>
                 </div>
             `;
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
-            document.getElementById("exportCSVBtn")?.addEventListener("click", exportToCSV);
-            document.getElementById("refreshBtn")?.addEventListener("click", () => {
-                triggerLocalSync();
+            document.getElementById("refreshBtn")?.addEventListener("click", async () => {
+                updateSyncStatus("🔄 Fetching latest data from Google Sheets...", "info");
+                cachedPlayers = await fetchPlayersFromGoogleSheets();
                 renderApp();
-                updateSyncStatus("🔄 Manual sync triggered!", "info");
             });
         } 
         else if (isPlayer) {
-            let myProfile = getMyPlayerProfile(currentUser.id);
-            if (!myProfile) {
-                let profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-                const newProfile = { userId: currentUser.id, fullName: currentUser.username, position: "Attacker", club: "Free Agent", age: "18", contactEmail: "", contactPhone: "", bio: "Update your info so scouts can contact you!" };
-                profiles.push(newProfile);
-                localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
-                myProfile = newProfile;
-                triggerLocalSync();
-            }
-            
+            // PLAYER: Show profile update form
             root.innerHTML = `
                 <div class="header">
                     <div class="logo">
                         <h1>⭐ STUD$ MUDD · PLAYER ZONE</h1>
-                        <p>your profile syncs across ALL devices</p>
+                        <p>your data is stored in Google Sheets</p>
                     </div>
                     <div class="user-panel">
                         <span class="user-greeting">🎮 ${escapeHtml(currentUser.username)}</span>
@@ -767,49 +655,50 @@
                 </div>
                 <div class="dashboard">
                     <div class="form-card">
-                        <div class="section-title">📝 YOUR PROFILE (VISIBLE TO ALL SCOUTS)</div>
-                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Your profile instantly syncs to ALL devices where scouts are viewing!</p>
+                        <div class="section-title">📝 YOUR PROFILE (Stored in Google Sheets)</div>
+                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Your profile is stored in Google Sheets and visible to all scouts (except your password).</p>
                         <div class="input-group">
                             <label>Full Name (visible to scouts)</label>
-                            <input type="text" id="fullName" value="${escapeHtml(myProfile.fullName || '')}" placeholder="Your real name">
+                            <input type="text" id="fullName" placeholder="Your real name" value="">
                         </div>
                         <div class="input-group">
                             <label>Position</label>
-                            <input type="text" id="position" value="${escapeHtml(myProfile.position || '')}" placeholder="e.g., Striker, Midfielder">
+                            <input type="text" id="position" placeholder="e.g., Striker, Midfielder">
                         </div>
                         <div class="input-group">
                             <label>Current Club / Team</label>
-                            <input type="text" id="club" value="${escapeHtml(myProfile.club || '')}" placeholder="Club name">
+                            <input type="text" id="club" placeholder="Club name">
                         </div>
                         <div class="input-group">
                             <label>Age</label>
-                            <input type="text" id="age" value="${escapeHtml(myProfile.age || '')}" placeholder="e.g., 19">
+                            <input type="text" id="age" placeholder="e.g., 19">
                         </div>
                         <div class="input-group">
                             <label>📧 Contact Email (scouts will see this)</label>
-                            <input type="email" id="contactEmail" value="${escapeHtml(myProfile.contactEmail || '')}" placeholder="your@email.com">
+                            <input type="email" id="contactEmail" placeholder="your@email.com">
                         </div>
                         <div class="input-group">
                             <label>📞 Contact Phone (scouts will see this)</label>
-                            <input type="text" id="contactPhone" value="${escapeHtml(myProfile.contactPhone || '')}" placeholder="+1234567890">
+                            <input type="text" id="contactPhone" placeholder="+1234567890">
                         </div>
                         <div class="input-group">
                             <label>Bio / Highlights</label>
-                            <textarea id="bio" rows="3" placeholder="Tell scouts about your skills...">${escapeHtml(myProfile.bio || '')}</textarea>
+                            <textarea id="bio" rows="3" placeholder="Tell scouts about your skills..."></textarea>
                         </div>
-                        <button id="saveProfileBtn">💾 SAVE (Syncs to ALL devices)</button>
+                        <button id="saveProfileBtn">💾 SAVE (Stores in Google Sheets)</button>
                         <hr>
                         <div style="background:#1e0a0a; border-radius:1rem; padding:0.8rem; margin-top:1rem;">
-                            <p style="color:#ffb3b3;"><strong>✅ Cross-Device Sync Active</strong></p>
-                            <div style="font-size:0.85rem; color:#c08f8f;">Your data is automatically saved and appears instantly on ANY device where a scout is logged in!</div>
+                            <p style="color:#ffb3b3;"><strong>✅ Google Sheets Storage</strong></p>
+                            <div style="font-size:0.85rem; color:#c08f8f;">Your information is saved to your connected Google Sheet. Scouts will see your profile when they refresh from the sheet!</div>
                         </div>
                     </div>
                 </div>
             `;
+            
             const saveBtn = document.getElementById("saveProfileBtn");
             if (saveBtn) {
-                saveBtn.onclick = () => {
-                    const updated = {
+                saveBtn.onclick = async () => {
+                    const profileData = {
                         fullName: document.getElementById("fullName").value,
                         position: document.getElementById("position").value,
                         club: document.getElementById("club").value,
@@ -818,8 +707,11 @@
                         contactPhone: document.getElementById("contactPhone").value,
                         bio: document.getElementById("bio").value
                     };
-                    updatePlayerProfile(currentUser.id, updated);
-                    alert("✅ Profile saved and synced to ALL devices!");
+                    
+                    await updatePlayerProfileToSheets(currentUser.id, currentUser.username, profileData);
+                    alert("✅ Profile saved to Google Sheets! Scouts can now see your updated info.");
+                    
+                    // Clear form for next time
                     renderApp();
                 };
             }
@@ -880,12 +772,12 @@
                     <div class="input-group"><label>Password * (min 3 chars)</label><input id="signPass" type="password" placeholder="password"></div>
                     <div class="input-group"><label>I want to sign up as:</label>
                         <select id="signRole">
-                            <option value="player" ${signupRole === 'player' ? 'selected' : ''}>⚽ Player (My profile will sync to ALL devices)</option>
-                            <option value="scout" ${signupRole === 'scout' ? 'selected' : ''}>🔎 Scout (I can view players from any device)</option>
+                            <option value="player" ${signupRole === 'player' ? 'selected' : ''}>⚽ Player (Profile stored in Google Sheets)</option>
+                            <option value="scout" ${signupRole === 'scout' ? 'selected' : ''}>🔎 Scout (View players from Google Sheets)</option>
                         </select>
                     </div>
-                    <button id="doSignupBtn">CREATE ACCOUNT (Cross-device ready)</button>
-                    <p style="color:#c07a7a; font-size:0.7rem; text-align:center; margin-top:0.8rem;">✅ Your account will be accessible and sync across ALL devices automatically!</p>
+                    <button id="doSignupBtn">CREATE ACCOUNT (Saves to Google Sheets)</button>
+                    <p style="color:#c07a7a; font-size:0.7rem; text-align:center; margin-top:0.8rem;">✅ Your data will be stored in Google Sheets. Scouts will see your profile (except password).</p>
                 `;
                 const roleSelect = document.getElementById("signRole");
                 if (roleSelect) {
@@ -908,40 +800,9 @@
         renderForm();
     }
     
-    // ========== CROSS-DEVICE SYNC LISTENERS ==========
-    
-    // Listen for storage events from other tabs/devices
-    window.addEventListener('storage', (e) => {
-        if (e.key === STORAGE_USERS || e.key === STORAGE_PLAYER_PROFILES) {
-            console.log("🔄 Cross-device change detected! Refreshing...");
-            updateSyncStatus("🔄 Detected changes from another device! Refreshing...", "info");
-            renderApp();
-        }
-    });
-    
-    // Also listen for our custom sync signal
-    window.addEventListener('storage', (e) => {
-        if (e.key === LAST_SYNC_KEY) {
-            console.log("📡 Sync signal received");
-            renderApp();
-        }
-    });
-    
-    // Auto-refresh every 5 seconds (backup for reliability)
-    setInterval(() => {
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-            renderApp();
-        }
-    }, 5000);
-    
     // Initialize and start
     initData();
     renderApp();
-    
-    console.log("✅ Studs Mudd Cross-Device Platform Active!");
-    console.log("💡 Test: Open this page in two different browser tabs/windows");
-    console.log("   Sign up as a player in one tab, and watch the scout view in the other tab update instantly!");
 </script>
 </body>
 </html>
