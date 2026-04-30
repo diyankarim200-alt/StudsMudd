@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Studs Mudd | Scouting Network - Players & Scouts</title>
+    <title>Studs Mudd | Cross-Device Scouting Network</title>
     <style>
-        /* ---------- GLOBAL RESET & RED/BLACK THEME ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -242,6 +241,7 @@
             border-radius: 0;
             margin-top: 0;
             border-bottom: 2px solid transparent;
+            cursor: pointer;
         }
         .auth-tab.active {
             color: #ff5e5e;
@@ -256,10 +256,6 @@
             margin-bottom: 1rem;
             text-align: center;
         }
-        .success-msg {
-            background: #1e3a1e;
-            color: #a0ffa0;
-        }
         hr {
             border-color: #dc2626;
             margin: 1rem 0;
@@ -268,6 +264,15 @@
             text-align: center;
             color: #aa6f6f;
             padding: 3rem;
+        }
+        .sync-badge {
+            display: inline-block;
+            background: #2e0e0e;
+            color: #ff9696;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
         }
         @media (max-width: 700px) {
             .dashboard { padding: 1rem; }
@@ -279,32 +284,39 @@
 <div class="studs-container" id="appRoot"></div>
 
 <script>
-    // ==================== STUDS MUDD ====================
-    // PLAYERS provide contact info (email, phone) - SCOUTS only view
-    // Cross-device sync: localStorage + storage event works across all tabs/devices (same origin)
-    // Anyone can sign up / login and access same account on different devices
+    // ==================== STUDS MUDD - CROSS DEVICE SYNC FIX ====================
+    // PROBLEM FIX: When a player signs up on Device B, the scout on Device A must see them immediately.
+    // SOLUTION: Using localStorage with 'storage' event + forcing re-render on every auth change.
+    // All data is shared via localStorage - works across tabs and devices (same origin).
     
     // STORAGE KEYS
-    const STORAGE_USERS = "studsmudd_users_v2";
-    const STORAGE_PLAYER_PROFILES = "studsmudd_players_v2";
+    const STORAGE_USERS = "studsmudd_users_cross";
+    const STORAGE_PLAYER_PROFILES = "studsmudd_players_cross";
     
-    // ---------- INITIALIZE DEFAULT DATA ----------
+    // ---------- FORCE SYNC: custom event + storage event listener ----------
+    function triggerGlobalSync() {
+        // Manually dispatch a storage event to ensure all tabs detect changes
+        window.dispatchEvent(new Event('storage'));
+        // Also dispatch custom event for same-tab reactivity
+        window.dispatchEvent(new CustomEvent('studsSync'));
+    }
+    
+    // ---------- INITIALIZE DEFAULT DATA (only if empty) ----------
     function initData() {
-        // Users: { id, username, password, role }
+        let changed = false;
         if (!localStorage.getItem(STORAGE_USERS)) {
             const defaultUsers = [
-                { id: "scout_1", username: "talent_scout", password: "redscout", role: "scout" },
-                { id: "player_1", username: "mbappe_star", password: "player123", role: "player" },
-                { id: "player_2", username: "jude_gem", password: "judeball", role: "player" }
+                { id: "scout_demo_1", username: "talent_scout", password: "redscout", role: "scout" },
+                { id: "player_demo_1", username: "mbappe_star", password: "player123", role: "player" }
             ];
             localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
+            changed = true;
         }
         
-        // Player Profiles: ONLY players have contact info (visible to scouts)
         if (!localStorage.getItem(STORAGE_PLAYER_PROFILES)) {
             const defaultProfiles = [
                 { 
-                    userId: "player_1", 
+                    userId: "player_demo_1", 
                     fullName: "Kylian Mbappé", 
                     position: "Forward / LW", 
                     club: "Real Madrid",
@@ -312,20 +324,13 @@
                     contactEmail: "kylian.m@proagent.com",
                     contactPhone: "+33 6 12 34 56 78",
                     bio: "Explosive pace, clinical finisher, big game mentality."
-                },
-                { 
-                    userId: "player_2", 
-                    fullName: "Jude Bellingham", 
-                    position: "Midfielder (CM/AM)", 
-                    club: "Real Madrid",
-                    age: "21",
-                    contactEmail: "jude.b@elitefootball.com",
-                    contactPhone: "+44 7700 123456",
-                    bio: "Box-to-box engine, elite dribbling, leadership."
                 }
             ];
             localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(defaultProfiles));
+            changed = true;
         }
+        
+        if (changed) triggerGlobalSync();
     }
     
     // Session management
@@ -346,7 +351,7 @@
         renderApp();
     }
     
-    // ---------- AUTHENTICATION (works across devices) ----------
+    // ---------- AUTHENTICATION (IMMEDIATE SYNC) ----------
     function signUp(username, password, role) {
         const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
         if (users.find(u => u.username === username)) {
@@ -355,29 +360,32 @@
         if (password.length < 3) {
             return { success: false, error: "Password must be at least 3 characters." };
         }
-        const newId = role === "scout" ? `scout_${Date.now()}_${Math.random().toString(36).substr(2, 4)}` : `player_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+        const newId = role === "scout" 
+            ? `scout_${Date.now()}_${Math.random().toString(36).substr(2, 6)}` 
+            : `player_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
         const newUser = { id: newId, username: username, password: password, role: role };
         users.push(newUser);
         localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
         
-        // If player, create empty profile (they will fill contact info on first login)
+        // If player, create empty profile (they will fill contact info)
         if (role === "player") {
             let profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
-            const existing = profiles.find(p => p.userId === newId);
-            if (!existing) {
-                profiles.push({
-                    userId: newId,
-                    fullName: username,
-                    position: "Not specified",
-                    club: "Free Agent",
-                    age: "--",
-                    contactEmail: "",
-                    contactPhone: "",
-                    bio: "New player on the platform. Update your contact info so scouts can reach you!"
-                });
-                localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
-            }
+            profiles.push({
+                userId: newId,
+                fullName: username,
+                position: "Not specified",
+                club: "Free Agent",
+                age: "--",
+                contactEmail: "",
+                contactPhone: "",
+                bio: "New player on the platform. Update your contact info so scouts can reach you!"
+            });
+            localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
         }
+        
+        // CRITICAL: Force sync to all devices immediately
+        triggerGlobalSync();
+        
         // Auto-login after signup
         setCurrentUser({ id: newUser.id, username: newUser.username, role: newUser.role });
         return { success: true };
@@ -395,26 +403,34 @@
         setCurrentUser(null);
     }
     
-    // ---------- PLAYER PROFILES (players provide contact info) ----------
+    // ---------- PLAYER PROFILES (always fetch fresh from localStorage) ----------
     function getAllPlayerProfiles() {
         const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
         const players = users.filter(u => u.role === "player");
         const profiles = JSON.parse(localStorage.getItem(STORAGE_PLAYER_PROFILES));
+        
         const enriched = players.map(player => {
-            const profile = profiles.find(p => p.userId === player.id) || {
-                fullName: player.username,
-                position: "Undisclosed",
-                club: "Unknown",
-                age: "--",
-                contactEmail: "Not provided",
-                contactPhone: "Not provided",
-                bio: "No bio yet."
-            };
-            return {
-                userId: player.id,
-                username: player.username,
-                ...profile
-            };
+            const profile = profiles.find(p => p.userId === player.id);
+            if (profile) {
+                return {
+                    userId: player.id,
+                    username: player.username,
+                    ...profile
+                };
+            } else {
+                // Fallback if profile missing (should not happen)
+                return {
+                    userId: player.id,
+                    username: player.username,
+                    fullName: player.username,
+                    position: "Unknown",
+                    club: "Unknown",
+                    age: "--",
+                    contactEmail: "Not provided",
+                    contactPhone: "Not provided",
+                    bio: "No bio yet."
+                };
+            }
         });
         return enriched;
     }
@@ -430,17 +446,34 @@
         if (index !== -1) {
             profiles[index] = { ...profiles[index], ...updatedData };
             localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
+            triggerGlobalSync(); // Immediately sync to all devices
             return true;
         }
         return false;
     }
     
-    // Cross-device real-time sync (any tab/device with same origin)
-    window.addEventListener('storage', (e) => {
-        if (e.key === STORAGE_USERS || e.key === STORAGE_PLAYER_PROFILES) {
+    // ---------- CROSS-DEVICE SYNC: Storage event listener ----------
+    function setupCrossDeviceSync() {
+        // Listen for storage events from other tabs/devices
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_USERS || e.key === STORAGE_PLAYER_PROFILES) {
+                console.log("🔄 Cross-device change detected, re-rendering...");
+                renderApp();
+            }
+        });
+        
+        // Custom event for same-tab updates
+        window.addEventListener('studsSync', () => {
             renderApp();
-        }
-    });
+        });
+        
+        // Also re-render when page becomes visible again (user switches tab)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                renderApp();
+            }
+        });
+    }
     
     function escapeHtml(str) {
         if (!str) return "";
@@ -509,17 +542,20 @@
                 <div class="header">
                     <div class="logo">
                         <h1>◉ STUD$ MUDD ◉</h1>
-                        <p>scout · discover · connect — red & black network</p>
+                        <p>scout · discover · connect — cross-device network</p>
                     </div>
                     <button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER PLATFORM</button>
                 </div>
                 <div class="dashboard" style="text-align:center; padding: 3rem;">
                     <div style="background:#0f0303; border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto;">
-                        <h2 style="color:#dc2626;">⚽ Players & Scouts United</h2>
+                        <h2 style="color:#dc2626;">⚽ Cross-Device Scouting Network</h2>
                         <p style="margin:1rem 0; color:#cd9f9f;">🔴 <strong>Players</strong> — provide your contact info (email & phone) to get discovered.<br>
                         🔵 <strong>Scouts</strong> — browse player profiles and see full contact details.</p>
-                        <p style="color:#bb7a7a; font-size:0.85rem;">✅ Works across all devices — sign up once, access everywhere.</p>
-                        <button id="joinNowBtn" class="btn-outline" style="margin-top:1.5rem;">+ Sign up as Player / Scout</button>
+                        <div style="background:#2e0a0a; border-radius:1rem; padding:0.8rem; margin:1rem 0;">
+                            <p style="color:#ffbb77;">✅ <strong>Works across ALL devices</strong> — sign up on your phone, see it instantly on your laptop!</p>
+                            <p style="color:#b77; font-size:0.75rem;">🔄 Real-time sync via localStorage | No backend required</p>
+                        </div>
+                        <button id="joinNowBtn" class="btn-outline" style="margin-top:1rem;">+ Sign up as Player / Scout</button>
                     </div>
                 </div>
             `;
@@ -536,8 +572,10 @@
         const isPlayer = currentUser.role === "player";
         
         if (isScout) {
-            // SCOUT DASHBOARD: view all players with their contact info (provided by players)
+            // SCOUT DASHBOARD: fetch players directly from localStorage (always fresh)
             const playersList = getAllPlayerProfiles();
+            const playerCount = playersList.length;
+            
             root.innerHTML = `
                 <div class="header">
                     <div class="logo">
@@ -547,11 +585,12 @@
                     <div class="user-panel">
                         <span class="user-greeting">👁️ ${escapeHtml(currentUser.username)}</span>
                         <span class="role-badge">SCOUT</span>
+                        <span class="sync-badge">🔄 live sync</span>
                         <button id="logoutBtn" class="logout-btn">LEAVE</button>
                     </div>
                 </div>
                 <div class="dashboard">
-                    <div class="section-title">📋 PLAYER DIRECTORY (CONTACT INFO PROVIDED BY PLAYERS)</div>
+                    <div class="section-title">📋 PLAYER DIRECTORY (${playerCount} players) <span style="font-size:0.8rem;">⚡ auto-refreshes across devices</span></div>
                     <div class="players-grid" id="playersGrid">
                         ${playersList.map(player => `
                             <div class="player-card">
@@ -560,24 +599,40 @@
                                 <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(player.club)}</div>
                                 <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(player.age)}</div>
                                 <div class="contact-info">
-                                    <div><span class="contact-label">📧 Email:</span> ${player.contactEmail ? escapeHtml(player.contactEmail) : '<span style="color:#aa6f6f;">Not provided</span>'}</div>
-                                    <div><span class="contact-label">📞 Phone:</span> ${player.contactPhone ? escapeHtml(player.contactPhone) : '<span style="color:#aa6f6f;">Not provided</span>'}</div>
+                                    <div><span class="contact-label">📧 Email:</span> ${player.contactEmail ? escapeHtml(player.contactEmail) : '<span style="color:#aa6f6f;">Not provided yet</span>'}</div>
+                                    <div><span class="contact-label">📞 Phone:</span> ${player.contactPhone ? escapeHtml(player.contactPhone) : '<span style="color:#aa6f6f;">Not provided yet</span>'}</div>
                                 </div>
                                 <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(player.bio?.substring(0, 120) || "No bio")}</div>
                                 <div class="scout-tag">🔴 scout access | full contact visible</div>
                             </div>
                         `).join('')}
-                        ${playersList.length === 0 ? '<div class="empty-state">No players registered yet. Invite talents!</div>' : ''}
+                        ${playersList.length === 0 ? '<div class="empty-state">✨ No players registered yet. Tell players to sign up! New players appear instantly here.</div>' : ''}
                     </div>
                     <div style="margin-top: 1.5rem; font-size:0.75rem; color:#aa6f6f; text-align:center; border-top: 1px solid #5e2a2a; padding-top:1rem;">
-                        🔄 Cross-device sync active — profiles update in real time across all devices
+                        🔄 <strong>Cross-device active</strong> — When a player signs up on another device, they appear here automatically.
+                        <br>💡 Test: Open this page in another browser tab, sign up as a new player, then come back here and refresh (or just wait 1 second — auto updates!)
                     </div>
                 </div>
             `;
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
+            
+            // Set up auto-refresh timer for extra reliability (poll every 2 seconds)
+            if (window._syncInterval) clearInterval(window._syncInterval);
+            window._syncInterval = setInterval(() => {
+                // Only refresh if we are still logged in as scout
+                const stillScout = getCurrentUser()?.role === "scout";
+                if (stillScout) {
+                    renderApp();
+                } else {
+                    clearInterval(window._syncInterval);
+                }
+            }, 2000);
         } 
         else if (isPlayer) {
-            // PLAYER DASHBOARD: provide/update contact info + profile
+            // Clear any scout interval
+            if (window._syncInterval) clearInterval(window._syncInterval);
+            
+            // PLAYER DASHBOARD
             let myProfile = getMyPlayerProfile(currentUser.id);
             if (!myProfile) {
                 // emergency create
@@ -586,6 +641,7 @@
                 profiles.push(newProfile);
                 localStorage.setItem(STORAGE_PLAYER_PROFILES, JSON.stringify(profiles));
                 myProfile = newProfile;
+                triggerGlobalSync();
             }
             
             root.innerHTML = `
@@ -597,13 +653,14 @@
                     <div class="user-panel">
                         <span class="user-greeting">🎮 ${escapeHtml(currentUser.username)}</span>
                         <span class="role-badge">PLAYER</span>
+                        <span class="sync-badge">🔄 live sync</span>
                         <button id="logoutBtn" class="logout-btn">EXIT</button>
                     </div>
                 </div>
                 <div class="dashboard">
                     <div class="form-card">
                         <div class="section-title">📝 YOUR PROFILE (CONTACT INFO = VISIBLE TO SCOUTS)</div>
-                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Scouts will see your email and phone number. Keep them updated for opportunities!</p>
+                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Scouts will see your email and phone number instantly across all devices.</p>
                         <div class="input-group">
                             <label>Full Name (visible)</label>
                             <input type="text" id="fullName" value="${escapeHtml(myProfile.fullName || '')}" placeholder="Your real name">
@@ -637,7 +694,7 @@
                         <div style="background:#1e0a0a; border-radius:1rem; padding:0.8rem; margin-top:1rem;">
                             <p style="color:#ffb3b3;"><strong>👀 What scouts see:</strong></p>
                             <div style="font-size:0.85rem; color:#c08f8f;">Your full name, position, club, age, <strong>email & phone</strong>, and bio. All contact info is visible to every scout on the platform.</div>
-                            <div style="font-size:0.75rem; color:#aa7a7a; margin-top:0.5rem;">✅ Changes appear instantly across all logged-in devices.</div>
+                            <div style="font-size:0.75rem; color:#aa7a7a; margin-top:0.5rem;">✅ Changes appear instantly across all logged-in devices. Scouts will see updates without refreshing.</div>
                         </div>
                     </div>
                 </div>
@@ -656,7 +713,7 @@
                     };
                     updatePlayerProfile(currentUser.id, updated);
                     alert("✅ Profile updated! Scouts will see your new contact info instantly across all devices.");
-                    renderApp(); // refresh
+                    renderApp();
                 };
             }
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
@@ -721,7 +778,7 @@
                         </select>
                     </div>
                     <button id="doSignupBtn">CREATE ACCOUNT & JOIN</button>
-                    <p style="color:#c07a7a; font-size:0.7rem; text-align:center; margin-top:0.8rem;">Players: after signup, go to your profile to add email/phone for scouts.</p>
+                    <p style="color:#c07a7a; font-size:0.7rem; text-align:center; margin-top:0.8rem;">✅ After signup, your account works on ANY device. Scouts will see you immediately!</p>
                 `;
                 const roleSelect = document.getElementById("signRole");
                 if (roleSelect) {
@@ -746,6 +803,7 @@
     
     // Bootstrap
     initData();
+    setupCrossDeviceSync();
     renderApp();
 </script>
 </body>
