@@ -3,476 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Studs Mudd | Scouting Network</title>
+    <title>Studs Mudd | Unified Scouting Network</title>
     <style>
-        /* ---------- RED & BLACK THEME ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, sans-serif;
-        }
-
-        body {
-            background: radial-gradient(circle at 30% 10%, #1a0000 0%, #000000 100%);
-            min-height: 100vh;
-            padding: 1.5rem;
-        }
-
-        .studs-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(8, 0, 0, 0.85);
-            backdrop-filter: blur(3px);
-            border-radius: 2rem;
-            border: 1px solid #dc2626;
-            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: #0c0000;
-            padding: 1rem 2rem;
-            border-bottom: 3px solid #dc2626;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ff4d4d, #b91c1c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
-        .logo p {
-            color: #b77;
-            font-size: 0.7rem;
-        }
-        .user-panel {
-            background: #1f0808;
-            padding: 0.5rem 1.2rem;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border: 1px solid #dc2626;
-            flex-wrap: wrap;
-        }
-        .user-greeting {
-            color: #ffc0c0;
-            font-weight: 600;
-        }
-        .role-badge {
-            background: #b91c1c;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
-        }
-        .logout-btn {
-            background: none;
-            border: 1px solid #dc5e5e;
-            color: #ffb3b3;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .logout-btn:hover {
-            background: #dc2626;
-            color: black;
-        }
-        .dashboard {
-            padding: 2rem;
-            min-height: 500px;
-        }
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        .player-card {
-            background: #0f0303;
-            border-radius: 1.2rem;
-            border: 1px solid #b22222;
-            padding: 1.2rem;
-            transition: 0.2s;
-        }
-        .player-card:hover {
-            border-color: #ff4d4d;
-            transform: translateY(-3px);
-        }
-        .player-name {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #ff8a8a;
-            border-left: 4px solid #dc2626;
-            padding-left: 0.6rem;
-            margin-bottom: 0.5rem;
-        }
-        .player-detail {
-            color: #d4b0b0;
-            font-size: 0.85rem;
-            margin: 0.4rem 0;
-        }
-        .contact-info {
-            background: #1e0a0a;
-            padding: 0.7rem;
-            border-radius: 0.8rem;
-            margin: 0.6rem 0;
-            border: 1px solid #9e2a2a;
-        }
-        .contact-label {
-            color: #ff9999;
-            font-weight: bold;
-        }
-        .scout-tag {
-            display: inline-block;
-            background: #5e1a1a;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-top: 0.4rem;
-        }
-        .form-card {
-            background: #0f0303;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            border: 1px solid #b91c1c;
-            max-width: 600px;
-            margin-bottom: 2rem;
-        }
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #dc2626;
-            margin-bottom: 1.2rem;
-            border-left: 5px solid #dc2626;
-            padding-left: 0.8rem;
-        }
-        .input-group {
-            margin-bottom: 1rem;
-        }
-        .input-group label {
-            display: block;
-            color: #e6b3b3;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-        input, select, textarea {
-            width: 100%;
-            background: #1f0c0c;
-            border: 1px solid #a53b3b;
-            padding: 0.7rem 1rem;
-            border-radius: 1rem;
-            color: #fff0f0;
-            font-size: 0.9rem;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #ff4d4d;
-            box-shadow: 0 0 4px red;
-        }
-        button {
-            background: #b91c1c;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 0.3rem;
-        }
-        button:hover {
-            background: #dc2626;
-            transform: scale(0.97);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #dc2626;
-            color: #ffa2a2;
-        }
-        .btn-outline:hover {
-            background: #dc2626;
-            color: black;
-        }
-        .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(6px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .auth-modal {
-            background: #0a0101;
-            border: 2px solid #dc2626;
-            border-radius: 2rem;
-            width: 92%;
-            max-width: 480px;
-            padding: 2rem;
-            box-shadow: 0 0 30px rgba(220,38,38,0.5);
-        }
-        .auth-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #dc2626;
-        }
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.6rem;
-            background: none;
-            color: #dd9898;
-            border-radius: 0;
-            margin-top: 0;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-        }
-        .auth-tab.active {
-            color: #ff5e5e;
-            border-bottom: 2px solid #dc2626;
-        }
-        .error-msg {
-            background: #3e1212;
-            padding: 0.5rem;
-            border-radius: 1rem;
-            color: #ffa0a0;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        .status-area {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #0a0101;
-            border: 1px solid #dc2626;
-            border-radius: 1rem;
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            color: #ff9999;
-            z-index: 1000;
-            font-family: monospace;
-            opacity: 0.8;
-        }
-        .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #00cc00;
-            margin-right: 6px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #ff9999;
-        }
-        hr {
-            border-color: #dc2626;
-            margin: 1rem 0;
-        }
-        .empty-state {
-            text-align: center;
-            color: #aa6f6f;
-            padding: 3rem;
-        }
-        @media (max-width: 700px) {
-            .dashboard { padding: 1rem; }
-            .header { flex-direction: column; text-align: center; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: radial-gradient(circle at 30% 10%, #1a0000 0%, #000000 100%); min-height: 100vh; padding: 1.5rem; }
+        .studs-container { max-width: 1400px; margin: 0 auto; background: rgba(8, 0, 0, 0.85); backdrop-filter: blur(3px); border-radius: 2rem; border: 1px solid #dc2626; box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3); overflow: hidden; }
+        .header { background: #0c0000; padding: 1rem 2rem; border-bottom: 3px solid #dc2626; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+        .logo h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #ff4d4d, #b91c1c); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 2px; }
+        .logo p { color: #b77; font-size: 0.7rem; }
+        .user-panel { background: #1f0808; padding: 0.5rem 1.2rem; border-radius: 60px; display: flex; align-items: center; gap: 1rem; border: 1px solid #dc2626; flex-wrap: wrap; }
+        .user-greeting { color: #ffc0c0; font-weight: 600; }
+        .role-badge { background: #b91c1c; padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.8rem; font-weight: bold; color: white; }
+        .logout-btn { background: none; border: 1px solid #dc5e5e; color: #ffb3b3; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; transition: 0.2s; }
+        .logout-btn:hover { background: #dc2626; color: black; }
+        .dashboard { padding: 2rem; min-height: 500px; }
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .player-card { background: #0f0303; border-radius: 1.2rem; border: 1px solid #b22222; padding: 1.2rem; transition: 0.2s; }
+        .player-card:hover { border-color: #ff4d4d; transform: translateY(-3px); }
+        .player-name { font-size: 1.4rem; font-weight: bold; color: #ff8a8a; border-left: 4px solid #dc2626; padding-left: 0.6rem; margin-bottom: 0.5rem; }
+        .player-detail { color: #d4b0b0; font-size: 0.85rem; margin: 0.4rem 0; }
+        .contact-info { background: #1e0a0a; padding: 0.7rem; border-radius: 0.8rem; margin: 0.6rem 0; border: 1px solid #9e2a2a; }
+        .contact-label { color: #ff9999; font-weight: bold; }
+        .scout-tag { display: inline-block; background: #5e1a1a; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; margin-top: 0.4rem; }
+        .form-card { background: #0f0303; border-radius: 1.5rem; padding: 1.5rem; border: 1px solid #b91c1c; max-width: 600px; margin-bottom: 2rem; }
+        .section-title { font-size: 1.4rem; font-weight: bold; color: #dc2626; margin-bottom: 1.2rem; border-left: 5px solid #dc2626; padding-left: 0.8rem; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; color: #e6b3b3; margin-bottom: 0.3rem; font-size: 0.85rem; }
+        input, select, textarea { width: 100%; background: #1f0c0c; border: 1px solid #a53b3b; padding: 0.7rem; border-radius: 1rem; color: #fff0f0; }
+        button { background: #b91c1c; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: bold; color: white; cursor: pointer; transition: 0.2s; margin-top: 0.3rem; }
+        button:hover { background: #dc2626; transform: scale(0.97); }
+        .btn-outline { background: transparent; border: 1px solid #dc2626; color: #ffa2a2; }
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .auth-modal { background: #0a0101; border: 2px solid #dc2626; border-radius: 2rem; width: 92%; max-width: 480px; padding: 2rem; }
+        .auth-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #dc2626; }
+        .auth-tab { flex: 1; text-align: center; padding: 0.6rem; background: none; color: #dd9898; border-radius: 0; border-bottom: 2px solid transparent; cursor: pointer; }
+        .auth-tab.active { color: #ff5e5e; border-bottom: 2px solid #dc2626; }
+        .error-msg { background: #3e1212; padding: 0.5rem; border-radius: 1rem; color: #ffa0a0; font-size: 0.8rem; margin-bottom: 1rem; text-align: center; }
+        .status-area { position: fixed; bottom: 20px; right: 20px; background: #0a0101; border: 1px solid #dc2626; border-radius: 1rem; padding: 0.5rem 1rem; font-size: 0.75rem; color: #ff9999; z-index: 1000; font-family: monospace; opacity: 0.9; }
+        .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #00cc00; margin-right: 6px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .loading { text-align: center; padding: 3rem; color: #ff9999; }
+        .empty-state { text-align: center; color: #aa6f6f; padding: 3rem; }
+        @media (max-width: 700px) { .dashboard { padding: 1rem; } .header { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body>
 <div class="studs-container" id="appRoot"></div>
-<div class="status-area" id="globalStatus">
-    <span class="live-dot"></span> System ready
-</div>
+<div class="status-area" id="globalStatus"><span class="live-dot"></span> System ready</div>
 
 <script>
-    // ========== BACKEND URL (HIDDEN FROM USERS) ==========
-    // This connects to your private Google Apps Script Web App
-    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbx7O5WOUxBHSrR45xgy_u45884g0ZyE-aWWn0aeRCydj9Ym07k8sDxETsE80IBmXw/exec";
+    // ========== YOUR DEPLOYED GOOGLE APPS SCRIPT URL ==========
+    const API_URL = "YOUR_DEPLOYED_URL_HERE";  // <-- PASTE YOUR URL HERE
     
-    // Storage keys for user accounts (separate from scouting data)
-    const STORAGE_USERS = "studsmudd_accounts_v2";
-    
-    // ========== HELPER FUNCTIONS ==========
-    function updateStatus(message, isError = false) {
-        const statusDiv = document.getElementById("globalStatus");
-        if (statusDiv) {
-            statusDiv.innerHTML = message;
-            statusDiv.style.background = isError ? "#3e1212" : "#0a3a1a";
+    // Helper: show temporary status
+    function setStatus(msg, isError = false) {
+        const el = document.getElementById("globalStatus");
+        if (el) {
+            el.innerHTML = msg;
+            el.style.background = isError ? "#3e1212" : "#0a3a1a";
             setTimeout(() => {
-                if (document.getElementById("globalStatus")) {
+                if (document.getElementById("globalStatus"))
                     document.getElementById("globalStatus").innerHTML = '<span class="live-dot"></span> System ready';
-                    document.getElementById("globalStatus").style.background = "#0a0101";
-                }
             }, 2500);
         }
     }
     
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
-        });
-    }
+    function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
     
-    // ========== FETCH ALL PLAYERS (FOR SCOUTS) - FROM BACKEND ==========
-    async function fetchAllPlayers() {
+    // ========== BACKEND COMMUNICATION ==========
+    async function apiCall(action, payload) {
         try {
-            updateStatus("Updating player directory...");
-            const response = await fetch(BACKEND_URL, {
-                method: 'GET',
-                mode: 'cors',
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                updateStatus(`${data.count} players loaded`);
-                // Cache players locally as backup
-                localStorage.setItem("cached_players", JSON.stringify(data.players || []));
-                return data.players || [];
-            } else {
-                throw new Error(data.error || "Failed to load data");
-            }
-        } catch (error) {
-            console.warn("Fetch error:", error);
-            updateStatus("Using local cache", true);
-            // Return cached data if available
-            const cached = localStorage.getItem("cached_players");
-            return cached ? JSON.parse(cached) : [];
-        }
-    }
-    
-    // ========== SEND DATA TO BACKEND (SIGNUP & PROFILE UPDATES) ==========
-    async function sendToBackend(data, eventType) {
-        try {
-            const payload = {
-                eventType: eventType,
-                timestamp: new Date().toISOString(),
-                ...data
-            };
-            
-            // Use no-cors for POST to avoid CORS issues
-            await fetch(BACKEND_URL, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ action, ...payload })
             });
-            
-            // After successful send, refresh the player cache
-            if (eventType === "signup" || eventType === "profile_update") {
-                setTimeout(() => refreshPlayerCache(), 500);
-            }
-            return true;
-        } catch (error) {
-            console.warn("Send error:", error);
-            updateStatus("Data saved locally", true);
-            return false;
+            const data = await response.json();
+            return data;
+        } catch (err) {
+            console.error(err);
+            return { success: false, message: "Network error" };
         }
     }
     
-    async function refreshPlayerCache() {
-        const players = await fetchAllPlayers();
-        localStorage.setItem("cached_players", JSON.stringify(players));
-    }
-    
-    // ========== USER AUTHENTICATION (LOCAL STORAGE) ==========
-    function initUserSystem() {
-        if (!localStorage.getItem(STORAGE_USERS)) {
-            const defaultUsers = [
-                { id: "scout_1", username: "talent_scout", password: "redscout", role: "scout" },
-                { id: "player_1", username: "mbappe_star", password: "player123", role: "player" }
-            ];
-            localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
+    async function fetchPlayers() {
+        try {
+            const response = await fetch(API_URL, { method: 'GET', mode: 'cors' });
+            const data = await response.json();
+            if (data.success) return data.players;
+            else return [];
+        } catch (err) {
+            console.error(err);
+            setStatus("Could not load players", true);
+            return [];
         }
     }
     
-    async function signUp(username, password, role) {
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
-        
-        if (users.find(u => u.username === username)) {
-            return { success: false, error: "❌ Username already taken" };
+    // ========== AUTHENTICATION (server‑side) ==========
+    async function signup(username, password, role) {
+        if (password.length < 3) return { success: false, error: "Password must be at least 3 characters" };
+        const userId = (role === "scout" ? "scout_" : "player_") + Date.now() + "_" + Math.random().toString(36).substr(2,6);
+        const result = await apiCall("signup", {
+            userId, username, password, role,
+            fullName: username, position: "", club: "", age: "", contactEmail: "", contactPhone: "", bio: ""
+        });
+        if (result.success) {
+            // store session
+            sessionStorage.setItem("currentUser", JSON.stringify({ id: userId, username, role }));
+            return { success: true };
+        } else {
+            return { success: false, error: result.message };
         }
-        if (password.length < 3) {
-            return { success: false, error: "Password must be at least 3 characters" };
-        }
-        
-        const newId = role === "scout" 
-            ? `scout_${Date.now()}_${Math.random().toString(36).substr(2, 6)}` 
-            : `player_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-        
-        const newUser = { 
-            id: newId, 
-            username: username, 
-            password: password, 
-            role: role,
-            createdAt: new Date().toISOString()
-        };
-        
-        users.push(newUser);
-        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-        
-        // Send to backend (Google Sheet)
-        const sheetData = {
-            userId: newId,
-            username: username,
-            password: password,
-            role: role,
-            fullName: role === "player" ? username : "",
-            position: "",
-            club: "",
-            age: "",
-            contactEmail: "",
-            contactPhone: "",
-            bio: "New member"
-        };
-        await sendToBackend(sheetData, "signup");
-        
-        return { success: true, user: newUser };
     }
     
-    function login(username, password) {
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
-        const found = users.find(u => u.username === username && u.password === password);
-        if (!found) return { success: false, error: "❌ Invalid username or password" };
-        sessionStorage.setItem("currentUser", JSON.stringify({ id: found.id, username: found.username, role: found.role }));
-        return { success: true };
+    async function login(username, password) {
+        const result = await apiCall("login", { username, password });
+        if (result.success) {
+            sessionStorage.setItem("currentUser", JSON.stringify({
+                id: result.userId,
+                username: result.username,
+                role: result.role
+            }));
+            return { success: true };
+        } else {
+            return { success: false, error: result.message };
+        }
     }
     
     function getCurrentUser() {
@@ -482,349 +138,201 @@
     
     function logout() {
         sessionStorage.removeItem("currentUser");
-        window.location.reload(); // Clean reset
+        window.location.reload();
     }
     
-    // ========== PLAYER PROFILE MANAGEMENT ==========
-    async function updatePlayerProfile(userId, username, profileData) {
-        const sheetData = {
-            userId: userId,
-            username: username,
-            password: "",  // Never send password on profile updates
-            role: "player",
-            fullName: profileData.fullName,
-            position: profileData.position,
-            club: profileData.club,
-            age: profileData.age,
-            contactEmail: profileData.contactEmail,
-            contactPhone: profileData.contactPhone,
-            bio: profileData.bio
-        };
-        await sendToBackend(sheetData, "profile_update");
-        return true;
+    // ========== PLAYER PROFILE UPDATE ==========
+    async function updateProfile(userId, profile) {
+        return await apiCall("update_profile", { userId, ...profile });
     }
     
     // ========== UI RENDERING ==========
     let authModalActive = false;
     let authTab = "login";
-    let authErrorMsg = "";
+    let authError = "";
     let signupRole = "player";
     let currentPlayers = [];
     let isLoading = true;
     
-    function showAuthModal(initialTab = "login", error = "") {
+    function showAuth(initialTab = "login", error = "") {
         authModalActive = true;
         authTab = initialTab;
-        authErrorMsg = error;
+        authError = error;
         signupRole = "player";
         renderApp();
     }
     
-    function closeAuthModal() {
+    function closeAuth() {
         authModalActive = false;
-        authErrorMsg = "";
+        authError = "";
         renderApp();
     }
     
-    function handleLoginSubmit(uname, pwd) {
-        if (!uname.trim() || !pwd.trim()) {
-            showAuthModal("login", "Please fill both fields.");
-            return;
-        }
-        const res = login(uname, pwd);
-        if (!res.success) {
-            showAuthModal("login", res.error);
+    async function handleLogin(u, p) {
+        if (!u.trim() || !p.trim()) { showAuth("login", "Fill both fields"); return; }
+        const res = await login(u, p);
+        if (res.success) {
+            closeAuth();
+            if (getCurrentUser().role === "scout") await loadPlayers();
+            renderApp();
         } else {
-            closeAuthModal();
-            loadPlayersForScout();
+            showAuth("login", res.error);
         }
     }
     
-    function handleSignupSubmit(username, password, role) {
-        if (!username.trim() || !password.trim()) {
-            showAuthModal("signup", "Username and password required.");
-            return;
+    async function handleSignup(u, p, role) {
+        if (!u.trim() || !p.trim()) { showAuth("signup", "Fill all fields"); return; }
+        const res = await signup(u, p, role);
+        if (res.success) {
+            closeAuth();
+            if (role === "scout") await loadPlayers();
+            renderApp();
+        } else {
+            showAuth("signup", res.error);
         }
-        signUp(username, password, role).then(res => {
-            if (!res.success) {
-                showAuthModal("signup", res.error);
-            } else {
-                closeAuthModal();
-                if (role === "player") {
-                    renderApp(); // Show profile update for new player
-                } else {
-                    loadPlayersForScout();
-                }
-            }
-        });
     }
     
-    async function loadPlayersForScout() {
+    async function loadPlayers() {
         isLoading = true;
         renderApp();
-        currentPlayers = await fetchAllPlayers();
+        currentPlayers = await fetchPlayers();
         isLoading = false;
         renderApp();
     }
     
     async function renderApp() {
         const root = document.getElementById("appRoot");
-        const currentUser = getCurrentUser();
+        const user = getCurrentUser();
         
         // Not logged in
-        if (!currentUser) {
+        if (!user) {
             root.innerHTML = `
-                <div class="header">
-                    <div class="logo">
-                        <h1>◉ STUD$ MUDD ◉</h1>
-                        <p>discover · connect · excel</p>
-                    </div>
-                    <button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER</button>
-                </div>
-                <div class="dashboard" style="text-align:center; padding: 3rem;">
-                    <div style="background:#0f0303; border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto;">
-                        <h2 style="color:#dc2626;">Welcome to the Network</h2>
-                        <p style="margin:1rem 0; color:#cd9f9f;">The professional platform connecting talent with opportunity.</p>
-                        <div style="background:#2e0a0a; border-radius:1rem; padding:1rem; margin:1rem 0;">
-                            <p style="color:#ffbb77;">⚡ <strong>For Players</strong> — Build your profile and get discovered.</p>
-                            <p style="color:#ffbb77; margin-top:0.5rem;">🔍 <strong>For Scouts</strong> — Find the next generation of stars.</p>
-                        </div>
-                        <button id="joinNowBtn" class="btn-outline">Join Now</button>
-                    </div>
-                </div>
+                <div class="header"><div class="logo"><h1>◉ STUD$ MUDD ◉</h1><p>central scouting network</p></div><button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER</button></div>
+                <div class="dashboard" style="text-align:center; padding:3rem;"><div style="background:#0f0303; border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto;">
+                <h2 style="color:#dc2626;">Unified Platform</h2><p style="margin:1rem 0;">All data is shared across every device. Sign up once, access everywhere.</p>
+                <button id="joinBtn" class="btn-outline">Join Now</button></div></div>
             `;
-            const authBtn = document.getElementById("openAuthBtn");
-            if (authBtn) authBtn.onclick = () => showAuthModal("login", "");
-            const joinBtn = document.getElementById("joinNowBtn");
-            if (joinBtn) joinBtn.onclick = () => showAuthModal("signup", "");
-            if (authModalActive) renderAuthModalOverlay();
+            document.getElementById("openAuthBtn")?.addEventListener("click", () => showAuth("login"));
+            document.getElementById("joinBtn")?.addEventListener("click", () => showAuth("signup"));
+            if (authModalActive) renderAuthModal();
             return;
         }
         
-        const isScout = currentUser.role === "scout";
-        const isPlayer = currentUser.role === "player";
-        
         // SCOUT DASHBOARD
-        if (isScout) {
+        if (user.role === "scout") {
             if (isLoading) {
-                root.innerHTML = `
-                    <div class="header">
-                        <div class="logo"><h1>🔍 STUD$ MUDD · SCOUT MODE</h1></div>
-                        <div class="user-panel">
-                            <span>${escapeHtml(currentUser.username)}</span>
-                            <button class="logout-btn" id="logoutBtn">EXIT</button>
-                        </div>
-                    </div>
-                    <div class="loading">⟳ Loading player directory...</div>
-                `;
+                root.innerHTML = `<div class="header"><div class="logo"><h1>🔍 SCOUT MODE</h1></div><div class="user-panel"><span>${escapeHtml(user.username)}</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div><div class="loading">⟳ Loading directory...</div>`;
                 document.getElementById("logoutBtn")?.addEventListener("click", logout);
                 return;
             }
-            
             root.innerHTML = `
-                <div class="header">
-                    <div class="logo">
-                        <h1>🔍 STUD$ MUDD · SCOUT MODE</h1>
-                        <p>${currentPlayers.length} active profiles</p>
-                    </div>
-                    <div class="user-panel">
-                        <span class="user-greeting">👁️ ${escapeHtml(currentUser.username)}</span>
-                        <span class="role-badge">SCOUT</span>
-                        <button id="logoutBtn" class="logout-btn">EXIT</button>
-                    </div>
-                </div>
-                <div class="dashboard">
-                    <div class="section-title">📋 PLAYER DIRECTORY</div>
-                    <div class="players-grid">
-                        ${currentPlayers.map(player => `
-                            <div class="player-card">
-                                <div class="player-name">⚡ ${escapeHtml(player.fullName || player.username)}</div>
-                                <div class="player-detail"><strong>🎯 Position:</strong> ${escapeHtml(player.position)}</div>
-                                <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(player.club)}</div>
-                                <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(player.age)}</div>
-                                <div class="contact-info">
-                                    <div><span class="contact-label">📧 Email:</span> ${escapeHtml(player.contactEmail)}</div>
-                                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(player.contactPhone)}</div>
-                                </div>
-                                <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(player.bio?.substring(0, 120) || "No bio provided")}</div>
-                                <div class="scout-tag">Full profile visible</div>
-                            </div>
-                        `).join('')}
-                        ${currentPlayers.length === 0 ? '<div class="empty-state">✨ No players registered yet. Share the platform to start building the directory.</div>' : ''}
-                    </div>
-                </div>
+                <div class="header"><div class="logo"><h1>🔍 STUD$ MUDD · SCOUT MODE</h1><p>${currentPlayers.length} active profiles</p></div>
+                <div class="user-panel"><span class="user-greeting">👁️ ${escapeHtml(user.username)}</span><span class="role-badge">SCOUT</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div>
+                <div class="dashboard"><div class="section-title">📋 PLAYER DIRECTORY</div><div class="players-grid">
+                ${currentPlayers.map(p => `
+                    <div class="player-card"><div class="player-name">⚡ ${escapeHtml(p.fullName)}</div>
+                    <div class="player-detail"><strong>🎯 Position:</strong> ${escapeHtml(p.position)}</div>
+                    <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(p.club)}</div>
+                    <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(p.age)}</div>
+                    <div class="contact-info"><div><span class="contact-label">📧 Email:</span> ${escapeHtml(p.contactEmail)}</div>
+                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(p.contactPhone)}</div></div>
+                    <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(p.bio.substring(0,120))}</div>
+                    <div class="scout-tag">Full contact visible</div></div>
+                `).join('')}
+                ${currentPlayers.length === 0 ? '<div class="empty-state">✨ No players yet. Share the platform to grow the directory.</div>' : ''}
+                </div></div>
             `;
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
             return;
         }
         
         // PLAYER DASHBOARD
-        if (isPlayer) {
+        if (user.role === "player") {
             root.innerHTML = `
-                <div class="header">
-                    <div class="logo">
-                        <h1>⭐ STUD$ MUDD · PLAYER ZONE</h1>
-                        <p>your professional profile</p>
-                    </div>
-                    <div class="user-panel">
-                        <span class="user-greeting">🎮 ${escapeHtml(currentUser.username)}</span>
-                        <span class="role-badge">PLAYER</span>
-                        <button id="logoutBtn" class="logout-btn">EXIT</button>
-                    </div>
-                </div>
-                <div class="dashboard">
-                    <div class="form-card">
-                        <div class="section-title">📝 YOUR PROFILE</div>
-                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">⚡ Complete your profile to get noticed by scouts.</p>
-                        <div class="input-group">
-                            <label>Full Name *</label>
-                            <input type="text" id="fullName" placeholder="Your real name">
-                        </div>
-                        <div class="input-group">
-                            <label>Position</label>
-                            <input type="text" id="position" placeholder="e.g., Striker, Midfielder">
-                        </div>
-                        <div class="input-group">
-                            <label>Current Club</label>
-                            <input type="text" id="club" placeholder="Club name">
-                        </div>
-                        <div class="input-group">
-                            <label>Age</label>
-                            <input type="text" id="age" placeholder="e.g., 19">
-                        </div>
-                        <div class="input-group">
-                            <label>📧 Contact Email (scouts will see this)</label>
-                            <input type="email" id="contactEmail" placeholder="your@email.com">
-                        </div>
-                        <div class="input-group">
-                            <label>📞 Contact Phone (scouts will see this)</label>
-                            <input type="text" id="contactPhone" placeholder="+1234567890">
-                        </div>
-                        <div class="input-group">
-                            <label>Bio / Highlights</label>
-                            <textarea id="bio" rows="3" placeholder="Tell scouts about your skills, achievements, and ambitions..."></textarea>
-                        </div>
-                        <button id="saveProfileBtn">💾 SAVE PROFILE</button>
-                        <hr>
-                        <div style="background:#1e0a0a; border-radius:1rem; padding:0.8rem; margin-top:1rem;">
-                            <p style="color:#ffb3b3;"><strong>✅ Visibility</strong></p>
-                            <div style="font-size:0.85rem; color:#c08f8f;">Your profile is immediately visible to all scouts. Keep your information updated!</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="header"><div class="logo"><h1>⭐ PLAYER ZONE</h1><p>complete your profile</p></div>
+                <div class="user-panel"><span>🎮 ${escapeHtml(user.username)}</span><span class="role-badge">PLAYER</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div>
+                <div class="dashboard"><div class="form-card"><div class="section-title">📝 YOUR PROFILE</div>
+                <div class="input-group"><label>Full Name *</label><input id="fullName" placeholder="Real name"></div>
+                <div class="input-group"><label>Position</label><input id="position" placeholder="e.g., Striker"></div>
+                <div class="input-group"><label>Club</label><input id="club" placeholder="Club name"></div>
+                <div class="input-group"><label>Age</label><input id="age" placeholder="e.g., 21"></div>
+                <div class="input-group"><label>📧 Contact Email (scouts see this)</label><input id="email" type="email" placeholder="your@email.com"></div>
+                <div class="input-group"><label>📞 Contact Phone (scouts see this)</label><input id="phone" placeholder="+1234567890"></div>
+                <div class="input-group"><label>Bio / Highlights</label><textarea id="bio" rows="3" placeholder="Tell scouts about your skills..."></textarea></div>
+                <button id="saveBtn">💾 SAVE PROFILE</button>
+                <hr><div style="background:#1e0a0a; border-radius:1rem; padding:0.8rem;"><p style="color:#ffb3b3;">✅ Your profile is instantly visible to all scouts.</p></div></div></div>
             `;
-            
-            const saveBtn = document.getElementById("saveProfileBtn");
-            if (saveBtn) {
-                saveBtn.onclick = async () => {
-                    const profileData = {
-                        fullName: document.getElementById("fullName").value,
-                        position: document.getElementById("position").value,
-                        club: document.getElementById("club").value,
-                        age: document.getElementById("age").value,
-                        contactEmail: document.getElementById("contactEmail").value,
-                        contactPhone: document.getElementById("contactPhone").value,
-                        bio: document.getElementById("bio").value
-                    };
-                    await updatePlayerProfile(currentUser.id, currentUser.username, profileData);
-                    updateStatus("Profile saved successfully!");
-                    alert("✅ Your profile has been saved and is now visible to scouts.");
-                };
-            }
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
+            document.getElementById("saveBtn")?.addEventListener("click", async () => {
+                const profile = {
+                    fullName: document.getElementById("fullName").value,
+                    position: document.getElementById("position").value,
+                    club: document.getElementById("club").value,
+                    age: document.getElementById("age").value,
+                    contactEmail: document.getElementById("email").value,
+                    contactPhone: document.getElementById("phone").value,
+                    bio: document.getElementById("bio").value
+                };
+                const res = await updateProfile(user.id, profile);
+                if (res.success) {
+                    setStatus("Profile saved!");
+                    alert("✅ Your profile has been saved. Scouts can now see your information.");
+                } else {
+                    setStatus("Error saving profile", true);
+                }
+            });
         }
         
-        if (authModalActive && !getCurrentUser()) {
-            renderAuthModalOverlay();
-        }
+        if (authModalActive && !getCurrentUser()) renderAuthModal();
     }
     
-    function renderAuthModalOverlay() {
-        const existing = document.getElementById("studsAuthModal");
+    function renderAuthModal() {
+        const existing = document.getElementById("authModal");
         if (existing) existing.remove();
         const root = document.getElementById("appRoot");
         if (!root) return;
         const modalDiv = document.createElement("div");
-        modalDiv.id = "studsAuthModal";
+        modalDiv.id = "authModal";
         modalDiv.className = "auth-overlay";
-        
         modalDiv.innerHTML = `
-            <div class="auth-modal">
-                <div class="auth-tabs">
-                    <button id="authTabLogin" class="auth-tab ${authTab === 'login' ? 'active' : ''}">LOGIN</button>
-                    <button id="authTabSignup" class="auth-tab ${authTab === 'signup' ? 'active' : ''}">SIGN UP</button>
-                </div>
-                ${authErrorMsg ? `<div class="error-msg">⚠️ ${escapeHtml(authErrorMsg)}</div>` : ""}
-                <div id="authFormContainer"></div>
-                <div style="margin-top:1rem; text-align:center;">
-                    <button id="closeAuthModalBtn" class="btn-outline">Cancel</button>
-                </div>
-            </div>
+            <div class="auth-modal"><div class="auth-tabs"><button id="tabLogin" class="auth-tab ${authTab === 'login' ? 'active' : ''}">LOGIN</button><button id="tabSignup" class="auth-tab ${authTab === 'signup' ? 'active' : ''}">SIGN UP</button></div>
+            ${authError ? `<div class="error-msg">⚠️ ${escapeHtml(authError)}</div>` : ""}
+            <div id="authForm"></div><div style="margin-top:1rem; text-align:center;"><button id="closeModal" class="btn-outline">Cancel</button></div></div>
         `;
         root.appendChild(modalDiv);
         
-        const loginTab = document.getElementById("authTabLogin");
-        const signupTab = document.getElementById("authTabSignup");
-        const formContainer = document.getElementById("authFormContainer");
-        const closeBtn = document.getElementById("closeAuthModalBtn");
-        
         const renderForm = () => {
+            const container = document.getElementById("authForm");
             if (authTab === "login") {
-                formContainer.innerHTML = `
-                    <div class="input-group"><label>Username</label><input id="loginUser" type="text" placeholder="username"></div>
-                    <div class="input-group"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
-                    <button id="doLoginBtn">ENTER ⚡</button>
-                    <p style="color:#aa6f6f; font-size:0.7rem; text-align:center; margin-top:0.8rem;">Demo scout: talent_scout / redscout</p>
-                `;
-                const doLogin = document.getElementById("doLoginBtn");
-                if (doLogin) doLogin.onclick = () => {
-                    const uname = document.getElementById("loginUser").value;
-                    const pwd = document.getElementById("loginPass").value;
-                    handleLoginSubmit(uname, pwd);
-                };
+                container.innerHTML = `<div class="input-group"><label>Username</label><input id="loginUser" type="text"></div><div class="input-group"><label>Password</label><input id="loginPass" type="password"></div><button id="doLogin">ENTER ⚡</button><p style="color:#aa6f6f; font-size:0.7rem; margin-top:0.8rem;">Demo scout: talent_scout / redscout</p>`;
+                document.getElementById("doLogin")?.addEventListener("click", () => {
+                    const u = document.getElementById("loginUser").value;
+                    const p = document.getElementById("loginPass").value;
+                    handleLogin(u, p);
+                });
             } else {
-                formContainer.innerHTML = `
-                    <div class="input-group"><label>Username *</label><input id="signUser" type="text" placeholder="choose username"></div>
-                    <div class="input-group"><label>Password * (min 3 chars)</label><input id="signPass" type="password" placeholder="password"></div>
-                    <div class="input-group"><label>I am a:</label>
-                        <select id="signRole">
-                            <option value="player" ${signupRole === 'player' ? 'selected' : ''}>⚽ Player (Get discovered)</option>
-                            <option value="scout" ${signupRole === 'scout' ? 'selected' : ''}>🔍 Scout (Discover talent)</option>
-                        </select>
-                    </div>
-                    <button id="doSignupBtn">CREATE ACCOUNT</button>
-                `;
-                const roleSelect = document.getElementById("signRole");
-                if (roleSelect) {
-                    roleSelect.addEventListener("change", (e) => { signupRole = e.target.value; });
-                }
-                const doSign = document.getElementById("doSignupBtn");
-                if (doSign) doSign.onclick = () => {
-                    const uname = document.getElementById("signUser").value;
-                    const pwd = document.getElementById("signPass").value;
-                    const role = document.getElementById("signRole").value;
-                    handleSignupSubmit(uname, pwd, role);
-                };
+                container.innerHTML = `<div class="input-group"><label>Username *</label><input id="signUser" type="text"></div><div class="input-group"><label>Password * (min 3)</label><input id="signPass" type="password"></div><div class="input-group"><label>I am a:</label><select id="signRole"><option value="player">⚽ Player (Get discovered)</option><option value="scout">🔍 Scout (Discover talent)</option></select></div><button id="doSignup">CREATE ACCOUNT</button>`;
+                document.getElementById("doSignup")?.addEventListener("click", () => {
+                    const u = document.getElementById("signUser").value;
+                    const p = document.getElementById("signPass").value;
+                    const r = document.getElementById("signRole").value;
+                    handleSignup(u, p, r);
+                });
             }
         };
         
-        if (loginTab) loginTab.onclick = () => { authTab = "login"; authErrorMsg = ""; renderAuthModalOverlay(); };
-        if (signupTab) signupTab.onclick = () => { authTab = "signup"; authErrorMsg = ""; signupRole = "player"; renderAuthModalOverlay(); };
-        if (closeBtn) closeBtn.onclick = () => closeAuthModal();
-        
+        document.getElementById("tabLogin")?.addEventListener("click", () => { authTab = "login"; authError = ""; renderAuthModal(); });
+        document.getElementById("tabSignup")?.addEventListener("click", () => { authTab = "signup"; authError = ""; renderAuthModal(); });
+        document.getElementById("closeModal")?.addEventListener("click", closeAuth);
         renderForm();
     }
     
-    // ========== INITIALIZE SYSTEM ==========
-    initUserSystem();
-    
-    // Pre-load players if a scout is already logged in
-    const existingUser = getCurrentUser();
-    if (existingUser && existingUser.role === "scout") {
-        loadPlayersForScout();
-    } else {
-        renderApp();
-    }
+    // Start the app: pre‑load players if a scout is already logged in
+    (async () => {
+        const u = getCurrentUser();
+        if (u && u.role === "scout") await loadPlayers();
+        else renderApp();
+    })();
 </script>
 </body>
 </html>
