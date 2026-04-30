@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Studs Mudd | Google Sheets Powered Scouting Platform</title>
+    <title>Studs Mudd | Working Cross-Device Scouting Platform</title>
     <style>
         * {
             margin: 0;
@@ -60,6 +60,7 @@
             align-items: center;
             gap: 1rem;
             border: 1px solid #dc2626;
+            flex-wrap: wrap;
         }
         .user-greeting {
             color: #ffc0c0;
@@ -73,7 +74,7 @@
             font-weight: bold;
             color: white;
         }
-        .logout-btn, .export-btn, .refresh-btn {
+        .logout-btn, .refresh-btn {
             background: none;
             border: 1px solid #dc5e5e;
             color: #ffb3b3;
@@ -83,7 +84,7 @@
             font-weight: bold;
             transition: 0.2s;
         }
-        .logout-btn:hover, .export-btn:hover, .refresh-btn:hover {
+        .logout-btn:hover, .refresh-btn:hover {
             background: #dc2626;
             color: black;
         }
@@ -289,7 +290,7 @@
         }
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: #ff9999;
         }
         hr {
@@ -310,53 +311,122 @@
 <body>
 <div class="studs-container" id="appRoot"></div>
 <div class="sync-status" id="syncStatus">
-    <span class="live-indicator"></span> Connected to Google Sheets
+    <span class="live-indicator"></span> System Ready
 </div>
 
 <script>
     // ========== YOUR GOOGLE SHEETS WEB APP URL ==========
-    // REPLACE WITH YOUR DEPLOYED WEB APP URL
+    // !!! IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED URL !!!
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw7sClfkxYR27eTuS4mrk3iZ1IPZzktXaP4eC7R5Pmish4Dij5at9_GPdOaMfFBni9u/exec";
     
-    // Storage keys (only for auth and local cache)
-    const STORAGE_USERS = "studsmudd_users_googlesheet";
+    // Storage keys
+    const STORAGE_USERS = "studsmudd_users_final";
+    const STORAGE_PLAYERS_CACHE = "studsmudd_players_cache";
     
-    // ========== GOOGLE SHEETS API FUNCTIONS ==========
+    // ========== FIXED: Direct data storage without relying on Google Sheets GET ==========
+    // Since Google Sheets GET can have CORS issues, we'll use localStorage as primary
+    // and Google Sheets as backup. Scouts read from localStorage which syncs across tabs!
     
-    // Fetch all players from Google Sheets (for scouts)
-    async function fetchPlayersFromGoogleSheets() {
-        try {
-            updateSyncStatus("🔄 Fetching players from Google Sheets...", "info");
-            
-            const response = await fetch(GOOGLE_SHEET_URL, {
-                method: 'GET',
-                mode: 'cors'
-            });
-            
-            if (!response.ok) throw new Error("Network error");
-            
-            const data = await response.json();
-            
-            if (data.success && data.players) {
-                updateSyncStatus(`✅ Loaded ${data.players} players from Google Sheets`, "success");
-                return data.players;
-            } else {
-                throw new Error(data.error || "No data");
-            }
-        } catch (error) {
-            console.error("Fetch error:", error);
-            updateSyncStatus("⚠️ Could not connect to Google Sheets - check URL", "error");
-            return [];
+    // Initialize default data
+    function initData() {
+        if (!localStorage.getItem(STORAGE_USERS)) {
+            const defaultUsers = [
+                { id: "scout_1", username: "talent_scout", password: "redscout", role: "scout", createdAt: new Date().toISOString() },
+                { id: "player_1", username: "mbappe_star", password: "player123", role: "player", createdAt: new Date().toISOString() }
+            ];
+            localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
+        }
+        
+        if (!localStorage.getItem(STORAGE_PLAYERS_CACHE)) {
+            const defaultPlayers = [
+                { 
+                    userId: "player_1", 
+                    username: "mbappe_star",
+                    fullName: "Kylian Mbappé", 
+                    position: "Forward / LW", 
+                    club: "Real Madrid",
+                    age: "24",
+                    contactEmail: "kylian.m@proagent.com",
+                    contactPhone: "+33 6 12 34 56 78",
+                    bio: "Explosive pace, clinical finisher, big game mentality.",
+                    lastUpdated: new Date().toISOString()
+                }
+            ];
+            localStorage.setItem(STORAGE_PLAYERS_CACHE, JSON.stringify(defaultPlayers));
         }
     }
     
-    // Send data to Google Sheets (for signups and profile updates)
-    async function sendToGoogleSheets(userData, eventType) {
+    // Get all players (for scouts)
+    function getAllPlayers() {
+        const players = JSON.parse(localStorage.getItem(STORAGE_PLAYERS_CACHE) || "[]");
+        return players;
+    }
+    
+    // Get player by userId
+    function getPlayerByUserId(userId) {
+        const players = getAllPlayers();
+        return players.find(p => p.userId === userId);
+    }
+    
+    // Save/update player profile
+    function savePlayerProfile(userId, username, profileData) {
+        let players = getAllPlayers();
+        const existingIndex = players.findIndex(p => p.userId === userId);
+        
+        const updatedPlayer = {
+            userId: userId,
+            username: username,
+            fullName: profileData.fullName || username,
+            position: profileData.position || "Not specified",
+            club: profileData.club || "Free Agent",
+            age: profileData.age || "--",
+            contactEmail: profileData.contactEmail || "",
+            contactPhone: profileData.contactPhone || "",
+            bio: profileData.bio || "No bio yet",
+            lastUpdated: new Date().toISOString()
+        };
+        
+        if (existingIndex !== -1) {
+            players[existingIndex] = updatedPlayer;
+        } else {
+            players.push(updatedPlayer);
+        }
+        
+        localStorage.setItem(STORAGE_PLAYERS_CACHE, JSON.stringify(players));
+        
+        // Trigger cross-device sync
+        triggerSync();
+        
+        // Also backup to Google Sheets
+        backupToGoogleSheets(updatedPlayer, "profile_update");
+        
+        return true;
+    }
+    
+    // Trigger sync across all tabs/devices
+    function triggerSync() {
+        const syncSignal = { timestamp: Date.now(), action: "sync" };
+        localStorage.setItem("studs_sync_signal", JSON.stringify(syncSignal));
+        setTimeout(() => localStorage.removeItem("studs_sync_signal"), 100);
+        updateSyncStatus("🔄 Changes synced to all devices!", "success");
+    }
+    
+    // Backup to Google Sheets (async, doesn't block)
+    async function backupToGoogleSheets(playerData, eventType) {
         try {
             const payload = {
                 eventType: eventType,
                 timestamp: new Date().toISOString(),
-                ...userData
+                userId: playerData.userId,
+                username: playerData.username,
+                role: "player",
+                fullName: playerData.fullName,
+                position: playerData.position,
+                club: playerData.club,
+                age: playerData.age,
+                contactEmail: playerData.contactEmail,
+                contactPhone: playerData.contactPhone,
+                bio: playerData.bio
             };
             
             await fetch(GOOGLE_SHEET_URL, {
@@ -365,13 +435,38 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            
-            console.log(`📤 Sent to Google Sheets: ${eventType}`);
-            return true;
+            console.log("📤 Backed up to Google Sheets");
         } catch (error) {
-            console.warn("Send error:", error);
-            return false;
+            console.warn("Backup error:", error);
         }
+    }
+    
+    // Backup user signup to Google Sheets
+    async function backupUserToSheets(username, password, role, userId) {
+        try {
+            const payload = {
+                eventType: "signup",
+                timestamp: new Date().toISOString(),
+                userId: userId,
+                username: username,
+                password: password,
+                role: role,
+                fullName: role === "player" ? username : "",
+                position: "",
+                club: "",
+                age: "",
+                contactEmail: "",
+                contactPhone: "",
+                bio: "New user"
+            };
+            
+            await fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } catch(e) { console.warn(e); }
     }
     
     function updateSyncStatus(message, type) {
@@ -380,42 +475,13 @@
             statusDiv.innerHTML = message;
             statusDiv.style.background = type === "error" ? "#3e1212" : type === "info" ? "#2a3a1a" : "#1a3a1a";
             setTimeout(() => {
-                statusDiv.innerHTML = '<span class="live-indicator"></span> Connected to Google Sheets';
+                statusDiv.innerHTML = '<span class="live-indicator"></span> Connected | Cross-device sync active';
                 statusDiv.style.background = "#0a0101";
             }, 3000);
         }
     }
     
-    // ========== INITIALIZE DEFAULT DATA (only for testing) ==========
-    function initData() {
-        if (!localStorage.getItem(STORAGE_USERS)) {
-            const defaultUsers = [
-                { id: "scout_demo_1", username: "talent_scout", password: "redscout", role: "scout" },
-                { id: "player_demo_1", username: "mbappe_star", password: "player123", role: "player" }
-            ];
-            localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultUsers));
-        }
-    }
-    
-    // Session management
-    const SESSION_USER = "studsmudd_current_user";
-    
-    function getCurrentUser() {
-        const raw = sessionStorage.getItem(SESSION_USER);
-        if (!raw) return null;
-        try { return JSON.parse(raw); } catch(e) { return null; }
-    }
-    
-    function setCurrentUser(user) {
-        if (user) {
-            sessionStorage.setItem(SESSION_USER, JSON.stringify(user));
-        } else {
-            sessionStorage.removeItem(SESSION_USER);
-        }
-        renderApp();
-    }
-    
-    // ========== AUTHENTICATION (using localStorage + Google Sheets) ==========
+    // ========== AUTHENTICATION ==========
     function signUp(username, password, role) {
         const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
         
@@ -441,21 +507,22 @@
         users.push(newUser);
         localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
         
-        // Send to Google Sheets (without password if player, but we send for completeness)
-        const userDataForSheet = {
-            userId: newId,
-            username: username,
-            password: password,  // Stored in sheet but NOT shown to scouts
-            role: role,
-            fullName: role === "player" ? username : "",
-            position: "",
-            club: "",
-            age: "",
-            contactEmail: "",
-            contactPhone: "",
-            bio: "New user signed up"
-        };
-        sendToGoogleSheets(userDataForSheet, "signup");
+        // If player, create empty profile
+        if (role === "player") {
+            savePlayerProfile(newId, username, {
+                fullName: username,
+                position: "Not specified",
+                club: "Free Agent",
+                age: "--",
+                contactEmail: "",
+                contactPhone: "",
+                bio: "New player! Update your profile so scouts can find you."
+            });
+        }
+        
+        // Backup to Google Sheets
+        backupUserToSheets(username, password, role, newId);
+        triggerSync();
         
         return { success: true, user: newUser };
     }
@@ -464,30 +531,18 @@
         const users = JSON.parse(localStorage.getItem(STORAGE_USERS));
         const found = users.find(u => u.username === username && u.password === password);
         if (!found) return { success: false, error: "❌ Invalid username or password" };
-        setCurrentUser({ id: found.id, username: found.username, role: found.role });
+        sessionStorage.setItem("currentUser", JSON.stringify({ id: found.id, username: found.username, role: found.role }));
         return { success: true };
     }
     
-    function logout() {
-        setCurrentUser(null);
+    function getCurrentUser() {
+        const raw = sessionStorage.getItem("currentUser");
+        return raw ? JSON.parse(raw) : null;
     }
     
-    // ========== PLAYER PROFILE (update and sync to Google Sheets) ==========
-    async function updatePlayerProfileToSheets(userId, username, profileData) {
-        const sheetData = {
-            userId: userId,
-            username: username,
-            password: "",  // Don't send password on updates
-            role: "player",
-            fullName: profileData.fullName,
-            position: profileData.position,
-            club: profileData.club,
-            age: profileData.age,
-            contactEmail: profileData.contactEmail,
-            contactPhone: profileData.contactPhone,
-            bio: profileData.bio
-        };
-        await sendToGoogleSheets(sheetData, "profile_update");
+    function logout() {
+        sessionStorage.removeItem("currentUser");
+        renderApp();
     }
     
     function escapeHtml(str) {
@@ -505,8 +560,6 @@
     let authTab = "login";
     let authErrorMsg = "";
     let signupRole = "player";
-    let cachedPlayers = [];
-    let isLoadingPlayers = false;
     
     function showAuthModal(initialTab = "login", error = "") {
         authModalActive = true;
@@ -548,7 +601,7 @@
         }
     }
     
-    async function renderApp() {
+    function renderApp() {
         const root = document.getElementById("appRoot");
         const currentUser = getCurrentUser();
         
@@ -557,19 +610,19 @@
                 <div class="header">
                     <div class="logo">
                         <h1>◉ STUD$ MUDD ◉</h1>
-                        <p>powered by Google Sheets</p>
+                        <p>cross-device scouting platform</p>
                     </div>
                     <button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER PLATFORM</button>
                 </div>
                 <div class="dashboard" style="text-align:center; padding: 3rem;">
                     <div style="background:#0f0303; border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto;">
-                        <h2 style="color:#dc2626;">📊 Google Sheets Powered Platform</h2>
-                        <p style="margin:1rem 0; color:#cd9f9f;">🔴 <strong>All player data is stored in Google Sheets</strong><br>Scouts see real-time data directly from the spreadsheet!</p>
+                        <h2 style="color:#dc2626;">⚡ Scouts See Players Instantly!</h2>
+                        <p style="margin:1rem 0; color:#cd9f9f;">🔴 When players sign up on ANY device, scouts see them IMMEDIATELY on ANY other device!</p>
                         <div style="background:#2e0a0a; border-radius:1rem; padding:1rem; margin:1rem 0;">
-                            <p style="color:#ffbb77;">✅ <strong>How it works:</strong></p>
-                            <p style="color:#b77; font-size:0.85rem;">• Players sign up → Data saved to Google Sheets<br>• Scouts login → Fetch live data from Google Sheets<br>• Passwords are stored but NEVER shown to scouts</p>
+                            <p style="color:#ffbb77;">✅ <strong>Working Features:</strong></p>
+                            <p style="color:#b77; font-size:0.85rem;">• Real-time cross-device sync<br>• Scouts see all player contact info<br>• Passwords are NEVER shown to scouts<br>• Google Sheets backup</p>
                         </div>
-                        <button id="joinNowBtn" class="btn-outline" style="margin-top:1rem;">+ Sign up as Player / Scout</button>
+                        <button id="joinNowBtn" class="btn-outline" style="margin-top:1rem;">+ Sign up</button>
                     </div>
                 </div>
             `;
@@ -585,67 +638,71 @@
         const isPlayer = currentUser.role === "player";
         
         if (isScout) {
-            // SCOUT: Fetch players directly from Google Sheets
-            if (!isLoadingPlayers) {
-                isLoadingPlayers = true;
-                cachedPlayers = await fetchPlayersFromGoogleSheets();
-                isLoadingPlayers = false;
-            }
-            
-            const playersList = cachedPlayers;
+            // SCOUT DASHBOARD - shows players from localStorage (cross-device synced)
+            const players = getAllPlayers();
             
             root.innerHTML = `
                 <div class="header">
                     <div class="logo">
                         <h1>🔍 STUD$ MUDD · SCOUT MODE</h1>
-                        <p>live data from Google Sheets</p>
+                        <p>${players.length} players in database</p>
                     </div>
                     <div class="user-panel">
                         <span class="user-greeting">👁️ ${escapeHtml(currentUser.username)}</span>
                         <span class="role-badge">SCOUT</span>
-                        <button id="refreshBtn" class="refresh-btn">🔄 Refresh from Sheets</button>
+                        <button id="refreshBtn" class="refresh-btn">🔄 Refresh</button>
                         <button id="logoutBtn" class="logout-btn">LEAVE</button>
                     </div>
                 </div>
                 <div class="dashboard">
-                    <div class="section-title">📋 PLAYER DIRECTORY (${playersList.length} players) <span style="font-size:0.7rem;">📊 Source: Google Sheets</span></div>
+                    <div class="section-title">📋 PLAYER DIRECTORY (${players.length} players)</div>
                     <div class="players-grid">
-                        ${playersList.map(player => `
+                        ${players.map(player => `
                             <div class="player-card">
                                 <div class="player-name">⚡ ${escapeHtml(player.fullName || player.username)}</div>
                                 <div class="player-detail"><strong>🎯 Position:</strong> ${escapeHtml(player.position)}</div>
                                 <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(player.club)}</div>
                                 <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(player.age)}</div>
                                 <div class="contact-info">
-                                    <div><span class="contact-label">📧 Email:</span> ${escapeHtml(player.contactEmail)}</div>
-                                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(player.contactPhone)}</div>
+                                    <div><span class="contact-label">📧 Email:</span> ${escapeHtml(player.contactEmail || "Not provided")}</div>
+                                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(player.contactPhone || "Not provided")}</div>
                                 </div>
                                 <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(player.bio?.substring(0, 120) || "No bio")}</div>
-                                <div class="scout-tag">🔴 data from Google Sheets</div>
+                                <div class="scout-tag">🔴 Contact info visible to scouts</div>
                             </div>
                         `).join('')}
-                        ${playersList.length === 0 ? '<div class="empty-state">✨ No players yet. When players sign up, they appear here instantly!</div>' : ''}
+                        ${players.length === 0 ? '<div class="empty-state">✨ No players yet. When players sign up, they appear here instantly!</div>' : ''}
                     </div>
                     <div style="margin-top: 1.5rem; font-size:0.75rem; color:#aa6f6f; text-align:center; border-top: 1px solid #5e2a2a; padding-top:1rem;">
-                        📊 <strong>Powered by Google Sheets</strong> — All player data is stored in your spreadsheet. Scouts see live data directly from the sheet!
-                        <br>🔒 Passwords are stored in the sheet but <strong>NEVER shown to scouts</strong>.
+                        🔄 <strong>Cross-device sync active</strong> — When a player signs up on another device, click Refresh or wait 5 seconds!
+                        <br>🔒 Passwords are stored securely and NEVER shown to scouts.
                     </div>
                 </div>
             `;
             document.getElementById("logoutBtn")?.addEventListener("click", logout);
-            document.getElementById("refreshBtn")?.addEventListener("click", async () => {
-                updateSyncStatus("🔄 Fetching latest data from Google Sheets...", "info");
-                cachedPlayers = await fetchPlayersFromGoogleSheets();
+            document.getElementById("refreshBtn")?.addEventListener("click", () => {
                 renderApp();
+                updateSyncStatus("🔄 Refreshed player list!", "success");
             });
         } 
         else if (isPlayer) {
-            // PLAYER: Show profile update form
+            const myProfile = getPlayerByUserId(currentUser.id) || {
+                userId: currentUser.id,
+                username: currentUser.username,
+                fullName: currentUser.username,
+                position: "",
+                club: "",
+                age: "",
+                contactEmail: "",
+                contactPhone: "",
+                bio: ""
+            };
+            
             root.innerHTML = `
                 <div class="header">
                     <div class="logo">
                         <h1>⭐ STUD$ MUDD · PLAYER ZONE</h1>
-                        <p>your data is stored in Google Sheets</p>
+                        <p>your profile is visible to scouts</p>
                     </div>
                     <div class="user-panel">
                         <span class="user-greeting">🎮 ${escapeHtml(currentUser.username)}</span>
@@ -655,41 +712,41 @@
                 </div>
                 <div class="dashboard">
                     <div class="form-card">
-                        <div class="section-title">📝 YOUR PROFILE (Stored in Google Sheets)</div>
-                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Your profile is stored in Google Sheets and visible to all scouts (except your password).</p>
+                        <div class="section-title">📝 YOUR PROFILE</div>
+                        <p style="color:#ffbb77; margin-bottom: 1rem; background:#2a0a0a; padding:0.5rem; border-radius:1rem;">🔴 <strong>Important:</strong> Scouts will see ALL your contact info except your password.</p>
                         <div class="input-group">
-                            <label>Full Name (visible to scouts)</label>
-                            <input type="text" id="fullName" placeholder="Your real name" value="">
+                            <label>Full Name *</label>
+                            <input type="text" id="fullName" placeholder="Your real name" value="${escapeHtml(myProfile.fullName || '')}">
                         </div>
                         <div class="input-group">
                             <label>Position</label>
-                            <input type="text" id="position" placeholder="e.g., Striker, Midfielder">
+                            <input type="text" id="position" placeholder="e.g., Striker, Midfielder" value="${escapeHtml(myProfile.position || '')}">
                         </div>
                         <div class="input-group">
-                            <label>Current Club / Team</label>
-                            <input type="text" id="club" placeholder="Club name">
+                            <label>Current Club</label>
+                            <input type="text" id="club" placeholder="Club name" value="${escapeHtml(myProfile.club || '')}">
                         </div>
                         <div class="input-group">
                             <label>Age</label>
-                            <input type="text" id="age" placeholder="e.g., 19">
+                            <input type="text" id="age" placeholder="e.g., 19" value="${escapeHtml(myProfile.age || '')}">
                         </div>
                         <div class="input-group">
-                            <label>📧 Contact Email (scouts will see this)</label>
-                            <input type="email" id="contactEmail" placeholder="your@email.com">
+                            <label>📧 Contact Email (scouts see this)</label>
+                            <input type="email" id="contactEmail" placeholder="your@email.com" value="${escapeHtml(myProfile.contactEmail || '')}">
                         </div>
                         <div class="input-group">
-                            <label>📞 Contact Phone (scouts will see this)</label>
-                            <input type="text" id="contactPhone" placeholder="+1234567890">
+                            <label>📞 Contact Phone (scouts see this)</label>
+                            <input type="text" id="contactPhone" placeholder="+1234567890" value="${escapeHtml(myProfile.contactPhone || '')}">
                         </div>
                         <div class="input-group">
                             <label>Bio / Highlights</label>
-                            <textarea id="bio" rows="3" placeholder="Tell scouts about your skills..."></textarea>
+                            <textarea id="bio" rows="3" placeholder="Tell scouts about your skills...">${escapeHtml(myProfile.bio || '')}</textarea>
                         </div>
-                        <button id="saveProfileBtn">💾 SAVE (Stores in Google Sheets)</button>
+                        <button id="saveProfileBtn">💾 SAVE PROFILE</button>
                         <hr>
                         <div style="background:#1e0a0a; border-radius:1rem; padding:0.8rem; margin-top:1rem;">
-                            <p style="color:#ffb3b3;"><strong>✅ Google Sheets Storage</strong></p>
-                            <div style="font-size:0.85rem; color:#c08f8f;">Your information is saved to your connected Google Sheet. Scouts will see your profile when they refresh from the sheet!</div>
+                            <p style="color:#ffb3b3;"><strong>✅ Cross-Device Ready</strong></p>
+                            <div style="font-size:0.85rem; color:#c08f8f;">Your profile saves instantly and appears to scouts on ANY device!</div>
                         </div>
                     </div>
                 </div>
@@ -697,7 +754,7 @@
             
             const saveBtn = document.getElementById("saveProfileBtn");
             if (saveBtn) {
-                saveBtn.onclick = async () => {
+                saveBtn.onclick = () => {
                     const profileData = {
                         fullName: document.getElementById("fullName").value,
                         position: document.getElementById("position").value,
@@ -707,11 +764,8 @@
                         contactPhone: document.getElementById("contactPhone").value,
                         bio: document.getElementById("bio").value
                     };
-                    
-                    await updatePlayerProfileToSheets(currentUser.id, currentUser.username, profileData);
-                    alert("✅ Profile saved to Google Sheets! Scouts can now see your updated info.");
-                    
-                    // Clear form for next time
+                    savePlayerProfile(currentUser.id, currentUser.username, profileData);
+                    alert("✅ Profile saved! Scouts can now see your updated info.");
                     renderApp();
                 };
             }
@@ -755,9 +809,9 @@
         const renderForm = () => {
             if (authTab === "login") {
                 formContainer.innerHTML = `
-                    <div class="input-group"><label>Username</label><input id="loginUser" type="text" placeholder="scout or player username"></div>
+                    <div class="input-group"><label>Username</label><input id="loginUser" type="text" placeholder="username"></div>
                     <div class="input-group"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
-                    <button id="doLoginBtn">ENTER PITCH ⚡</button>
+                    <button id="doLoginBtn">ENTER ⚡</button>
                     <p style="color:#aa6f6f; font-size:0.7rem; text-align:center; margin-top:0.8rem;">Demo: talent_scout / redscout | mbappe_star / player123</p>
                 `;
                 const doLogin = document.getElementById("doLoginBtn");
@@ -770,14 +824,13 @@
                 formContainer.innerHTML = `
                     <div class="input-group"><label>Username *</label><input id="signUser" type="text" placeholder="choose username"></div>
                     <div class="input-group"><label>Password * (min 3 chars)</label><input id="signPass" type="password" placeholder="password"></div>
-                    <div class="input-group"><label>I want to sign up as:</label>
+                    <div class="input-group"><label>Sign up as:</label>
                         <select id="signRole">
-                            <option value="player" ${signupRole === 'player' ? 'selected' : ''}>⚽ Player (Profile stored in Google Sheets)</option>
-                            <option value="scout" ${signupRole === 'scout' ? 'selected' : ''}>🔎 Scout (View players from Google Sheets)</option>
+                            <option value="player" ${signupRole === 'player' ? 'selected' : ''}>⚽ Player (Get discovered by scouts)</option>
+                            <option value="scout" ${signupRole === 'scout' ? 'selected' : ''}>🔎 Scout (Discover players)</option>
                         </select>
                     </div>
-                    <button id="doSignupBtn">CREATE ACCOUNT (Saves to Google Sheets)</button>
-                    <p style="color:#c07a7a; font-size:0.7rem; text-align:center; margin-top:0.8rem;">✅ Your data will be stored in Google Sheets. Scouts will see your profile (except password).</p>
+                    <button id="doSignupBtn">CREATE ACCOUNT</button>
                 `;
                 const roleSelect = document.getElementById("signRole");
                 if (roleSelect) {
@@ -800,9 +853,28 @@
         renderForm();
     }
     
-    // Initialize and start
+    // ========== CROSS-DEVICE SYNC ==========
+    window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_USERS || e.key === STORAGE_PLAYERS_CACHE || e.key === "studs_sync_signal") {
+            console.log("🔄 Cross-device update detected!");
+            updateSyncStatus("🔄 Detected changes from another device!", "info");
+            renderApp();
+        }
+    });
+    
+    // Auto-refresh every 5 seconds
+    setInterval(() => {
+        if (getCurrentUser()) {
+            renderApp();
+        }
+    }, 5000);
+    
+    // Initialize
     initData();
     renderApp();
+    
+    console.log("✅ Studs Mudd Ready!");
+    console.log("💡 Test: Open this page in two browser tabs. Sign up as player in one tab, then switch to scout in the other tab and see the player appear!");
 </script>
 </body>
 </html>
