@@ -21,13 +21,12 @@
             padding: 1.5rem;
         }
 
-        /* Glassmorphism containers */
         .glass-card {
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(16px);
             border-radius: 2rem;
-            border: 1px solid rgba(220, 38, 38, 0.35);
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(220, 38, 38, 0.15) inset;
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6);
             transition: all 0.2s ease;
         }
 
@@ -37,17 +36,15 @@
             margin: 0 auto;
         }
 
-        /* auth panels */
         .auth-panel {
-            max-width: 480px;
+            max-width: 500px;
             margin: 2rem auto;
             padding: 2rem 2rem 2.2rem;
         }
 
         .logo {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
             background: linear-gradient(135deg, #f87171, #dc2626);
             -webkit-background-clip: text;
             background-clip: text;
@@ -61,11 +58,6 @@
             color: #b0a8a8;
             margin-bottom: 2rem;
             font-size: 0.9rem;
-            border-left: 2px solid #dc2626;
-            padding-left: 1rem;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .tab-buttons {
@@ -106,13 +98,12 @@
             font-weight: 500;
             color: #e5e0e0;
             font-size: 0.85rem;
-            letter-spacing: 0.3px;
         }
 
         .input-group input, .input-group textarea, .input-group select {
             width: 100%;
             padding: 0.9rem 1rem;
-            background: rgba(20, 10, 10, 0.7);
+            background: rgba(20, 10, 10, 0.8);
             border: 1px solid #4a2a2a;
             border-radius: 1.2rem;
             color: white;
@@ -156,7 +147,6 @@
             text-align: center;
         }
 
-        /* Dashboard layouts */
         .dashboard {
             display: none;
         }
@@ -170,7 +160,6 @@
             background: rgba(0,0,0,0.5);
             padding: 1rem 2rem;
             border-radius: 2rem;
-            backdrop-filter: blur(8px);
         }
 
         .dashboard-title h2 {
@@ -200,18 +189,17 @@
             color: white;
         }
 
-        /* Players grid (scout) */
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.8rem;
             margin-top: 1rem;
         }
 
         .player-card {
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(16px);
-            border-radius: 1.8rem;
+            border-radius: 1.5rem;
             border-left: 4px solid #dc2626;
             padding: 1.4rem;
             transition: all 0.2s ease;
@@ -219,13 +207,12 @@
 
         .player-card:hover {
             transform: translateY(-5px);
-            background: rgba(20, 8, 8, 0.8);
-            border-left-width: 6px;
+            background: rgba(20, 8, 8, 0.85);
         }
 
         .avatar-icon {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(145deg, #dc2626, #7a1a1a);
             border-radius: 30px;
             display: flex;
@@ -238,20 +225,19 @@
         }
 
         .player-name {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: white;
+            margin-bottom: 0.5rem;
         }
 
         .player-detail {
             margin-top: 0.7rem;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.7rem;
+            gap: 0.5rem;
             font-size: 0.85rem;
             color: #ccc;
-            border-top: 1px dashed #3a2a2a;
-            padding-top: 0.7rem;
         }
 
         .detail-badge {
@@ -266,15 +252,16 @@
             font-size: 0.8rem;
             color: #b9b3b3;
             line-height: 1.4;
+            padding-top: 0.5rem;
+            border-top: 1px solid #3a2a2a;
         }
 
-        /* Player profile form */
         .profile-form-container {
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(12px);
             border-radius: 2rem;
             padding: 2rem;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -305,7 +292,6 @@
             border-radius: 40px;
             z-index: 1000;
             font-weight: 500;
-            backdrop-filter: blur(4px);
             animation: fadeOut 3s forwards;
         }
 
@@ -327,7 +313,7 @@
             border-radius: 1rem;
             padding: 0.7rem;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #bcb0b0;
             margin-top: 1rem;
         }
@@ -335,7 +321,6 @@
 </head>
 <body>
 <div class="container" id="appRoot">
-    <!-- AUTH SECTION -->
     <div id="authSection" class="glass-card auth-panel">
         <div class="logo">⚡ STUDS MUDD</div>
         <div class="sub">elite scouting network</div>
@@ -345,28 +330,30 @@
         </div>
         <div id="loginForm">
             <div class="input-group">
-                <label>👤 Username</label>
-                <input type="text" id="loginUsername" placeholder="talent_scout / mbappe_star">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="talent_scout or mbappe_star">
             </div>
             <div class="input-group">
-                <label>🔒 Password</label>
+                <label>Password</label>
                 <input type="password" id="loginPassword" placeholder="••••••">
             </div>
-            <button class="primary-btn" id="doLoginBtn">ENTER THE HUB →</button>
+            <button class="primary-btn" id="doLoginBtn">ENTER HUB →</button>
             <div id="loginError" class="error-msg" style="display: none;"></div>
-            <div class="info-note">Demo: scout (talent_scout / redscout) — player (mbappe_star / player123)</div>
+            <div class="info-note">
+                🔑 Demo: Scout (talent_scout / redscout) | Player (mbappe_star / player123)
+            </div>
         </div>
         <div id="signupForm" style="display: none;">
             <div class="input-group">
-                <label>👤 Choose Username</label>
-                <input type="text" id="signupUsername" placeholder="e.g., risingstar_10">
+                <label>Username</label>
+                <input type="text" id="signupUsername" placeholder="Choose username">
             </div>
             <div class="input-group">
-                <label>🔒 Password</label>
-                <input type="password" id="signupPassword" placeholder="create password">
+                <label>Password</label>
+                <input type="password" id="signupPassword" placeholder="Create password">
             </div>
             <div class="input-group">
-                <label>🎭 Role</label>
+                <label>Role</label>
                 <select id="signupRole">
                     <option value="player">⚽ Player</option>
                     <option value="scout">🕵️ Scout</option>
@@ -377,31 +364,27 @@
         </div>
     </div>
 
-    <!-- SCOUT DASHBOARD -->
     <div id="scoutDashboard" class="dashboard">
         <div class="glass-card" style="padding: 1.5rem;">
             <div class="dashboard-header">
                 <div class="dashboard-title">
-                    <h2>🔍 Scouting Network</h2>
-                    <p>All registered players — live insights</p>
+                    <h2>🔍 Scout Dashboard</h2>
+                    <p>All players - live from database</p>
                 </div>
-                <button class="logout-btn" id="scoutLogoutBtn">← Exit Scouting Hub</button>
+                <button class="logout-btn" id="scoutLogoutBtn">← Logout</button>
             </div>
             <div id="scoutPlayersList" class="players-grid">
-                <!-- dynamic cards -->
-                <div class="loading-spinner">Loading elite talent pool...</div>
+                <div class="loading-spinner">Loading players...</div>
             </div>
-            <div class="info-note" style="margin-top: 2rem;">📡 Real-time data from athlete profiles. No refresh needed — updates instantly.</div>
         </div>
     </div>
 
-    <!-- PLAYER DASHBOARD -->
     <div id="playerDashboard" class="dashboard">
         <div class="glass-card" style="padding: 1.5rem;">
             <div class="dashboard-header">
                 <div class="dashboard-title">
-                    <h2>⚙️ My Profile (Player Hub)</h2>
-                    <p>Your information will be visible to scouts worldwide</p>
+                    <h2>⚽ Player Profile</h2>
+                    <p>Your info is visible to all scouts</p>
                 </div>
                 <button class="logout-btn" id="playerLogoutBtn">← Logout</button>
             </div>
@@ -410,66 +393,58 @@
                     <div class="form-row">
                         <div class="input-group">
                             <label>Full Name</label>
-                            <input type="text" id="profileFullName" placeholder="Kylian Mbappé">
+                            <input type="text" id="profileFullName" placeholder="Your full name">
                         </div>
                         <div class="input-group">
                             <label>Position</label>
-                            <input type="text" id="profilePosition" placeholder="Forward / Winger">
+                            <input type="text" id="profilePosition" placeholder="Forward, Midfielder, etc">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="input-group">
                             <label>Club / Team</label>
-                            <input type="text" id="profileClub" placeholder="Real Madrid">
+                            <input type="text" id="profileClub" placeholder="Current club">
                         </div>
                         <div class="input-group">
                             <label>Age</label>
-                            <input type="number" id="profileAge" placeholder="22">
+                            <input type="number" id="profileAge" placeholder="Age">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="input-group">
-                            <label>📧 Email</label>
-                            <input type="email" id="profileEmail" placeholder="player@example.com">
+                            <label>Email</label>
+                            <input type="email" id="profileEmail" placeholder="contact@email.com">
                         </div>
                         <div class="input-group">
-                            <label>📞 Phone</label>
-                            <input type="tel" id="profilePhone" placeholder="+123456789">
+                            <label>Phone</label>
+                            <input type="tel" id="profilePhone" placeholder="Phone number">
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>⚽ Bio / Scouting notes</label>
-                        <textarea id="profileBio" rows="3" placeholder="Pace, finishing, vision..."></textarea>
+                        <label>Bio / Scouting Notes</label>
+                        <textarea id="profileBio" rows="3" placeholder="Your strengths, stats, achievements..."></textarea>
                     </div>
-                    <button type="submit" class="primary-btn" style="margin-top: 1rem;">💾 SAVE & UPDATE PROFILE</button>
+                    <button type="submit" class="primary-btn">💾 SAVE PROFILE</button>
                 </form>
-                <div class="info-note" style="margin-top: 1.5rem;">✅ Changes are saved instantly to your profile. Scouts will see updated info across any device.</div>
+                <div class="info-note">✅ Changes save instantly and are visible to scouts across all devices.</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- CONFIG ----------
+    // ⚠️ IMPORTANT: REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
     const BACKEND_URL = "https://script.google.com/macros/s/AKfycbx7O5WOUxBHSrR45xgy_u45884g0ZyE-aWWn0aeRCydj9Ym07k8sDxETsE80IBmXw/exec";
-
-    // Global state
-    let currentSession = null;   // { username, role }
     
-    // DOM elements
+    let currentSession = null;
+    
     const authSection = document.getElementById('authSection');
     const scoutDashboard = document.getElementById('scoutDashboard');
     const playerDashboard = document.getElementById('playerDashboard');
     const loginFormDiv = document.getElementById('loginForm');
     const signupFormDiv = document.getElementById('signupForm');
     const tabBtns = document.querySelectorAll('.tab-btn');
-    const loginBtn = document.getElementById('doLoginBtn');
-    const signupBtn = document.getElementById('doSignupBtn');
-    const scoutLogout = document.getElementById('scoutLogoutBtn');
-    const playerLogout = document.getElementById('playerLogoutBtn');
-    const playerProfileForm = document.getElementById('playerProfileForm');
-
-    // Helper: show toast
+    
     function showToast(message, isError = false) {
         const toast = document.createElement('div');
         toast.className = 'success-toast';
@@ -478,37 +453,29 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
-    // Helper: API caller
-    async function callAPI(action, payload) {
+    
+    async function callAPI(action, payload = {}) {
         try {
+            const params = new URLSearchParams({ action, ...payload });
             const response = await fetch(BACKEND_URL, {
                 method: 'POST',
-                mode: 'no-cors', // due to Google Apps Script CORS, we handle via JSONP alternative? We'll use POST with no-cors and rely on Google's response? Actually do-cors better: but Apps Script supports CORS, we use proper.
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ action, ...payload })
+                body: params
             });
-            // Because of no-cors we cannot read response? Better approach: use text and parse but we must use CORS. Actually Google Apps Script with doPost returns JSON and allows CORS if we set headers. But for simplicity we implement robust: fetch with mode cors.
-            // Replace mode to default: cors
-            const corsResponse = await fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ action, ...payload })
-            });
-            const data = await corsResponse.json();
+            const data = await response.json();
             return data;
         } catch (err) {
-            console.error(err);
+            console.error('API Error:', err);
             return { success: false, error: err.message };
         }
     }
-
-    // --- Authentication Logic ---
+    
     async function handleLogin(username, password) {
         const result = await callAPI('login', { username, password });
         if (result.success) {
             currentSession = { username: result.username, role: result.role };
-            showToast(`Welcome back, ${username} (${result.role})`);
+            showToast(`Welcome ${username}!`);
+            
             if (result.role === 'scout') {
                 await loadScoutDashboard();
             } else if (result.role === 'player') {
@@ -517,13 +484,13 @@
             return true;
         } else {
             const errDiv = document.getElementById('loginError');
-            errDiv.innerText = result.error || 'Invalid credentials.';
+            errDiv.innerText = result.error || 'Login failed';
             errDiv.style.display = 'block';
             setTimeout(() => errDiv.style.display = 'none', 3000);
             return false;
         }
     }
-
+    
     async function handleSignup(username, password, role) {
         if (!username.trim() || !password.trim()) {
             showToast('Username and password required', true);
@@ -532,21 +499,18 @@
         const result = await callAPI('signup', { username, password, role });
         if (result.success) {
             showToast('Account created! Please login.');
-            // switch to login tab
             document.querySelector('[data-tab="login"]').click();
             return true;
         } else {
             const errDiv = document.getElementById('signupError');
-            errDiv.innerText = result.error || 'Signup failed. Username may exist.';
+            errDiv.innerText = result.error || 'Signup failed';
             errDiv.style.display = 'block';
             setTimeout(() => errDiv.style.display = 'none', 3000);
             return false;
         }
     }
-
-    // --- SCOUT: load all players ---
+    
     async function loadScoutDashboard() {
-        if (!currentSession || currentSession.role !== 'scout') return;
         const result = await callAPI('fetchAllPlayers', {});
         if (result.success && result.players) {
             renderScoutPlayers(result.players);
@@ -554,19 +518,20 @@
             playerDashboard.style.display = 'none';
             authSection.style.display = 'none';
         } else {
-            showToast('Could not load players', true);
+            showToast('Failed to load players', true);
         }
     }
-
+    
     function renderScoutPlayers(players) {
         const container = document.getElementById('scoutPlayersList');
-        if (!players.length) {
-            container.innerHTML = '<div class="glass-card" style="padding:2rem; text-align:center;">⚡ No players registered yet.</div>';
+        if (!players || players.length === 0) {
+            container.innerHTML = '<div class="player-card">No players registered yet.</div>';
             return;
         }
+        
         container.innerHTML = players.map(p => `
             <div class="player-card">
-                <div class="avatar-icon">${(p.fullName ? p.fullName.charAt(0).toUpperCase() : p.username.charAt(0).toUpperCase()) || 'P'}</div>
+                <div class="avatar-icon">${(p.fullName ? p.fullName.charAt(0) : p.username.charAt(0)).toUpperCase()}</div>
                 <div class="player-name">${escapeHtml(p.fullName || p.username)}</div>
                 <div class="player-detail">
                     <span class="detail-badge">📍 ${escapeHtml(p.position || 'Not set')}</span>
@@ -574,17 +539,15 @@
                     <span class="detail-badge">📅 ${p.age || '?'} yrs</span>
                 </div>
                 <div class="player-detail">
-                    <span>📧 ${escapeHtml(p.email || 'no email')}</span>
-                    <span>📞 ${escapeHtml(p.phone || '—')}</span>
+                    <span>📧 ${escapeHtml(p.email || 'No email')}</span>
+                    <span>📞 ${escapeHtml(p.phone || 'No phone')}</span>
                 </div>
                 <div class="player-bio">${escapeHtml(p.bio || 'No bio provided yet.')}</div>
             </div>
         `).join('');
     }
-
-    // --- Player dashboard: load & update profile ---
+    
     async function loadPlayerDashboard() {
-        if (!currentSession || currentSession.role !== 'player') return;
         const result = await callAPI('getPlayerProfile', { username: currentSession.username });
         if (result.success && result.profile) {
             const prof = result.profile;
@@ -595,46 +558,44 @@
             document.getElementById('profileEmail').value = prof.email || '';
             document.getElementById('profilePhone').value = prof.phone || '';
             document.getElementById('profileBio').value = prof.bio || '';
-        } else {
-            showToast('Could not fetch profile', true);
         }
         scoutDashboard.style.display = 'none';
         playerDashboard.style.display = 'block';
         authSection.style.display = 'none';
     }
-
-    async function savePlayerProfile(formData) {
-        const payload = {
+    
+    async function savePlayerProfile(profileData) {
+        const result = await callAPI('updatePlayerProfile', {
             username: currentSession.username,
-            fullName: formData.fullName,
-            position: formData.position,
-            club: formData.club,
-            age: formData.age,
-            email: formData.email,
-            phone: formData.phone,
-            bio: formData.bio
-        };
-        const result = await callAPI('updatePlayerProfile', payload);
+            ...profileData
+        });
+        
         if (result.success) {
-            showToast('Profile updated! Scouts can see new info instantly.');
+            showToast('Profile saved! Scouts can see your updated info.');
         } else {
-            showToast('Update failed: ' + (result.error || 'unknown'), true);
+            showToast('Error saving profile: ' + (result.error || 'Unknown'), true);
         }
     }
-
-    // Logout
+    
     function logout() {
         currentSession = null;
         authSection.style.display = 'block';
         scoutDashboard.style.display = 'none';
         playerDashboard.style.display = 'none';
-        document.getElementById('loginUsername').value = '';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('loginError').style.display = 'none';
-        showToast('Logged out safely');
+        showToast('Logged out');
     }
-
-    // UI tabs
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Tab switching
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const tab = btn.getAttribute('data-tab');
@@ -649,27 +610,35 @@
             }
         });
     });
-
-    // Event handlers
-    loginBtn.addEventListener('click', async () => {
-        const user = document.getElementById('loginUsername').value.trim();
-        const pwd = document.getElementById('loginPassword').value;
-        if (!user || !pwd) { showToast('Enter username & password', true); return; }
-        await handleLogin(user, pwd);
+    
+    // Event listeners
+    document.getElementById('doLoginBtn').addEventListener('click', async () => {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!username || !password) {
+            showToast('Enter username and password', true);
+            return;
+        }
+        await handleLogin(username, password);
     });
-    signupBtn.addEventListener('click', async () => {
-        const user = document.getElementById('signupUsername').value.trim();
-        const pwd = document.getElementById('signupPassword').value;
+    
+    document.getElementById('doSignupBtn').addEventListener('click', async () => {
+        const username = document.getElementById('signupUsername').value.trim();
+        const password = document.getElementById('signupPassword').value;
         const role = document.getElementById('signupRole').value;
-        if (!user || !pwd) { showToast('Fill all fields', true); return; }
-        await handleSignup(user, pwd, role);
+        if (!username || !password) {
+            showToast('Fill all fields', true);
+            return;
+        }
+        await handleSignup(username, password, role);
     });
-    scoutLogout?.addEventListener('click', logout);
-    playerLogout?.addEventListener('click', logout);
-    playerProfileForm.addEventListener('submit', async (e) => {
+    
+    document.getElementById('scoutLogoutBtn')?.addEventListener('click', logout);
+    document.getElementById('playerLogoutBtn')?.addEventListener('click', logout);
+    
+    document.getElementById('playerProfileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const form = e.target;
-        const data = {
+        const profileData = {
             fullName: document.getElementById('profileFullName').value,
             position: document.getElementById('profilePosition').value,
             club: document.getElementById('profileClub').value,
@@ -678,15 +647,8 @@
             phone: document.getElementById('profilePhone').value,
             bio: document.getElementById('profileBio').value
         };
-        await savePlayerProfile(data);
+        await savePlayerProfile(profileData);
     });
-
-    // demo accounts quick helper (no auto)
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-    // initial state
-    authSection.style.display = 'block';
-    scoutDashboard.style.display = 'none';
-    playerDashboard.style.display = 'none';
 </script>
 </body>
 </html>
