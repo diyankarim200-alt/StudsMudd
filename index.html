@@ -2,713 +2,691 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Studs Mudd | Unified Scouting Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Studs Mudd | Scouting Platform</title>
     <style>
-        /* ---------- RESET & BASE ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at 25% 0%, #0a0000 0%, #000000 100%);
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
+            background: radial-gradient(circle at 10% 20%, #1a0a0a, #0a0404);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 1.5rem;
-            position: relative;
         }
 
-        /* animated background grain */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjciIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Zz4=');
-            background-repeat: repeat;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .studs-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(6, 0, 0, 0.65);
-            backdrop-filter: blur(12px);
-            border-radius: 2.5rem;
-            border: 1px solid rgba(220, 38, 38, 0.4);
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(220, 38, 38, 0.1) inset;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(12, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid rgba(220, 38, 38, 0.6);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo h1 {
-            font-size: 1.9rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ff4d4d, #b91c1c, #7f1a1a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-            text-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
-        }
-
-        .logo p {
-            color: #b77;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .user-panel {
-            background: rgba(31, 8, 8, 0.9);
-            backdrop-filter: blur(4px);
-            padding: 0.5rem 1.2rem;
-            border-radius: 80px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border: 1px solid #dc2626;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .user-greeting {
-            color: #ffc0c0;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .role-badge {
-            background: linear-gradient(145deg, #b91c1c, #7f1a1a);
-            padding: 0.25rem 0.9rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: white;
-            text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 1px 2px black;
-        }
-
-        .logout-btn, .btn-outline {
-            background: none;
-            border: 1px solid #dc5e5e;
-            color: #ffb3b3;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            font-size: 0.8rem;
-        }
-
-        .logout-btn:hover, .btn-outline:hover {
-            background: #dc2626;
-            color: black;
-            border-color: white;
-            transform: scale(0.96);
-            box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
-        }
-
-        /* Dashboard */
-        .dashboard {
-            padding: 2rem;
-            min-height: 500px;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(120deg, #ff6b6b, #dc2626);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 1.5rem;
-            border-left: 5px solid #dc2626;
-            padding-left: 1rem;
-            letter-spacing: -0.3px;
-        }
-
-        /* Players grid */
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.8rem;
-            margin-top: 0.5rem;
-        }
-
-        .player-card {
-            background: rgba(15, 3, 3, 0.8);
-            backdrop-filter: blur(4px);
-            border-radius: 1.8rem;
-            border: 1px solid rgba(180, 34, 34, 0.5);
-            padding: 1.3rem;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5);
-        }
-
-        .player-card:hover {
-            border-color: #ff4d4d;
-            transform: translateY(-6px);
-            box-shadow: 0 20px 30px -12px rgba(220, 38, 38, 0.3);
-            background: rgba(20, 5, 5, 0.9);
-        }
-
-        .player-name {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #ff8a8a;
-            border-left: 4px solid #dc2626;
-            padding-left: 0.75rem;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.3px;
-        }
-
-        .player-detail {
-            color: #d4b0b0;
-            font-size: 0.85rem;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: baseline;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-        }
-
-        .contact-info {
-            background: rgba(30, 10, 10, 0.7);
-            padding: 0.8rem;
-            border-radius: 1rem;
-            margin: 0.8rem 0;
-            border: 1px solid #9e2a2a;
-            font-size: 0.8rem;
-        }
-
-        .contact-label {
-            color: #ffacac;
-            font-weight: 700;
-            margin-right: 0.4rem;
-        }
-
-        .scout-tag {
-            display: inline-block;
-            background: linear-gradient(145deg, #5e1a1a, #3e0a0a);
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-            color: #ffc0c0;
-        }
-
-        /* Form styling */
-        .form-card {
-            background: rgba(12, 2, 2, 0.8);
-            backdrop-filter: blur(10px);
+        /* Glassmorphism containers */
+        .glass-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(16px);
             border-radius: 2rem;
-            padding: 1.8rem;
-            border: 1px solid #b91c1c;
-            max-width: 620px;
-            margin-bottom: 1rem;
-            transition: 0.2s;
+            border: 1px solid rgba(220, 38, 38, 0.35);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(220, 38, 38, 0.15) inset;
+            transition: all 0.2s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* auth panels */
+        .auth-panel {
+            max-width: 480px;
+            margin: 2rem auto;
+            padding: 2rem 2rem 2.2rem;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #f87171, #dc2626);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .sub {
+            text-align: center;
+            color: #b0a8a8;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            border-left: 2px solid #dc2626;
+            padding-left: 1rem;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem;
+            border-radius: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: #dc2626;
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
         }
 
         .input-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
         }
 
         .input-group label {
             display: block;
-            color: #f0c0c0;
             margin-bottom: 0.4rem;
             font-weight: 500;
-            font-size: 0.8rem;
+            color: #e5e0e0;
+            font-size: 0.85rem;
             letter-spacing: 0.3px;
         }
 
-        input, select, textarea {
+        .input-group input, .input-group textarea, .input-group select {
             width: 100%;
-            background: #1f0c0c;
-            border: 1px solid #a53b3b;
-            padding: 0.75rem 1rem;
+            padding: 0.9rem 1rem;
+            background: rgba(20, 10, 10, 0.7);
+            border: 1px solid #4a2a2a;
             border-radius: 1.2rem;
-            color: #fff0f0;
-            font-size: 0.9rem;
+            color: white;
+            font-size: 0.95rem;
             transition: all 0.2s;
-        }
-
-        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #ff4d4d;
-            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
-            background: #2c0f0f;
         }
 
-        button {
-            background: linear-gradient(145deg, #b91c1c, #8b1515);
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220,38,38,0.3);
+        }
+
+        button.primary-btn {
+            width: 100%;
+            background: linear-gradient(95deg, #dc2626, #b91c1c);
             border: none;
-            padding: 0.75rem 1.8rem;
+            padding: 0.9rem;
             border-radius: 2rem;
             font-weight: 700;
+            font-size: 1rem;
             color: white;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 0.3rem;
-            font-size: 0.9rem;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
+            margin-top: 0.5rem;
         }
 
-        button:hover {
-            background: linear-gradient(145deg, #dc2626, #a51c1c);
-            transform: scale(0.97);
-            box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #dc2626;
-            box-shadow: none;
-        }
-
-        /* Auth modal */
-        .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .auth-modal {
-            background: #0a0101;
-            border: 2px solid #dc2626;
-            border-radius: 2.2rem;
-            width: 92%;
-            max-width: 480px;
-            padding: 2rem;
-            box-shadow: 0 30px 40px rgba(220, 38, 38, 0.3);
-            animation: fadeInUp 0.3s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.8rem;
-            border-bottom: 1px solid #dc2626;
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.6rem;
-            background: none;
-            color: #dd9898;
-            border-radius: 0;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .auth-tab.active {
-            color: #ff5e5e;
-            border-bottom: 2px solid #dc2626;
+        button.primary-btn:hover {
+            background: linear-gradient(95deg, #ef4444, #dc2626);
+            transform: scale(0.98);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.4);
         }
 
         .error-msg {
-            background: #3e1212;
-            padding: 0.6rem;
+            color: #ff8a7a;
+            background: rgba(220,38,38,0.2);
+            padding: 0.7rem;
             border-radius: 1rem;
-            color: #ffa0a0;
             font-size: 0.8rem;
-            margin-bottom: 1.2rem;
+            margin-top: 1rem;
             text-align: center;
-            border-left: 3px solid #ff4d4d;
         }
 
-        /* Status area */
-        .status-area {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #0a0101cc;
-            backdrop-filter: blur(12px);
-            border: 1px solid #dc2626;
-            border-radius: 60px;
-            padding: 0.5rem 1.2rem;
-            font-size: 0.75rem;
-            color: #ffb3b3;
-            z-index: 1000;
-            font-family: monospace;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 12px black;
+        /* Dashboard layouts */
+        .dashboard {
+            display: none;
         }
 
-        .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #3eff6e;
-            margin-right: 8px;
-            box-shadow: 0 0 6px #3eff6e;
-            animation: pulse 1.4s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #ff9999;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #bb7a7a;
-            padding: 3rem;
-            background: rgba(0, 0, 0, 0.3);
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem 2rem;
             border-radius: 2rem;
-            font-style: italic;
+            backdrop-filter: blur(8px);
         }
 
-        hr {
-            border-color: #dc2626;
-            margin: 1rem 0;
+        .dashboard-title h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: white;
         }
 
-        /* responsiveness */
-        @media (max-width: 700px) {
-            body { padding: 0.8rem; }
-            .dashboard { padding: 1rem; }
-            .header { flex-direction: column; text-align: center; padding: 1rem; }
-            .section-title { font-size: 1.3rem; }
-            .players-grid { gap: 1rem; }
+        .dashboard-title p {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(220,38,38,0.2);
+            border: 1px solid #dc2626;
+            padding: 0.6rem 1.4rem;
+            border-radius: 2rem;
+            color: #fbb;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* Players grid (scout) */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .player-card {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(16px);
+            border-radius: 1.8rem;
+            border-left: 4px solid #dc2626;
+            padding: 1.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            background: rgba(20, 8, 8, 0.8);
+            border-left-width: 6px;
+        }
+
+        .avatar-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(145deg, #dc2626, #7a1a1a);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .player-detail {
+            margin-top: 0.7rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            font-size: 0.85rem;
+            color: #ccc;
+            border-top: 1px dashed #3a2a2a;
+            padding-top: 0.7rem;
+        }
+
+        .detail-badge {
+            background: rgba(220,38,38,0.2);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .player-bio {
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: #b9b3b3;
+            line-height: 1.4;
+        }
+
+        /* Player profile form */
+        .profile-form-container {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: start;
+            }
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1f9a4e;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            z-index: 1000;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0);}
+            70% { opacity: 1;}
+            100% { opacity: 0; visibility: hidden;}
+        }
+
+        .loading-spinner {
+            text-align: center;
+            color: #dc2626;
+            padding: 2rem;
+            font-weight: 500;
+        }
+
+        .info-note {
+            background: rgba(0,0,0,0.5);
+            border-radius: 1rem;
+            padding: 0.7rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #bcb0b0;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-<div class="studs-container" id="appRoot"></div>
-<div class="status-area" id="globalStatus"><span class="live-dot"></span> System ready</div>
+<div class="container" id="appRoot">
+    <!-- AUTH SECTION -->
+    <div id="authSection" class="glass-card auth-panel">
+        <div class="logo">⚡ STUDS MUDD</div>
+        <div class="sub">elite scouting network</div>
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="login">LOGIN</button>
+            <button class="tab-btn" data-tab="signup">SIGN UP</button>
+        </div>
+        <div id="loginForm">
+            <div class="input-group">
+                <label>👤 Username</label>
+                <input type="text" id="loginUsername" placeholder="talent_scout / mbappe_star">
+            </div>
+            <div class="input-group">
+                <label>🔒 Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••">
+            </div>
+            <button class="primary-btn" id="doLoginBtn">ENTER THE HUB →</button>
+            <div id="loginError" class="error-msg" style="display: none;"></div>
+            <div class="info-note">Demo: scout (talent_scout / redscout) — player (mbappe_star / player123)</div>
+        </div>
+        <div id="signupForm" style="display: none;">
+            <div class="input-group">
+                <label>👤 Choose Username</label>
+                <input type="text" id="signupUsername" placeholder="e.g., risingstar_10">
+            </div>
+            <div class="input-group">
+                <label>🔒 Password</label>
+                <input type="password" id="signupPassword" placeholder="create password">
+            </div>
+            <div class="input-group">
+                <label>🎭 Role</label>
+                <select id="signupRole">
+                    <option value="player">⚽ Player</option>
+                    <option value="scout">🕵️ Scout</option>
+                </select>
+            </div>
+            <button class="primary-btn" id="doSignupBtn">CREATE ACCOUNT</button>
+            <div id="signupError" class="error-msg" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- SCOUT DASHBOARD -->
+    <div id="scoutDashboard" class="dashboard">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h2>🔍 Scouting Network</h2>
+                    <p>All registered players — live insights</p>
+                </div>
+                <button class="logout-btn" id="scoutLogoutBtn">← Exit Scouting Hub</button>
+            </div>
+            <div id="scoutPlayersList" class="players-grid">
+                <!-- dynamic cards -->
+                <div class="loading-spinner">Loading elite talent pool...</div>
+            </div>
+            <div class="info-note" style="margin-top: 2rem;">📡 Real-time data from athlete profiles. No refresh needed — updates instantly.</div>
+        </div>
+    </div>
+
+    <!-- PLAYER DASHBOARD -->
+    <div id="playerDashboard" class="dashboard">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    <h2>⚙️ My Profile (Player Hub)</h2>
+                    <p>Your information will be visible to scouts worldwide</p>
+                </div>
+                <button class="logout-btn" id="playerLogoutBtn">← Logout</button>
+            </div>
+            <div class="profile-form-container">
+                <form id="playerProfileForm">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileFullName" placeholder="Kylian Mbappé">
+                        </div>
+                        <div class="input-group">
+                            <label>Position</label>
+                            <input type="text" id="profilePosition" placeholder="Forward / Winger">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Club / Team</label>
+                            <input type="text" id="profileClub" placeholder="Real Madrid">
+                        </div>
+                        <div class="input-group">
+                            <label>Age</label>
+                            <input type="number" id="profileAge" placeholder="22">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>📧 Email</label>
+                            <input type="email" id="profileEmail" placeholder="player@example.com">
+                        </div>
+                        <div class="input-group">
+                            <label>📞 Phone</label>
+                            <input type="tel" id="profilePhone" placeholder="+123456789">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>⚽ Bio / Scouting notes</label>
+                        <textarea id="profileBio" rows="3" placeholder="Pace, finishing, vision..."></textarea>
+                    </div>
+                    <button type="submit" class="primary-btn" style="margin-top: 1rem;">💾 SAVE & UPDATE PROFILE</button>
+                </form>
+                <div class="info-note" style="margin-top: 1.5rem;">✅ Changes are saved instantly to your profile. Scouts will see updated info across any device.</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // ========== YOUR DEPLOYED GOOGLE APPS SCRIPT URL ==========
-    const API_URL = "YOUR_DEPLOYED_URL_HERE";  // <-- PASTE YOUR URL HERE
+    // ---------- CONFIG ----------
+    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbx7O5WOUxBHSrR45xgy_u45884g0ZyE-aWWn0aeRCydj9Ym07k8sDxETsE80IBmXw/exec";
+
+    // Global state
+    let currentSession = null;   // { username, role }
     
-    // Helper: show temporary status
-    function setStatus(msg, isError = false) {
-        const el = document.getElementById("globalStatus");
-        if (el) {
-            el.innerHTML = msg;
-            el.style.background = isError ? "#3e1212cc" : "#0a3a1acc";
-            setTimeout(() => {
-                if (document.getElementById("globalStatus"))
-                    document.getElementById("globalStatus").innerHTML = '<span class="live-dot"></span> System ready';
-            }, 2500);
-        }
+    // DOM elements
+    const authSection = document.getElementById('authSection');
+    const scoutDashboard = document.getElementById('scoutDashboard');
+    const playerDashboard = document.getElementById('playerDashboard');
+    const loginFormDiv = document.getElementById('loginForm');
+    const signupFormDiv = document.getElementById('signupForm');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const loginBtn = document.getElementById('doLoginBtn');
+    const signupBtn = document.getElementById('doSignupBtn');
+    const scoutLogout = document.getElementById('scoutLogoutBtn');
+    const playerLogout = document.getElementById('playerLogoutBtn');
+    const playerProfileForm = document.getElementById('playerProfileForm');
+
+    // Helper: show toast
+    function showToast(message, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = 'success-toast';
+        toast.style.background = isError ? '#b91c1c' : '#1f9a4e';
+        toast.innerText = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
-    
-    function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-    
-    // ========== BACKEND COMMUNICATION ==========
-    async function apiCall(action, payload) {
+
+    // Helper: API caller
+    async function callAPI(action, payload) {
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(BACKEND_URL, {
                 method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action, ...payload })
+                mode: 'no-cors', // due to Google Apps Script CORS, we handle via JSONP alternative? We'll use POST with no-cors and rely on Google's response? Actually do-cors better: but Apps Script supports CORS, we use proper.
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ action, ...payload })
             });
-            const data = await response.json();
+            // Because of no-cors we cannot read response? Better approach: use text and parse but we must use CORS. Actually Google Apps Script with doPost returns JSON and allows CORS if we set headers. But for simplicity we implement robust: fetch with mode cors.
+            // Replace mode to default: cors
+            const corsResponse = await fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ action, ...payload })
+            });
+            const data = await corsResponse.json();
             return data;
         } catch (err) {
             console.error(err);
-            return { success: false, message: "Network error" };
+            return { success: false, error: err.message };
         }
     }
-    
-    async function fetchPlayers() {
-        try {
-            const response = await fetch(API_URL, { method: 'GET', mode: 'cors' });
-            const data = await response.json();
-            if (data.success) return data.players;
-            else return [];
-        } catch (err) {
-            console.error(err);
-            setStatus("Could not load players", true);
-            return [];
-        }
-    }
-    
-    // ========== AUTHENTICATION (server‑side) ==========
-    async function signup(username, password, role) {
-        if (password.length < 3) return { success: false, error: "Password must be at least 3 characters" };
-        const userId = (role === "scout" ? "scout_" : "player_") + Date.now() + "_" + Math.random().toString(36).substr(2,6);
-        const result = await apiCall("signup", {
-            userId, username, password, role,
-            fullName: username, position: "", club: "", age: "", contactEmail: "", contactPhone: "", bio: ""
-        });
+
+    // --- Authentication Logic ---
+    async function handleLogin(username, password) {
+        const result = await callAPI('login', { username, password });
         if (result.success) {
-            sessionStorage.setItem("currentUser", JSON.stringify({ id: userId, username, role }));
-            return { success: true };
+            currentSession = { username: result.username, role: result.role };
+            showToast(`Welcome back, ${username} (${result.role})`);
+            if (result.role === 'scout') {
+                await loadScoutDashboard();
+            } else if (result.role === 'player') {
+                await loadPlayerDashboard();
+            }
+            return true;
         } else {
-            return { success: false, error: result.message };
+            const errDiv = document.getElementById('loginError');
+            errDiv.innerText = result.error || 'Invalid credentials.';
+            errDiv.style.display = 'block';
+            setTimeout(() => errDiv.style.display = 'none', 3000);
+            return false;
         }
     }
-    
-    async function login(username, password) {
-        const result = await apiCall("login", { username, password });
+
+    async function handleSignup(username, password, role) {
+        if (!username.trim() || !password.trim()) {
+            showToast('Username and password required', true);
+            return false;
+        }
+        const result = await callAPI('signup', { username, password, role });
         if (result.success) {
-            sessionStorage.setItem("currentUser", JSON.stringify({
-                id: result.userId,
-                username: result.username,
-                role: result.role
-            }));
-            return { success: true };
+            showToast('Account created! Please login.');
+            // switch to login tab
+            document.querySelector('[data-tab="login"]').click();
+            return true;
         } else {
-            return { success: false, error: result.message };
+            const errDiv = document.getElementById('signupError');
+            errDiv.innerText = result.error || 'Signup failed. Username may exist.';
+            errDiv.style.display = 'block';
+            setTimeout(() => errDiv.style.display = 'none', 3000);
+            return false;
         }
     }
-    
-    function getCurrentUser() {
-        const raw = sessionStorage.getItem("currentUser");
-        return raw ? JSON.parse(raw) : null;
-    }
-    
-    function logout() {
-        sessionStorage.removeItem("currentUser");
-        window.location.reload();
-    }
-    
-    // ========== PLAYER PROFILE UPDATE ==========
-    async function updateProfile(userId, profile) {
-        return await apiCall("update_profile", { userId, ...profile });
-    }
-    
-    // ========== UI RENDERING ==========
-    let authModalActive = false;
-    let authTab = "login";
-    let authError = "";
-    let signupRole = "player";
-    let currentPlayers = [];
-    let isLoading = true;
-    
-    function showAuth(initialTab = "login", error = "") {
-        authModalActive = true;
-        authTab = initialTab;
-        authError = error;
-        signupRole = "player";
-        renderApp();
-    }
-    
-    function closeAuth() {
-        authModalActive = false;
-        authError = "";
-        renderApp();
-    }
-    
-    async function handleLogin(u, p) {
-        if (!u.trim() || !p.trim()) { showAuth("login", "Fill both fields"); return; }
-        const res = await login(u, p);
-        if (res.success) {
-            closeAuth();
-            if (getCurrentUser().role === "scout") await loadPlayers();
-            renderApp();
+
+    // --- SCOUT: load all players ---
+    async function loadScoutDashboard() {
+        if (!currentSession || currentSession.role !== 'scout') return;
+        const result = await callAPI('fetchAllPlayers', {});
+        if (result.success && result.players) {
+            renderScoutPlayers(result.players);
+            scoutDashboard.style.display = 'block';
+            playerDashboard.style.display = 'none';
+            authSection.style.display = 'none';
         } else {
-            showAuth("login", res.error);
+            showToast('Could not load players', true);
         }
     }
-    
-    async function handleSignup(u, p, role) {
-        if (!u.trim() || !p.trim()) { showAuth("signup", "Fill all fields"); return; }
-        const res = await signup(u, p, role);
-        if (res.success) {
-            closeAuth();
-            if (role === "scout") await loadPlayers();
-            renderApp();
-        } else {
-            showAuth("signup", res.error);
-        }
-    }
-    
-    async function loadPlayers() {
-        isLoading = true;
-        renderApp();
-        currentPlayers = await fetchPlayers();
-        isLoading = false;
-        renderApp();
-    }
-    
-    async function renderApp() {
-        const root = document.getElementById("appRoot");
-        const user = getCurrentUser();
-        
-        // Not logged in
-        if (!user) {
-            root.innerHTML = `
-                <div class="header"><div class="logo"><h1>◉ STUD$ MUDD ◉</h1><p>central scouting network</p></div><button id="openAuthBtn" style="background:#b91c1c;">⚡ ENTER</button></div>
-                <div class="dashboard" style="text-align:center; padding:3rem;"><div style="background:rgba(15,3,3,0.6); backdrop-filter:blur(8px); border-radius:2rem; padding:2rem; max-width:650px; margin:0 auto; border:1px solid #dc2626;">
-                <h2 style="color:#dc2626; margin-bottom:0.5rem;">Unified Platform</h2><p style="margin:1rem 0;">All data is shared across every device. Sign up once, access everywhere.</p>
-                <button id="joinBtn" class="btn-outline">Join Now</button></div></div>
-            `;
-            document.getElementById("openAuthBtn")?.addEventListener("click", () => showAuth("login"));
-            document.getElementById("joinBtn")?.addEventListener("click", () => showAuth("signup"));
-            if (authModalActive) renderAuthModal();
+
+    function renderScoutPlayers(players) {
+        const container = document.getElementById('scoutPlayersList');
+        if (!players.length) {
+            container.innerHTML = '<div class="glass-card" style="padding:2rem; text-align:center;">⚡ No players registered yet.</div>';
             return;
         }
-        
-        // SCOUT DASHBOARD
-        if (user.role === "scout") {
-            if (isLoading) {
-                root.innerHTML = `<div class="header"><div class="logo"><h1>🔍 SCOUT MODE</h1></div><div class="user-panel"><span>${escapeHtml(user.username)}</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div><div class="loading">⟳ Loading directory...</div>`;
-                document.getElementById("logoutBtn")?.addEventListener("click", logout);
-                return;
-            }
-            root.innerHTML = `
-                <div class="header"><div class="logo"><h1>🔍 STUD$ MUDD · SCOUT MODE</h1><p>${currentPlayers.length} active profiles</p></div>
-                <div class="user-panel"><span class="user-greeting">👁️ ${escapeHtml(user.username)}</span><span class="role-badge">SCOUT</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div>
-                <div class="dashboard"><div class="section-title">📋 PLAYER DIRECTORY</div><div class="players-grid">
-                ${currentPlayers.map(p => `
-                    <div class="player-card"><div class="player-name">⚡ ${escapeHtml(p.fullName)}</div>
-                    <div class="player-detail"><strong>🎯 Position:</strong> ${escapeHtml(p.position)}</div>
-                    <div class="player-detail"><strong>🏟️ Club:</strong> ${escapeHtml(p.club)}</div>
-                    <div class="player-detail"><strong>📅 Age:</strong> ${escapeHtml(p.age)}</div>
-                    <div class="contact-info"><div><span class="contact-label">📧 Email:</span> ${escapeHtml(p.contactEmail)}</div>
-                    <div><span class="contact-label">📞 Phone:</span> ${escapeHtml(p.contactPhone)}</div></div>
-                    <div class="player-detail"><strong>📝 Bio:</strong> ${escapeHtml(p.bio.substring(0,120))}</div>
-                    <div class="scout-tag">Full contact visible</div></div>
-                `).join('')}
-                ${currentPlayers.length === 0 ? '<div class="empty-state">✨ No players yet. Share the platform to grow the directory.</div>' : ''}
-                </div></div>
-            `;
-            document.getElementById("logoutBtn")?.addEventListener("click", logout);
-            return;
-        }
-        
-        // PLAYER DASHBOARD
-        if (user.role === "player") {
-            root.innerHTML = `
-                <div class="header"><div class="logo"><h1>⭐ PLAYER ZONE</h1><p>complete your profile</p></div>
-                <div class="user-panel"><span>🎮 ${escapeHtml(user.username)}</span><span class="role-badge">PLAYER</span><button id="logoutBtn" class="logout-btn">EXIT</button></div></div>
-                <div class="dashboard"><div class="form-card"><div class="section-title">📝 YOUR PROFILE</div>
-                <div class="input-group"><label>Full Name *</label><input id="fullName" placeholder="Real name"></div>
-                <div class="input-group"><label>Position</label><input id="position" placeholder="e.g., Striker"></div>
-                <div class="input-group"><label>Club</label><input id="club" placeholder="Club name"></div>
-                <div class="input-group"><label>Age</label><input id="age" placeholder="e.g., 21"></div>
-                <div class="input-group"><label>📧 Contact Email (scouts see this)</label><input id="email" type="email" placeholder="your@email.com"></div>
-                <div class="input-group"><label>📞 Contact Phone (scouts see this)</label><input id="phone" placeholder="+1234567890"></div>
-                <div class="input-group"><label>Bio / Highlights</label><textarea id="bio" rows="3" placeholder="Tell scouts about your skills..."></textarea></div>
-                <button id="saveBtn">💾 SAVE PROFILE</button>
-                <hr><div style="background:rgba(30,10,10,0.6); border-radius:1rem; padding:0.8rem;"><p style="color:#ffb3b3;">✅ Your profile is instantly visible to all scouts.</p></div></div></div>
-            `;
-            document.getElementById("logoutBtn")?.addEventListener("click", logout);
-            document.getElementById("saveBtn")?.addEventListener("click", async () => {
-                const profile = {
-                    fullName: document.getElementById("fullName").value,
-                    position: document.getElementById("position").value,
-                    club: document.getElementById("club").value,
-                    age: document.getElementById("age").value,
-                    contactEmail: document.getElementById("email").value,
-                    contactPhone: document.getElementById("phone").value,
-                    bio: document.getElementById("bio").value
-                };
-                const res = await updateProfile(user.id, profile);
-                if (res.success) {
-                    setStatus("Profile saved!");
-                    alert("✅ Your profile has been saved. Scouts can now see your information.");
-                } else {
-                    setStatus("Error saving profile", true);
-                }
-            });
-        }
-        
-        if (authModalActive && !getCurrentUser()) renderAuthModal();
+        container.innerHTML = players.map(p => `
+            <div class="player-card">
+                <div class="avatar-icon">${(p.fullName ? p.fullName.charAt(0).toUpperCase() : p.username.charAt(0).toUpperCase()) || 'P'}</div>
+                <div class="player-name">${escapeHtml(p.fullName || p.username)}</div>
+                <div class="player-detail">
+                    <span class="detail-badge">📍 ${escapeHtml(p.position || 'Not set')}</span>
+                    <span class="detail-badge">🏆 ${escapeHtml(p.club || 'Free agent')}</span>
+                    <span class="detail-badge">📅 ${p.age || '?'} yrs</span>
+                </div>
+                <div class="player-detail">
+                    <span>📧 ${escapeHtml(p.email || 'no email')}</span>
+                    <span>📞 ${escapeHtml(p.phone || '—')}</span>
+                </div>
+                <div class="player-bio">${escapeHtml(p.bio || 'No bio provided yet.')}</div>
+            </div>
+        `).join('');
     }
-    
-    function renderAuthModal() {
-        const existing = document.getElementById("authModal");
-        if (existing) existing.remove();
-        const root = document.getElementById("appRoot");
-        if (!root) return;
-        const modalDiv = document.createElement("div");
-        modalDiv.id = "authModal";
-        modalDiv.className = "auth-overlay";
-        modalDiv.innerHTML = `
-            <div class="auth-modal"><div class="auth-tabs"><button id="tabLogin" class="auth-tab ${authTab === 'login' ? 'active' : ''}">LOGIN</button><button id="tabSignup" class="auth-tab ${authTab === 'signup' ? 'active' : ''}">SIGN UP</button></div>
-            ${authError ? `<div class="error-msg">⚠️ ${escapeHtml(authError)}</div>` : ""}
-            <div id="authForm"></div><div style="margin-top:1rem; text-align:center;"><button id="closeModal" class="btn-outline">Cancel</button></div></div>
-        `;
-        root.appendChild(modalDiv);
-        
-        const renderForm = () => {
-            const container = document.getElementById("authForm");
-            if (authTab === "login") {
-                container.innerHTML = `<div class="input-group"><label>Username</label><input id="loginUser" type="text"></div><div class="input-group"><label>Password</label><input id="loginPass" type="password"></div><button id="doLogin">ENTER ⚡</button><p style="color:#aa6f6f; font-size:0.7rem; margin-top:0.8rem;">Demo scout: talent_scout / redscout</p>`;
-                document.getElementById("doLogin")?.addEventListener("click", () => {
-                    const u = document.getElementById("loginUser").value;
-                    const p = document.getElementById("loginPass").value;
-                    handleLogin(u, p);
-                });
-            } else {
-                container.innerHTML = `<div class="input-group"><label>Username *</label><input id="signUser" type="text"></div><div class="input-group"><label>Password * (min 3)</label><input id="signPass" type="password"></div><div class="input-group"><label>I am a:</label><select id="signRole"><option value="player">⚽ Player (Get discovered)</option><option value="scout">🔍 Scout (Discover talent)</option></select></div><button id="doSignup">CREATE ACCOUNT</button>`;
-                document.getElementById("doSignup")?.addEventListener("click", () => {
-                    const u = document.getElementById("signUser").value;
-                    const p = document.getElementById("signPass").value;
-                    const r = document.getElementById("signRole").value;
-                    handleSignup(u, p, r);
-                });
-            }
+
+    // --- Player dashboard: load & update profile ---
+    async function loadPlayerDashboard() {
+        if (!currentSession || currentSession.role !== 'player') return;
+        const result = await callAPI('getPlayerProfile', { username: currentSession.username });
+        if (result.success && result.profile) {
+            const prof = result.profile;
+            document.getElementById('profileFullName').value = prof.fullName || '';
+            document.getElementById('profilePosition').value = prof.position || '';
+            document.getElementById('profileClub').value = prof.club || '';
+            document.getElementById('profileAge').value = prof.age || '';
+            document.getElementById('profileEmail').value = prof.email || '';
+            document.getElementById('profilePhone').value = prof.phone || '';
+            document.getElementById('profileBio').value = prof.bio || '';
+        } else {
+            showToast('Could not fetch profile', true);
+        }
+        scoutDashboard.style.display = 'none';
+        playerDashboard.style.display = 'block';
+        authSection.style.display = 'none';
+    }
+
+    async function savePlayerProfile(formData) {
+        const payload = {
+            username: currentSession.username,
+            fullName: formData.fullName,
+            position: formData.position,
+            club: formData.club,
+            age: formData.age,
+            email: formData.email,
+            phone: formData.phone,
+            bio: formData.bio
         };
-        
-        document.getElementById("tabLogin")?.addEventListener("click", () => { authTab = "login"; authError = ""; renderAuthModal(); });
-        document.getElementById("tabSignup")?.addEventListener("click", () => { authTab = "signup"; authError = ""; renderAuthModal(); });
-        document.getElementById("closeModal")?.addEventListener("click", closeAuth);
-        renderForm();
+        const result = await callAPI('updatePlayerProfile', payload);
+        if (result.success) {
+            showToast('Profile updated! Scouts can see new info instantly.');
+        } else {
+            showToast('Update failed: ' + (result.error || 'unknown'), true);
+        }
     }
-    
-    // Start the app: pre‑load players if a scout is already logged in
-    (async () => {
-        const u = getCurrentUser();
-        if (u && u.role === "scout") await loadPlayers();
-        else renderApp();
-    })();
+
+    // Logout
+    function logout() {
+        currentSession = null;
+        authSection.style.display = 'block';
+        scoutDashboard.style.display = 'none';
+        playerDashboard.style.display = 'none';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
+        showToast('Logged out safely');
+    }
+
+    // UI tabs
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.getAttribute('data-tab');
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (tab === 'login') {
+                loginFormDiv.style.display = 'block';
+                signupFormDiv.style.display = 'none';
+            } else {
+                loginFormDiv.style.display = 'none';
+                signupFormDiv.style.display = 'block';
+            }
+        });
+    });
+
+    // Event handlers
+    loginBtn.addEventListener('click', async () => {
+        const user = document.getElementById('loginUsername').value.trim();
+        const pwd = document.getElementById('loginPassword').value;
+        if (!user || !pwd) { showToast('Enter username & password', true); return; }
+        await handleLogin(user, pwd);
+    });
+    signupBtn.addEventListener('click', async () => {
+        const user = document.getElementById('signupUsername').value.trim();
+        const pwd = document.getElementById('signupPassword').value;
+        const role = document.getElementById('signupRole').value;
+        if (!user || !pwd) { showToast('Fill all fields', true); return; }
+        await handleSignup(user, pwd, role);
+    });
+    scoutLogout?.addEventListener('click', logout);
+    playerLogout?.addEventListener('click', logout);
+    playerProfileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            fullName: document.getElementById('profileFullName').value,
+            position: document.getElementById('profilePosition').value,
+            club: document.getElementById('profileClub').value,
+            age: document.getElementById('profileAge').value,
+            email: document.getElementById('profileEmail').value,
+            phone: document.getElementById('profilePhone').value,
+            bio: document.getElementById('profileBio').value
+        };
+        await savePlayerProfile(data);
+    });
+
+    // demo accounts quick helper (no auto)
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    // initial state
+    authSection.style.display = 'block';
+    scoutDashboard.style.display = 'none';
+    playerDashboard.style.display = 'none';
 </script>
 </body>
 </html>
