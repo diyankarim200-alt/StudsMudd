@@ -1,654 +1,1403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Studs Mudd | Scouting Platform</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StusMudd – Football Scouting Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D0021B;
+    --red-dark: #8B0010;
+    --red-bright: #FF1A30;
+    --black: #0A0A0A;
+    --black-2: #111111;
+    --black-3: #1A1A1A;
+    --black-4: #222222;
+    --grey: #2A2A2A;
+    --grey-light: #444;
+    --white: #F5F0EB;
+    --white-dim: #A0968A;
+    --accent: #FF4455;
+  }
 
-        body {
-            min-height: 100vh;
-            background: radial-gradient(circle at 10% 20%, #1a0a0a, #0a0404);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .glass-card {
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(16px);
-            border-radius: 2rem;
-            border: 1px solid rgba(220, 38, 38, 0.4);
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6);
-            transition: all 0.2s ease;
-        }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            margin: 0 auto;
-        }
+  /* ===== BACKGROUND TEXTURE ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 40px,
+        rgba(208,2,27,0.03) 40px,
+        rgba(208,2,27,0.03) 41px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 40px,
+        rgba(208,2,27,0.03) 40px,
+        rgba(208,2,27,0.03) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        .auth-panel {
-            max-width: 500px;
-            margin: 2rem auto;
-            padding: 2rem 2rem 2.2rem;
-        }
+  /* ===== VIEWS ===== */
+  .view { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .view.active { display: block; }
 
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f87171, #dc2626);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
+  /* ===== HERO / LANDING ===== */
+  #view-landing {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #view-landing.active { display: flex; }
 
-        .sub {
-            text-align: center;
-            color: #b0a8a8;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-        }
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    margin-bottom: 32px;
+    animation: fadeIn 0.6s ease;
+  }
 
-        .tab-buttons {
-            display: flex;
-            gap: 1rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 0.5rem;
-            border-radius: 3rem;
-            margin-bottom: 2rem;
-        }
+  .hero-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(72px, 15vw, 160px);
+    line-height: 0.85;
+    letter-spacing: -2px;
+    color: var(--white);
+    animation: slideUp 0.7s ease;
+  }
 
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #ddd;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
+  .hero-logo span {
+    color: var(--red);
+    display: block;
+  }
 
-        .tab-btn.active {
-            background: #dc2626;
-            color: white;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-        }
+  .hero-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 300;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin: 24px 0 60px;
+    animation: fadeIn 1s ease;
+  }
 
-        .input-group {
-            margin-bottom: 1.25rem;
-        }
+  .hero-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--red);
+    margin: 0 auto 48px;
+  }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-weight: 500;
-            color: #e5e0e0;
-            font-size: 0.85rem;
-        }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeIn 1.2s ease;
+  }
 
-        .input-group input, .input-group textarea, .input-group select {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            background: rgba(20, 10, 10, 0.8);
-            border: 1px solid #4a2a2a;
-            border-radius: 1.2rem;
-            color: white;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            outline: none;
-        }
+  /* ===== BUTTONS ===== */
+  .btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-        .input-group input:focus, .input-group textarea:focus {
-            border-color: #dc2626;
-            box-shadow: 0 0 0 2px rgba(220,38,38,0.3);
-        }
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.08);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn:hover::after { opacity: 1; }
 
-        button.primary-btn {
-            width: 100%;
-            background: linear-gradient(95deg, #dc2626, #b91c1c);
-            border: none;
-            padding: 0.9rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.2s;
-            margin-top: 0.5rem;
-        }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary:hover { background: var(--red-bright); transform: translateY(-2px); }
 
-        button.primary-btn:hover {
-            background: linear-gradient(95deg, #ef4444, #dc2626);
-            transform: scale(0.98);
-            box-shadow: 0 8px 20px rgba(220,38,38,0.4);
-        }
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(245,240,235,0.3);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-outline:hover { border-color: var(--white); transform: translateY(-2px); }
 
-        .error-msg {
-            color: #ff8a7a;
-            background: rgba(220,38,38,0.2);
-            padding: 0.7rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            text-align: center;
-        }
+  .btn-ghost {
+    background: transparent;
+    color: var(--white-dim);
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 10px 20px;
+    border: none;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .btn-ghost:hover { color: var(--white); }
 
-        .dashboard {
-            display: none;
-        }
+  .btn-sm {
+    font-size: 12px;
+    padding: 8px 20px;
+    letter-spacing: 2px;
+  }
 
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-            background: rgba(0,0,0,0.5);
-            padding: 1rem 2rem;
-            border-radius: 2rem;
-        }
+  .btn-danger {
+    background: var(--red-dark);
+    color: var(--white);
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .btn-danger:hover { background: var(--red); }
 
-        .dashboard-title h2 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: white;
-        }
+  /* ===== AUTH FORM ===== */
+  #view-auth {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  #view-auth.active { display: flex; }
 
-        .dashboard-title p {
-            color: #dc2626;
-            font-weight: 500;
-        }
+  .auth-card {
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    border-top: 3px solid var(--red);
+    width: 100%;
+    max-width: 460px;
+    padding: 48px 40px;
+    animation: slideUp 0.5s ease;
+  }
 
-        .logout-btn {
-            background: rgba(220,38,38,0.2);
-            border: 1px solid #dc2626;
-            padding: 0.6rem 1.4rem;
-            border-radius: 2rem;
-            color: #fbb;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+  .auth-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 36px;
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .auth-logo span { color: var(--red); }
 
-        .logout-btn:hover {
-            background: #dc2626;
-            color: white;
-        }
+  .auth-subtitle {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-bottom: 36px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
 
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.8rem;
-            margin-top: 1rem;
-        }
+  .tab-row {
+    display: flex;
+    border-bottom: 1px solid var(--grey);
+    margin-bottom: 32px;
+  }
 
-        .player-card {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(16px);
-            border-radius: 1.5rem;
-            border-left: 4px solid #dc2626;
-            padding: 1.4rem;
-            transition: all 0.2s ease;
-        }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+  .tab-btn:hover:not(.active) { color: var(--white); }
 
-        .player-card:hover {
-            transform: translateY(-5px);
-            background: rgba(20, 8, 8, 0.85);
-        }
+  .form-group { margin-bottom: 20px; }
+  
+  .form-label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-bottom: 8px;
+  }
 
-        .avatar-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(145deg, #dc2626, #7a1a1a);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 1rem;
-        }
+  .form-input, .form-select {
+    width: 100%;
+    background: var(--black-3);
+    border: 1px solid var(--grey);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--red); }
+  .form-input::placeholder { color: var(--grey-light); }
 
-        .player-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
+  .form-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  .form-select option { background: var(--black-2); }
 
-        .player-detail {
-            margin-top: 0.7rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #ccc;
-        }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-        .detail-badge {
-            background: rgba(220,38,38,0.2);
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-        }
+  .form-hint {
+    font-size: 11px;
+    color: var(--white-dim);
+    margin-top: 5px;
+  }
 
-        .player-bio {
-            margin-top: 0.8rem;
-            font-size: 0.8rem;
-            color: #b9b3b3;
-            line-height: 1.4;
-            padding-top: 0.5rem;
-            border-top: 1px solid #3a2a2a;
-        }
+  .form-submit { width: 100%; margin-top: 8px; }
+  .form-footer { text-align: center; margin-top: 20px; }
+  .form-footer p { font-size: 13px; color: var(--white-dim); }
 
-        .profile-form-container {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+  /* Role Toggle */
+  .role-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .role-option { display: none; }
+  .role-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 12px;
+    border: 1px solid var(--grey);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+  .role-label .role-icon { font-size: 24px; }
+  .role-option:checked + .role-label {
+    border-color: var(--red);
+    background: rgba(208,2,27,0.08);
+    color: var(--white);
+  }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
+  /* ===== ALERTS ===== */
+  .alert {
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    border-left: 3px solid;
+    display: none;
+  }
+  .alert.show { display: block; }
+  .alert-error { background: rgba(208,2,27,0.1); border-color: var(--red); color: #ff8899; }
+  .alert-success { background: rgba(0,200,100,0.08); border-color: #00c864; color: #66ffaa; }
 
-        @media (max-width: 600px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .dashboard-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: start;
-            }
-        }
+  /* ===== DASHBOARD LAYOUT ===== */
+  #view-dashboard {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  #view-dashboard.active { display: flex; }
 
-        .success-toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1f9a4e;
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border-radius: 40px;
-            z-index: 1000;
-            font-weight: 500;
-            animation: fadeOut 3s forwards;
-        }
+  .topbar {
+    background: var(--black-2);
+    border-bottom: 1px solid var(--grey);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-        @keyframes fadeOut {
-            0% { opacity: 1; transform: translateY(0);}
-            70% { opacity: 1;}
-            100% { opacity: 0; visibility: hidden;}
-        }
+  .topbar-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+  .topbar-logo span { color: var(--red); }
 
-        .loading-spinner {
-            text-align: center;
-            color: #dc2626;
-            padding: 2rem;
-            font-weight: 500;
-        }
+  .topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-        .info-note {
-            background: rgba(0,0,0,0.5);
-            border-radius: 1rem;
-            padding: 0.7rem;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #bcb0b0;
-            margin-top: 1rem;
-        }
-    </style>
+  .user-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+  .user-badge strong { color: var(--white); display: block; font-size: 14px; }
+
+  .role-pill {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .dash-body {
+    flex: 1;
+    padding: 40px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .dash-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .dash-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 48px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .dash-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-top: 4px;
+  }
+  .dash-count span { color: var(--red); font-size: 18px; font-weight: 700; }
+
+  /* ===== PLAYER CARDS GRID ===== */
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .player-card {
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    border-top: 2px solid var(--red);
+    padding: 24px;
+    transition: transform 0.2s, border-color 0.2s;
+    animation: fadeIn 0.4s ease;
+  }
+  .player-card:hover { transform: translateY(-4px); border-color: var(--red); }
+
+  .card-number {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 48px;
+    color: rgba(208,2,27,0.15);
+    line-height: 1;
+    float: right;
+    margin-top: -4px;
+  }
+
+  .card-position {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+
+  .card-name {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    clear: both;
+  }
+
+  .card-divider {
+    width: 30px;
+    height: 2px;
+    background: var(--red);
+    margin: 12px 0;
+  }
+
+  .card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-item label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    margin-bottom: 2px;
+  }
+  .stat-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--grey);
+    flex-wrap: wrap;
+  }
+
+  .contact-info {
+    background: var(--black-3);
+    border: 1px solid var(--grey);
+    padding: 12px;
+    font-size: 12px;
+    margin-top: 12px;
+    display: none;
+  }
+  .contact-info.visible { display: block; }
+  .contact-info p { margin-bottom: 6px; color: var(--white-dim); }
+  .contact-info strong { color: var(--white); }
+  .contact-info a { color: var(--red-bright); text-decoration: none; word-break: break-all; }
+  .contact-info a:hover { text-decoration: underline; }
+
+  /* ===== PLAYER OWN PROFILE ===== */
+  .profile-card {
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    border-left: 4px solid var(--red);
+    padding: 36px;
+    max-width: 700px;
+    animation: slideUp 0.4s ease;
+  }
+
+  .profile-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+
+  .profile-name {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .profile-field label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-bottom: 3px;
+  }
+  .profile-field p {
+    font-size: 15px;
+    color: var(--white);
+    word-break: break-all;
+  }
+
+  /* ===== FILTERS ===== */
+  .filters-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-select {
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 8px 32px 8px 14px;
+    cursor: pointer;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    appearance: none;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { border-color: var(--red); }
+  .filter-select option { background: var(--black-2); }
+
+  .search-input {
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 8px 14px;
+    outline: none;
+    flex: 1;
+    min-width: 200px;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--red); }
+  .search-input::placeholder { color: var(--grey-light); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--white-dim);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--grey-light); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ===== LOADING ===== */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    transition: opacity 0.5s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+  .loader-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 64px;
+    letter-spacing: 2px;
+    animation: pulse 1s ease-in-out infinite alternate;
+  }
+  .loader-logo span { color: var(--red); }
+
+  .loader-bar-wrap {
+    width: 200px;
+    height: 2px;
+    background: var(--grey);
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: var(--red);
+    animation: loadBar 1.5s ease-in-out infinite;
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--black-2);
+    border: 1px solid var(--grey);
+    border-left: 4px solid var(--red);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 14px 20px;
+    z-index: 9999;
+    transform: translateX(200%);
+    transition: transform 0.3s ease;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateX(0); }
+  .toast.success { border-left-color: #00c864; }
+
+  /* ===== SETUP GUIDE ===== */
+  .setup-banner {
+    background: rgba(208,2,27,0.08);
+    border: 1px solid var(--red);
+    border-left: 4px solid var(--red);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    display: none;
+  }
+  .setup-banner.show { display: block; }
+  .setup-banner h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 22px;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .setup-banner p { font-size: 13px; color: var(--white-dim); line-height: 1.6; margin-bottom: 6px; }
+  .setup-banner code {
+    background: var(--black-3);
+    padding: 2px 6px;
+    font-size: 12px;
+    color: #ff9955;
+    font-family: monospace;
+  }
+
+  .config-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .config-input {
+    flex: 1;
+    min-width: 260px;
+    background: var(--black-3);
+    border: 1px solid var(--grey);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+  }
+  .config-input:focus { border-color: var(--red); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
+  @keyframes loadBar { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .auth-card { padding: 32px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .topbar { padding: 0 16px; }
+    .dash-body { padding: 24px 16px; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .topbar-user .user-badge { display: none; }
+  }
+</style>
 </head>
 <body>
-<div class="container" id="appRoot">
-    <div id="authSection" class="glass-card auth-panel">
-        <div class="logo">⚡ STUDS MUDD</div>
-        <div class="sub">elite scouting network</div>
-        <div class="tab-buttons">
-            <button class="tab-btn active" data-tab="login">LOGIN</button>
-            <button class="tab-btn" data-tab="signup">SIGN UP</button>
-        </div>
-        <div id="loginForm">
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="loginUsername" placeholder="talent_scout or mbappe_star">
-            </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="••••••">
-            </div>
-            <button class="primary-btn" id="doLoginBtn">ENTER HUB →</button>
-            <div id="loginError" class="error-msg" style="display: none;"></div>
-            <div class="info-note">
-                🔑 Demo: Scout (talent_scout / redscout) | Player (mbappe_star / player123)
-            </div>
-        </div>
-        <div id="signupForm" style="display: none;">
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="signupUsername" placeholder="Choose username">
-            </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="signupPassword" placeholder="Create password">
-            </div>
-            <div class="input-group">
-                <label>Role</label>
-                <select id="signupRole">
-                    <option value="player">⚽ Player</option>
-                    <option value="scout">🕵️ Scout</option>
-                </select>
-            </div>
-            <button class="primary-btn" id="doSignupBtn">CREATE ACCOUNT</button>
-            <div id="signupError" class="error-msg" style="display: none;"></div>
-        </div>
-    </div>
 
-    <div id="scoutDashboard" class="dashboard">
-        <div class="glass-card" style="padding: 1.5rem;">
-            <div class="dashboard-header">
-                <div class="dashboard-title">
-                    <h2>🔍 Scout Dashboard</h2>
-                    <p>All players - live from database</p>
-                </div>
-                <button class="logout-btn" id="scoutLogoutBtn">← Logout</button>
-            </div>
-            <div id="scoutPlayersList" class="players-grid">
-                <div class="loading-spinner">Loading players...</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="playerDashboard" class="dashboard">
-        <div class="glass-card" style="padding: 1.5rem;">
-            <div class="dashboard-header">
-                <div class="dashboard-title">
-                    <h2>⚽ Player Profile</h2>
-                    <p>Your info is visible to all scouts</p>
-                </div>
-                <button class="logout-btn" id="playerLogoutBtn">← Logout</button>
-            </div>
-            <div class="profile-form-container">
-                <form id="playerProfileForm">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Full Name</label>
-                            <input type="text" id="profileFullName" placeholder="Your full name">
-                        </div>
-                        <div class="input-group">
-                            <label>Position</label>
-                            <input type="text" id="profilePosition" placeholder="Forward, Midfielder, etc">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Club / Team</label>
-                            <input type="text" id="profileClub" placeholder="Current club">
-                        </div>
-                        <div class="input-group">
-                            <label>Age</label>
-                            <input type="number" id="profileAge" placeholder="Age">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" id="profileEmail" placeholder="contact@email.com">
-                        </div>
-                        <div class="input-group">
-                            <label>Phone</label>
-                            <input type="tel" id="profilePhone" placeholder="Phone number">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Bio / Scouting Notes</label>
-                        <textarea id="profileBio" rows="3" placeholder="Your strengths, stats, achievements..."></textarea>
-                    </div>
-                    <button type="submit" class="primary-btn">💾 SAVE PROFILE</button>
-                </form>
-                <div class="info-note">✅ Changes save instantly and are visible to scouts across all devices.</div>
-            </div>
-        </div>
-    </div>
+<!-- Loading -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-logo">Stus<span>Mudd</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================
+     LANDING VIEW
+============================= -->
+<div class="view" id="view-landing">
+  <span class="hero-badge">⚽ Elite Football Scouting</span>
+  <h1 class="hero-logo">Stus<span>Mudd</span></h1>
+  <div class="hero-divider"></div>
+  <p class="hero-tagline">Where Talent Meets Opportunity</p>
+  <div class="hero-buttons">
+    <button class="btn btn-primary" onclick="showAuth('register')">Register Now</button>
+    <button class="btn btn-outline" onclick="showAuth('login')">Sign In</button>
+  </div>
+</div>
+
+<!-- ============================
+     AUTH VIEW
+============================= -->
+<div class="view" id="view-auth">
+  <div class="auth-card">
+    <div class="auth-logo">Stus<span>Mudd</span></div>
+    <div class="auth-subtitle">Football Scouting Platform</div>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="alert alert-error" id="login-error"></div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="login-email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary form-submit" onclick="handleLogin()">Sign In →</button>
+      <div class="form-footer">
+        <p>Don't have an account? <button class="btn-ghost" onclick="switchTab('register')">Register</button></p>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none">
+      <div class="alert alert-error" id="register-error"></div>
+      <div class="alert alert-success" id="register-success"></div>
+
+      <!-- Role Selection -->
+      <div class="form-group">
+        <label class="form-label">I am a...</label>
+        <div class="role-toggle">
+          <input type="radio" name="reg-role" id="role-player" value="player" class="role-option" checked>
+          <label for="role-player" class="role-label"><span class="role-icon">⚽</span> Player</label>
+          <input type="radio" name="reg-role" id="role-scout" value="scout" class="role-option">
+          <label for="role-scout" class="role-label"><span class="role-icon">🔭</span> Scout</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="reg-firstname" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="reg-lastname" placeholder="Smith">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="reg-email" placeholder="your@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="reg-password" placeholder="Min. 6 characters">
+      </div>
+
+      <!-- Player-only fields -->
+      <div id="player-fields">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Position</label>
+            <select class="form-select" id="reg-position">
+              <option value="">Select position</option>
+              <option>Goalkeeper</option>
+              <option>Right Back</option>
+              <option>Left Back</option>
+              <option>Centre Back</option>
+              <option>Defensive Midfielder</option>
+              <option>Central Midfielder</option>
+              <option>Attacking Midfielder</option>
+              <option>Right Winger</option>
+              <option>Left Winger</option>
+              <option>Striker</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-input" id="reg-age" placeholder="e.g. 20" min="14" max="45">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nationality</label>
+            <input type="text" class="form-input" id="reg-nationality" placeholder="e.g. Nigerian">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Club</label>
+            <input type="text" class="form-input" id="reg-club" placeholder="e.g. FC United">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone / WhatsApp</label>
+          <input type="tel" class="form-input" id="reg-phone" placeholder="+1 234 567 8900">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Video Highlight Link</label>
+          <input type="url" class="form-input" id="reg-video" placeholder="YouTube / Hudl link">
+          <p class="form-hint">Scouts will be able to see this link</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Brief Bio (optional)</label>
+          <input type="text" class="form-input" id="reg-bio" placeholder="e.g. Fast, technical winger with 3 years pro experience">
+        </div>
+      </div>
+
+      <!-- Scout-only fields -->
+      <div id="scout-fields" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Organisation / Club</label>
+          <input type="text" class="form-input" id="reg-org" placeholder="e.g. Arsenal FC Academy">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country of Operation</label>
+          <input type="text" class="form-input" id="reg-country" placeholder="e.g. England">
+        </div>
+      </div>
+
+      <button class="btn btn-primary form-submit" onclick="handleRegister()">Create Account →</button>
+      <div class="form-footer">
+        <p>Already registered? <button class="btn-ghost" onclick="switchTab('login')">Sign In</button></p>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; text-align:center;">
+      <button class="btn-ghost" onclick="showView('landing')">← Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     DASHBOARD VIEW
+============================= -->
+<div class="view" id="view-dashboard">
+  <div class="topbar">
+    <div class="topbar-logo">Stus<span>Mudd</span></div>
+    <div class="topbar-user">
+      <div class="user-badge">
+        <strong id="topbar-name">—</strong>
+        <span id="topbar-email">—</span>
+      </div>
+      <span class="role-pill" id="topbar-role">—</span>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+
+    <!-- Setup Banner (shown when Sheets not configured) -->
+    <div class="setup-banner" id="setup-banner">
+      <h3>⚙️ Connect Google Sheets Backend</h3>
+      <p>To enable cross-device login and persistent data, you need a free Google Apps Script backend. Follow these steps:</p>
+      <p>1. Go to <strong>script.google.com</strong> → New Project → paste the Apps Script code (see below) → Deploy as Web App (anyone, even anonymous)</p>
+      <p>2. Copy your Web App URL and paste it here:</p>
+      <div class="config-form">
+        <input type="text" class="config-input" id="sheets-url-input" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
+        <button class="btn btn-primary btn-sm" onclick="saveSheetUrl()">Save & Connect</button>
+      </div>
+      <p style="margin-top:12px;">3. Use <strong>Demo Mode</strong> (no persistence) until connected — data resets on refresh.</p>
+      <p style="margin-top:8px; font-size:12px; color: var(--white-dim);">Apps Script code snippet: see the <code>&lt;script&gt;</code> block in this file for the full <code>GAS_CODE</code> constant.</p>
+    </div>
+
+    <!-- SCOUT DASHBOARD -->
+    <div id="scout-dash" style="display:none">
+      <div class="dash-header">
+        <div>
+          <div class="dash-title">Player Directory</div>
+          <div class="dash-count"><span id="player-count">0</span> players registered</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="loadPlayers()">↻ Refresh</button>
+      </div>
+
+      <div class="filters-bar">
+        <input type="text" class="search-input" id="search-input" placeholder="🔍  Search players..." oninput="filterPlayers()">
+        <select class="filter-select" id="filter-position" onchange="filterPlayers()">
+          <option value="">All Positions</option>
+          <option>Goalkeeper</option>
+          <option>Right Back</option>
+          <option>Left Back</option>
+          <option>Centre Back</option>
+          <option>Defensive Midfielder</option>
+          <option>Central Midfielder</option>
+          <option>Attacking Midfielder</option>
+          <option>Right Winger</option>
+          <option>Left Winger</option>
+          <option>Striker</option>
+        </select>
+        <select class="filter-select" id="filter-age" onchange="filterPlayers()">
+          <option value="">All Ages</option>
+          <option value="u18">Under 18</option>
+          <option value="18-23">18–23</option>
+          <option value="24-29">24–29</option>
+          <option value="30+">30+</option>
+        </select>
+      </div>
+
+      <div class="players-grid" id="players-grid"></div>
+    </div>
+
+    <!-- PLAYER DASHBOARD -->
+    <div id="player-dash" style="display:none">
+      <div class="dash-header">
+        <div class="dash-title">My Profile</div>
+      </div>
+      <div class="profile-card" id="player-profile-card"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================
+     APPS SCRIPT CODE (for user reference)
+============================= -->
+<script id="gas-reference" type="text/plain">
+/* ============================================================
+   GOOGLE APPS SCRIPT — Paste this into script.google.com
+   Deploy > New Deployment > Web App > Anyone can access
+   ============================================================
+
+function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+  var action = data.action;
+
+  if (action === 'register') {
+    var sheet = ss.getSheetByName('Users') || ss.insertSheet('Users');
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['timestamp','role','firstname','lastname','email','password','position','age','nationality','club','phone','video','bio','org','country']);
+    }
+    // Check duplicate
+    var emails = sheet.getRange(2, 5, Math.max(1,sheet.getLastRow()-1), 1).getValues().flat();
+    if (emails.includes(data.email)) return output({success:false, error:'Email already registered'});
+    sheet.appendRow([
+      new Date().toISOString(), data.role, data.firstname, data.lastname,
+      data.email, data.password, data.position||'', data.age||'',
+      data.nationality||'', data.club||'', data.phone||'', data.video||'',
+      data.bio||'', data.org||'', data.country||''
+    ]);
+    return output({success:true});
+  }
+
+  if (action === 'login') {
+    var sheet = ss.getSheetByName('Users');
+    if (!sheet) return output({success:false, error:'No users yet'});
+    var rows = sheet.getDataRange().getValues();
+    for (var i=1; i<rows.length; i++) {
+      if (rows[i][4] === data.email && rows[i][5] === data.password) {
+        return output({success:true, user:{
+          role: rows[i][1], firstname: rows[i][2], lastname: rows[i][3],
+          email: rows[i][4], position: rows[i][6], age: rows[i][7],
+          nationality: rows[i][8], club: rows[i][9], phone: rows[i][10],
+          video: rows[i][11], bio: rows[i][12], org: rows[i][13], country: rows[i][14]
+        }});
+      }
+    }
+    return output({success:false, error:'Invalid email or password'});
+  }
+
+  if (action === 'getPlayers') {
+    var sheet = ss.getSheetByName('Users');
+    if (!sheet) return output({players:[]});
+    var rows = sheet.getDataRange().getValues();
+    var players = [];
+    for (var i=1; i<rows.length; i++) {
+      if (rows[i][1] === 'player') {
+        players.push({
+          firstname: rows[i][2], lastname: rows[i][3], email: rows[i][4],
+          position: rows[i][6], age: rows[i][7], nationality: rows[i][8],
+          club: rows[i][9], phone: rows[i][10], video: rows[i][11], bio: rows[i][12]
+        });
+      }
+    }
+    return output({players: players});
+  }
+}
+
+function output(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+*/
+</script>
+
 <script>
-    // ⚠️ IMPORTANT: REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
-    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzChdfXu1U_OhHMy64zxWZ6kQQ41oVzP31FJS36jL3qR9R8ZjT862k4MG39PciTLaLc/exec";
-    
-    let currentSession = null;
-    
-    const authSection = document.getElementById('authSection');
-    const scoutDashboard = document.getElementById('scoutDashboard');
-    const playerDashboard = document.getElementById('playerDashboard');
-    const loginFormDiv = document.getElementById('loginForm');
-    const signupFormDiv = document.getElementById('signupForm');
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    
-    function showToast(message, isError = false) {
-        const toast = document.createElement('div');
-        toast.className = 'success-toast';
-        toast.style.background = isError ? '#b91c1c' : '#1f9a4e';
-        toast.innerText = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    async function callAPI(action, payload = {}) {
-        try {
-            const params = new URLSearchParams({ action, ...payload });
-            const response = await fetch(BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params
-            });
-            const data = await response.json();
-            return data;
-        } catch (err) {
-            console.error('API Error:', err);
-            return { success: false, error: err.message };
-        }
-    }
-    
-    async function handleLogin(username, password) {
-        const result = await callAPI('login', { username, password });
-        if (result.success) {
-            currentSession = { username: result.username, role: result.role };
-            showToast(`Welcome ${username}!`);
-            
-            if (result.role === 'scout') {
-                await loadScoutDashboard();
-            } else if (result.role === 'player') {
-                await loadPlayerDashboard();
-            }
-            return true;
-        } else {
-            const errDiv = document.getElementById('loginError');
-            errDiv.innerText = result.error || 'Login failed';
-            errDiv.style.display = 'block';
-            setTimeout(() => errDiv.style.display = 'none', 3000);
-            return false;
-        }
-    }
-    
-    async function handleSignup(username, password, role) {
-        if (!username.trim() || !password.trim()) {
-            showToast('Username and password required', true);
-            return false;
-        }
-        const result = await callAPI('signup', { username, password, role });
-        if (result.success) {
-            showToast('Account created! Please login.');
-            document.querySelector('[data-tab="login"]').click();
-            return true;
-        } else {
-            const errDiv = document.getElementById('signupError');
-            errDiv.innerText = result.error || 'Signup failed';
-            errDiv.style.display = 'block';
-            setTimeout(() => errDiv.style.display = 'none', 3000);
-            return false;
-        }
-    }
-    
-    async function loadScoutDashboard() {
-        const result = await callAPI('fetchAllPlayers', {});
-        if (result.success && result.players) {
-            renderScoutPlayers(result.players);
-            scoutDashboard.style.display = 'block';
-            playerDashboard.style.display = 'none';
-            authSection.style.display = 'none';
-        } else {
-            showToast('Failed to load players', true);
-        }
-    }
-    
-    function renderScoutPlayers(players) {
-        const container = document.getElementById('scoutPlayersList');
-        if (!players || players.length === 0) {
-            container.innerHTML = '<div class="player-card">No players registered yet.</div>';
-            return;
-        }
-        
-        container.innerHTML = players.map(p => `
-            <div class="player-card">
-                <div class="avatar-icon">${(p.fullName ? p.fullName.charAt(0) : p.username.charAt(0)).toUpperCase()}</div>
-                <div class="player-name">${escapeHtml(p.fullName || p.username)}</div>
-                <div class="player-detail">
-                    <span class="detail-badge">📍 ${escapeHtml(p.position || 'Not set')}</span>
-                    <span class="detail-badge">🏆 ${escapeHtml(p.club || 'Free agent')}</span>
-                    <span class="detail-badge">📅 ${p.age || '?'} yrs</span>
-                </div>
-                <div class="player-detail">
-                    <span>📧 ${escapeHtml(p.email || 'No email')}</span>
-                    <span>📞 ${escapeHtml(p.phone || 'No phone')}</span>
-                </div>
-                <div class="player-bio">${escapeHtml(p.bio || 'No bio provided yet.')}</div>
-            </div>
-        `).join('');
-    }
-    
-    async function loadPlayerDashboard() {
-        const result = await callAPI('getPlayerProfile', { username: currentSession.username });
-        if (result.success && result.profile) {
-            const prof = result.profile;
-            document.getElementById('profileFullName').value = prof.fullName || '';
-            document.getElementById('profilePosition').value = prof.position || '';
-            document.getElementById('profileClub').value = prof.club || '';
-            document.getElementById('profileAge').value = prof.age || '';
-            document.getElementById('profileEmail').value = prof.email || '';
-            document.getElementById('profilePhone').value = prof.phone || '';
-            document.getElementById('profileBio').value = prof.bio || '';
-        }
-        scoutDashboard.style.display = 'none';
-        playerDashboard.style.display = 'block';
-        authSection.style.display = 'none';
-    }
-    
-    async function savePlayerProfile(profileData) {
-        const result = await callAPI('updatePlayerProfile', {
-            username: currentSession.username,
-            ...profileData
-        });
-        
-        if (result.success) {
-            showToast('Profile saved! Scouts can see your updated info.');
-        } else {
-            showToast('Error saving profile: ' + (result.error || 'Unknown'), true);
-        }
-    }
-    
-    function logout() {
-        currentSession = null;
-        authSection.style.display = 'block';
-        scoutDashboard.style.display = 'none';
-        playerDashboard.style.display = 'none';
-        showToast('Logged out');
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    // Tab switching
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tab = btn.getAttribute('data-tab');
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if (tab === 'login') {
-                loginFormDiv.style.display = 'block';
-                signupFormDiv.style.display = 'none';
-            } else {
-                loginFormDiv.style.display = 'none';
-                signupFormDiv.style.display = 'block';
-            }
-        });
+// ============================================================
+//  CONFIG
+// ============================================================
+const GAS_URL_KEY = 'stusMudd_gasUrl';
+let GAS_URL = localStorage.getItem(GAS_URL_KEY) || '';
+
+// Demo in-memory store (used when no GAS URL)
+let demoStore = { users: [], players: [] };
+
+let currentUser = null;
+let allPlayers = [];
+
+// ============================================================
+//  INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  // Check saved session
+  const saved = sessionStorage.getItem('stusMudd_user');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    showDashboard();
+  } else {
+    showView('landing');
+  }
+  setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 1200);
+});
+
+// ============================================================
+//  VIEW MANAGEMENT
+// ============================================================
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+}
+
+function showAuth(tab) {
+  showView('auth');
+  switchTab(tab);
+}
+
+function switchTab(tab) {
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  clearAlerts();
+}
+
+function showDashboard() {
+  showView('dashboard');
+  document.getElementById('topbar-name').textContent = currentUser.firstname + ' ' + currentUser.lastname;
+  document.getElementById('topbar-email').textContent = currentUser.email;
+  document.getElementById('topbar-role').textContent = currentUser.role === 'scout' ? '🔭 Scout' : '⚽ Player';
+
+  if (currentUser.role === 'scout') {
+    document.getElementById('scout-dash').style.display = 'block';
+    document.getElementById('player-dash').style.display = 'none';
+    if (!GAS_URL) document.getElementById('setup-banner').classList.add('show');
+    loadPlayers();
+  } else {
+    document.getElementById('scout-dash').style.display = 'none';
+    document.getElementById('player-dash').style.display = 'block';
+    renderPlayerProfile();
+  }
+}
+
+// ============================================================
+//  ROLE TOGGLE (register form)
+// ============================================================
+document.querySelectorAll('input[name="reg-role"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    const isPlayer = radio.value === 'player';
+    document.getElementById('player-fields').style.display = isPlayer ? 'block' : 'none';
+    document.getElementById('scout-fields').style.display = isPlayer ? 'none' : 'block';
+  });
+});
+
+// ============================================================
+//  API CALLS
+// ============================================================
+async function apiCall(payload) {
+  if (!GAS_URL) {
+    // Demo mode
+    return demoDB(payload);
+  }
+  try {
+    const resp = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      mode: 'cors'
     });
-    
-    // Event listeners
-    document.getElementById('doLoginBtn').addEventListener('click', async () => {
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value;
-        if (!username || !password) {
-            showToast('Enter username and password', true);
-            return;
-        }
-        await handleLogin(username, password);
-    });
-    
-    document.getElementById('doSignupBtn').addEventListener('click', async () => {
-        const username = document.getElementById('signupUsername').value.trim();
-        const password = document.getElementById('signupPassword').value;
-        const role = document.getElementById('signupRole').value;
-        if (!username || !password) {
-            showToast('Fill all fields', true);
-            return;
-        }
-        await handleSignup(username, password, role);
-    });
-    
-    document.getElementById('scoutLogoutBtn')?.addEventListener('click', logout);
-    document.getElementById('playerLogoutBtn')?.addEventListener('click', logout);
-    
-    document.getElementById('playerProfileForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const profileData = {
-            fullName: document.getElementById('profileFullName').value,
-            position: document.getElementById('profilePosition').value,
-            club: document.getElementById('profileClub').value,
-            age: document.getElementById('profileAge').value,
-            email: document.getElementById('profileEmail').value,
-            phone: document.getElementById('profilePhone').value,
-            bio: document.getElementById('profileBio').value
-        };
-        await savePlayerProfile(profileData);
-    });
+    return await resp.json();
+  } catch (err) {
+    showToast('Connection error — using demo mode', false);
+    return demoDB(payload);
+  }
+}
+
+function demoDB(payload) {
+  if (payload.action === 'register') {
+    if (demoStore.users.find(u => u.email === payload.email)) return { success: false, error: 'Email already registered' };
+    demoStore.users.push({ ...payload });
+    if (payload.role === 'player') demoStore.players.push({ ...payload });
+    return { success: true };
+  }
+  if (payload.action === 'login') {
+    const user = demoStore.users.find(u => u.email === payload.email && u.password === payload.password);
+    if (user) return { success: true, user };
+    return { success: false, error: 'Invalid email or password' };
+  }
+  if (payload.action === 'getPlayers') {
+    return { players: demoStore.players };
+  }
+}
+
+// ============================================================
+//  AUTH HANDLERS
+// ============================================================
+async function handleLogin() {
+  clearAlerts();
+  const email = v('login-email').trim();
+  const password = v('login-password');
+  if (!email || !password) return showAlert('login-error', 'Please fill in all fields');
+
+  setLoading(true);
+  const res = await apiCall({ action: 'login', email, password });
+  setLoading(false);
+
+  if (!res.success) return showAlert('login-error', res.error || 'Login failed');
+
+  currentUser = res.user;
+  sessionStorage.setItem('stusMudd_user', JSON.stringify(currentUser));
+  showToast('Welcome back, ' + currentUser.firstname + '!', true);
+  showDashboard();
+}
+
+async function handleRegister() {
+  clearAlerts();
+  const role = document.querySelector('input[name="reg-role"]:checked').value;
+  const firstname = v('reg-firstname').trim();
+  const lastname = v('reg-lastname').trim();
+  const email = v('reg-email').trim();
+  const password = v('reg-password');
+
+  if (!firstname || !lastname || !email || !password) return showAlert('register-error', 'Please fill in all required fields');
+  if (password.length < 6) return showAlert('register-error', 'Password must be at least 6 characters');
+
+  const payload = { action: 'register', role, firstname, lastname, email, password };
+
+  if (role === 'player') {
+    payload.position = v('reg-position');
+    payload.age = v('reg-age');
+    payload.nationality = v('reg-nationality').trim();
+    payload.club = v('reg-club').trim();
+    payload.phone = v('reg-phone').trim();
+    payload.video = v('reg-video').trim();
+    payload.bio = v('reg-bio').trim();
+    if (!payload.position || !payload.age) return showAlert('register-error', 'Players must select position and age');
+  } else {
+    payload.org = v('reg-org').trim();
+    payload.country = v('reg-country').trim();
+  }
+
+  setLoading(true);
+  const res = await apiCall(payload);
+  setLoading(false);
+
+  if (!res.success) return showAlert('register-error', res.error || 'Registration failed');
+
+  showAlert('register-success', '✓ Account created! You can now sign in.');
+  setTimeout(() => switchTab('login'), 2000);
+}
+
+function handleLogout() {
+  currentUser = null;
+  sessionStorage.removeItem('stusMudd_user');
+  allPlayers = [];
+  showView('landing');
+  showToast('Signed out successfully');
+}
+
+// ============================================================
+//  SCOUT: LOAD PLAYERS
+// ============================================================
+async function loadPlayers() {
+  const grid = document.getElementById('players-grid');
+  grid.innerHTML = '<div style="color:var(--white-dim);font-family:Barlow Condensed;letter-spacing:2px;font-size:13px;text-transform:uppercase;padding:20px;">Loading players...</div>';
+  const res = await apiCall({ action: 'getPlayers' });
+  allPlayers = res.players || [];
+  document.getElementById('player-count').textContent = allPlayers.length;
+  filterPlayers();
+}
+
+function filterPlayers() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const pos = document.getElementById('filter-position').value;
+  const ageFilter = document.getElementById('filter-age').value;
+
+  let filtered = allPlayers.filter(p => {
+    const nameMatch = (p.firstname + ' ' + p.lastname + ' ' + (p.club||'')).toLowerCase().includes(q);
+    const posMatch = !pos || p.position === pos;
+    let ageMatch = true;
+    if (ageFilter) {
+      const a = parseInt(p.age) || 0;
+      if (ageFilter === 'u18') ageMatch = a < 18;
+      else if (ageFilter === '18-23') ageMatch = a >= 18 && a <= 23;
+      else if (ageFilter === '24-29') ageMatch = a >= 24 && a <= 29;
+      else if (ageFilter === '30+') ageMatch = a >= 30;
+    }
+    return nameMatch && posMatch && ageMatch;
+  });
+
+  renderPlayersGrid(filtered);
+}
+
+function renderPlayersGrid(players) {
+  const grid = document.getElementById('players-grid');
+  if (!players.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">🔍</div>
+      <h3>No Players Found</h3>
+      <p>Try adjusting your search filters or check back later.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = players.map((p, i) => `
+    <div class="player-card">
+      <div class="card-number">${String(i+1).padStart(2,'0')}</div>
+      <div class="card-position">${p.position || 'Unknown'}</div>
+      <div class="card-name">${p.firstname} ${p.lastname}</div>
+      <div class="card-divider"></div>
+      <div class="card-stats">
+        <div class="stat-item">
+          <label>Age</label>
+          <span>${p.age || '—'}</span>
+        </div>
+        <div class="stat-item">
+          <label>Nationality</label>
+          <span>${p.nationality || '—'}</span>
+        </div>
+        <div class="stat-item">
+          <label>Club</label>
+          <span>${p.club || '—'}</span>
+        </div>
+        <div class="stat-item">
+          <label>Position</label>
+          <span>${p.position || '—'}</span>
+        </div>
+      </div>
+      ${p.bio ? `<p style="font-size:13px;color:var(--white-dim);margin-bottom:10px;font-style:italic;">"${esc(p.bio)}"</p>` : ''}
+      <div class="card-actions">
+        <button class="btn btn-danger btn-sm" onclick="toggleContact(${i})">📞 Contact Info</button>
+        ${p.video ? `<a href="${esc(p.video)}" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none;">▶ Watch Video</a>` : ''}
+      </div>
+      <div class="contact-info" id="contact-${i}">
+        <p>📧 <strong>Email:</strong> <a href="mailto:${esc(p.email)}">${esc(p.email)}</a></p>
+        <p>📱 <strong>Phone / WhatsApp:</strong> <strong>${esc(p.phone||'Not provided')}</strong></p>
+        ${p.video ? `<p>🎬 <strong>Video:</strong> <a href="${esc(p.video)}" target="_blank">${esc(p.video)}</a></p>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleContact(i) {
+  const el = document.getElementById('contact-' + i);
+  el.classList.toggle('visible');
+}
+
+// ============================================================
+//  PLAYER: OWN PROFILE
+// ============================================================
+function renderPlayerProfile() {
+  const p = currentUser;
+  document.getElementById('player-profile-card').innerHTML = `
+    <div class="profile-section-title">Your Scouting Profile</div>
+    <div class="profile-name">${p.firstname} ${p.lastname}</div>
+    <span class="role-pill" style="display:inline-block">${p.position || 'Player'}</span>
+    <div class="profile-grid">
+      <div class="profile-field"><label>Age</label><p>${p.age || '—'}</p></div>
+      <div class="profile-field"><label>Nationality</label><p>${p.nationality || '—'}</p></div>
+      <div class="profile-field"><label>Current Club</label><p>${p.club || '—'}</p></div>
+      <div class="profile-field"><label>Position</label><p>${p.position || '—'}</p></div>
+      <div class="profile-field"><label>Email</label><p>${p.email}</p></div>
+      <div class="profile-field"><label>Phone / WhatsApp</label><p>${p.phone || '—'}</p></div>
+    </div>
+    ${p.bio ? `<div style="margin-top:20px;"><div class="profile-section-title" style="margin-bottom:8px;">Bio</div><p style="color:var(--white-dim);font-size:14px;line-height:1.7;">${esc(p.bio)}</p></div>` : ''}
+    ${p.video ? `<div style="margin-top:20px;">
+      <div class="profile-section-title" style="margin-bottom:8px;">Highlight Video</div>
+      <a href="${esc(p.video)}" target="_blank" class="btn btn-primary btn-sm" style="text-decoration:none;display:inline-block;">▶ Watch Video</a>
+      <p style="font-size:12px;color:var(--white-dim);margin-top:8px;">${esc(p.video)}</p>
+    </div>` : ''}
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--grey);">
+      <p style="font-size:12px;color:var(--white-dim);letter-spacing:1px;">✓ Your profile is visible to all registered scouts on the platform.</p>
+    </div>
+  `;
+}
+
+// ============================================================
+//  SHEETS URL CONFIG
+// ============================================================
+function saveSheetUrl() {
+  const url = document.getElementById('sheets-url-input').value.trim();
+  if (!url || !url.startsWith('https://')) return showToast('Please enter a valid URL');
+  GAS_URL = url;
+  localStorage.setItem(GAS_URL_KEY, url);
+  document.getElementById('setup-banner').classList.remove('show');
+  showToast('Google Sheets connected!', true);
+  loadPlayers();
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function v(id) { return document.getElementById(id).value; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function clearAlerts() {
+  document.querySelectorAll('.alert').forEach(el => el.classList.remove('show'));
+}
+
+function setLoading(on) {
+  document.getElementById('loadingOverlay').classList.toggle('hidden', !on);
+}
+
+let toastTimer;
+function showToast(msg, success = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (success ? ' success' : '') + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
 </script>
 </body>
 </html>
