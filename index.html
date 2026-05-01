@@ -1062,7 +1062,7 @@ function output(obj) {
 //  CONFIG
 // ============================================================
 const GAS_URL_KEY = 'stusMudd_gasUrl';
-let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbwOzSTBWh6tw0NYEdkD_R9e9fjO8SDYgPjCWyhmjUEvn7DE0TA1gZE_sPRAE5XS5o0/exec';
+let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbw0A79OfKKXt5hfPh_i3sIGV1-yxKdA0AQ1YAPDKpzEiLTMPaRScRPiatPJ8g70u80L/exec';
 
 // Demo in-memory store (used when no GAS URL)
 let demoStore = { users: [], players: [] };
@@ -1139,18 +1139,13 @@ document.querySelectorAll('input[name="reg-role"]').forEach(radio => {
 //  API CALLS
 // ============================================================
 async function apiCall(payload) {
-  if (!GAS_URL) {
-    // Demo mode
-    return demoDB(payload);
-  }
+  if (!GAS_URL) return demoDB(payload);
   try {
-    const resp = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      mode: 'cors'
-    });
-    return await resp.json();
+    const params = new URLSearchParams(payload);
+    const url = GAS_URL + '?' + params.toString();
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    return JSON.parse(text);
   } catch (err) {
     showToast('Connection error — using demo mode', false);
     return demoDB(payload);
