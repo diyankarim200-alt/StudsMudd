@@ -20,9 +20,9 @@
     --white-dim: #A0968A;
     --accent: #FF4455;
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
   body {
     background: var(--black);
     color: var(--white);
@@ -30,7 +30,7 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
+ 
   /* ===== BACKGROUND TEXTURE ===== */
   body::before {
     content: '';
@@ -54,11 +54,11 @@
     pointer-events: none;
     z-index: 0;
   }
-
+ 
   /* ===== VIEWS ===== */
   .view { display: none; position: relative; z-index: 1; min-height: 100vh; }
   .view.active { display: block; }
-
+ 
   /* ===== HERO / LANDING ===== */
   #view-landing {
     display: none;
@@ -70,7 +70,7 @@
     padding: 40px 20px;
   }
   #view-landing.active { display: flex; }
-
+ 
   .hero-badge {
     display: inline-block;
     border: 1px solid var(--red);
@@ -83,7 +83,7 @@
     margin-bottom: 32px;
     animation: fadeIn 0.6s ease;
   }
-
+ 
   .hero-logo {
     font-family: 'Bebas Neue', cursive;
     font-size: clamp(72px, 15vw, 160px);
@@ -92,12 +92,12 @@
     color: var(--white);
     animation: slideUp 0.7s ease;
   }
-
+ 
   .hero-logo span {
     color: var(--red);
     display: block;
   }
-
+ 
   .hero-tagline {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: clamp(14px, 2vw, 18px);
@@ -108,14 +108,14 @@
     margin: 24px 0 60px;
     animation: fadeIn 1s ease;
   }
-
+ 
   .hero-divider {
     width: 60px;
     height: 3px;
     background: var(--red);
     margin: 0 auto 48px;
   }
-
+ 
   .hero-buttons {
     display: flex;
     gap: 16px;
@@ -123,7 +123,7 @@
     justify-content: center;
     animation: fadeIn 1.2s ease;
   }
-
+ 
   /* ===== BUTTONS ===== */
   .btn {
     font-family: 'Barlow Condensed', sans-serif;
@@ -138,7 +138,7 @@
     position: relative;
     overflow: hidden;
   }
-
+ 
   .btn::after {
     content: '';
     position: absolute;
@@ -148,14 +148,14 @@
     transition: opacity 0.2s;
   }
   .btn:hover::after { opacity: 1; }
-
+ 
   .btn-primary {
     background: var(--red);
     color: var(--white);
     clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   }
   .btn-primary:hover { background: var(--red-bright); transform: translateY(-2px); }
-
+ 
   .btn-outline {
     background: transparent;
     color: var(--white);
@@ -163,7 +163,7 @@
     clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   }
   .btn-outline:hover { border-color: var(--white); transform: translateY(-2px); }
-
+ 
   .btn-ghost {
     background: transparent;
     color: var(--white-dim);
@@ -175,20 +175,20 @@
     text-underline-offset: 4px;
   }
   .btn-ghost:hover { color: var(--white); }
-
+ 
   .btn-sm {
     font-size: 12px;
     padding: 8px 20px;
     letter-spacing: 2px;
   }
-
+ 
   .btn-danger {
     background: var(--red-dark);
     color: var(--white);
     clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
   }
   .btn-danger:hover { background: var(--red); }
-
+ 
   /* ===== AUTH FORM ===== */
   #view-auth {
     display: none;
@@ -199,7 +199,7 @@
     padding: 40px 20px;
   }
   #view-auth.active { display: flex; }
-
+ 
   .auth-card {
     background: var(--black-2);
     border: 1px solid var(--grey);
@@ -209,7 +209,7 @@
     padding: 48px 40px;
     animation: slideUp 0.5s ease;
   }
-
+ 
   .auth-logo {
     font-family: 'Bebas Neue', cursive;
     font-size: 36px;
@@ -218,7 +218,7 @@
     margin-bottom: 6px;
   }
   .auth-logo span { color: var(--red); }
-
+ 
   .auth-subtitle {
     text-align: center;
     font-size: 12px;
@@ -228,13 +228,13 @@
     margin-bottom: 36px;
     font-family: 'Barlow Condensed', sans-serif;
   }
-
+ 
   .tab-row {
     display: flex;
     border-bottom: 1px solid var(--grey);
     margin-bottom: 32px;
   }
-
+ 
   .tab-btn {
     flex: 1;
     background: none;
@@ -252,7 +252,7 @@
   }
   .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
   .tab-btn:hover:not(.active) { color: var(--white); }
-
+ 
   .form-group { margin-bottom: 20px; }
   
   .form-label {
@@ -264,7 +264,7 @@
     color: var(--white-dim);
     margin-bottom: 8px;
   }
-
+ 
   .form-input, .form-select {
     width: 100%;
     background: var(--black-3);
@@ -279,22 +279,22 @@
   }
   .form-input:focus, .form-select:focus { border-color: var(--red); }
   .form-input::placeholder { color: var(--grey-light); }
-
+ 
   .form-select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
   .form-select option { background: var(--black-2); }
-
+ 
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
+ 
   .form-hint {
     font-size: 11px;
     color: var(--white-dim);
     margin-top: 5px;
   }
-
+ 
   .form-submit { width: 100%; margin-top: 8px; }
   .form-footer { text-align: center; margin-top: 20px; }
   .form-footer p { font-size: 13px; color: var(--white-dim); }
-
+ 
   /* Role Toggle */
   .role-toggle {
     display: grid;
@@ -324,7 +324,7 @@
     background: rgba(208,2,27,0.08);
     color: var(--white);
   }
-
+ 
   /* ===== ALERTS ===== */
   .alert {
     padding: 12px 16px;
@@ -336,7 +336,7 @@
   .alert.show { display: block; }
   .alert-error { background: rgba(208,2,27,0.1); border-color: var(--red); color: #ff8899; }
   .alert-success { background: rgba(0,200,100,0.08); border-color: #00c864; color: #66ffaa; }
-
+ 
   /* ===== DASHBOARD LAYOUT ===== */
   #view-dashboard {
     display: none;
@@ -344,7 +344,7 @@
     min-height: 100vh;
   }
   #view-dashboard.active { display: flex; }
-
+ 
   .topbar {
     background: var(--black-2);
     border-bottom: 1px solid var(--grey);
@@ -357,7 +357,7 @@
     top: 0;
     z-index: 100;
   }
-
+ 
   .topbar-logo {
     font-family: 'Bebas Neue', cursive;
     font-size: 28px;
@@ -365,13 +365,13 @@
     letter-spacing: 1px;
   }
   .topbar-logo span { color: var(--red); }
-
+ 
   .topbar-user {
     display: flex;
     align-items: center;
     gap: 16px;
   }
-
+ 
   .user-badge {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 12px;
@@ -380,7 +380,7 @@
     color: var(--white-dim);
   }
   .user-badge strong { color: var(--white); display: block; font-size: 14px; }
-
+ 
   .role-pill {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px;
@@ -390,7 +390,7 @@
     background: var(--red);
     color: var(--white);
   }
-
+ 
   .dash-body {
     flex: 1;
     padding: 40px 32px;
@@ -398,7 +398,7 @@
     margin: 0 auto;
     width: 100%;
   }
-
+ 
   .dash-header {
     display: flex;
     align-items: flex-end;
@@ -407,14 +407,14 @@
     flex-wrap: wrap;
     gap: 16px;
   }
-
+ 
   .dash-title {
     font-family: 'Bebas Neue', cursive;
     font-size: 48px;
     letter-spacing: 1px;
     line-height: 1;
   }
-
+ 
   .dash-count {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 13px;
@@ -424,14 +424,14 @@
     margin-top: 4px;
   }
   .dash-count span { color: var(--red); font-size: 18px; font-weight: 700; }
-
+ 
   /* ===== PLAYER CARDS GRID ===== */
   .players-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
   }
-
+ 
   .player-card {
     background: var(--black-2);
     border: 1px solid var(--grey);
@@ -441,7 +441,7 @@
     animation: fadeIn 0.4s ease;
   }
   .player-card:hover { transform: translateY(-4px); border-color: var(--red); }
-
+ 
   .card-number {
     font-family: 'Bebas Neue', cursive;
     font-size: 48px;
@@ -450,7 +450,7 @@
     float: right;
     margin-top: -4px;
   }
-
+ 
   .card-position {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px;
@@ -459,7 +459,7 @@
     color: var(--red);
     margin-bottom: 8px;
   }
-
+ 
   .card-name {
     font-family: 'Bebas Neue', cursive;
     font-size: 28px;
@@ -467,21 +467,21 @@
     line-height: 1;
     clear: both;
   }
-
+ 
   .card-divider {
     width: 30px;
     height: 2px;
     background: var(--red);
     margin: 12px 0;
   }
-
+ 
   .card-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-bottom: 16px;
   }
-
+ 
   .stat-item label {
     display: block;
     font-size: 10px;
@@ -496,7 +496,7 @@
     font-weight: 500;
     color: var(--white);
   }
-
+ 
   .card-actions {
     display: flex;
     gap: 8px;
@@ -505,7 +505,7 @@
     border-top: 1px solid var(--grey);
     flex-wrap: wrap;
   }
-
+ 
   .contact-info {
     background: var(--black-3);
     border: 1px solid var(--grey);
@@ -519,7 +519,7 @@
   .contact-info strong { color: var(--white); }
   .contact-info a { color: var(--red-bright); text-decoration: none; word-break: break-all; }
   .contact-info a:hover { text-decoration: underline; }
-
+ 
   /* ===== PLAYER OWN PROFILE ===== */
   .profile-card {
     background: var(--black-2);
@@ -529,7 +529,7 @@
     max-width: 700px;
     animation: slideUp 0.4s ease;
   }
-
+ 
   .profile-section-title {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 11px;
@@ -538,21 +538,21 @@
     color: var(--red);
     margin-bottom: 20px;
   }
-
+ 
   .profile-name {
     font-family: 'Bebas Neue', cursive;
     font-size: 56px;
     line-height: 1;
     margin-bottom: 4px;
   }
-
+ 
   .profile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-top: 24px;
   }
-
+ 
   .profile-field label {
     display: block;
     font-family: 'Barlow Condensed', sans-serif;
@@ -567,7 +567,7 @@
     color: var(--white);
     word-break: break-all;
   }
-
+ 
   /* ===== FILTERS ===== */
   .filters-bar {
     display: flex;
@@ -576,7 +576,7 @@
     flex-wrap: wrap;
     align-items: center;
   }
-
+ 
   .filter-select {
     background: var(--black-2);
     border: 1px solid var(--grey);
@@ -595,7 +595,7 @@
   }
   .filter-select:focus { border-color: var(--red); }
   .filter-select option { background: var(--black-2); }
-
+ 
   .search-input {
     background: var(--black-2);
     border: 1px solid var(--grey);
@@ -610,7 +610,7 @@
   }
   .search-input:focus { border-color: var(--red); }
   .search-input::placeholder { color: var(--grey-light); }
-
+ 
   /* ===== EMPTY STATE ===== */
   .empty-state {
     text-align: center;
@@ -620,7 +620,7 @@
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
   .empty-state h3 { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--grey-light); margin-bottom: 8px; }
   .empty-state p { font-size: 14px; }
-
+ 
   /* ===== LOADING ===== */
   .loading-overlay {
     position: fixed;
@@ -634,7 +634,7 @@
     transition: opacity 0.5s;
   }
   .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-
+ 
   .loader-logo {
     font-family: 'Bebas Neue', cursive;
     font-size: 64px;
@@ -642,7 +642,7 @@
     animation: pulse 1s ease-in-out infinite alternate;
   }
   .loader-logo span { color: var(--red); }
-
+ 
   .loader-bar-wrap {
     width: 200px;
     height: 2px;
@@ -655,7 +655,7 @@
     background: var(--red);
     animation: loadBar 1.5s ease-in-out infinite;
   }
-
+ 
   /* ===== TOAST ===== */
   .toast {
     position: fixed;
@@ -676,7 +676,7 @@
   }
   .toast.show { transform: translateX(0); }
   .toast.success { border-left-color: #00c864; }
-
+ 
   /* ===== SETUP GUIDE ===== */
   .setup-banner {
     background: rgba(208,2,27,0.08);
@@ -701,7 +701,7 @@
     color: #ff9955;
     font-family: monospace;
   }
-
+ 
   .config-form {
     display: flex;
     gap: 10px;
@@ -720,13 +720,13 @@
     outline: none;
   }
   .config-input:focus { border-color: var(--red); }
-
+ 
   /* ===== ANIMATIONS ===== */
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
   @keyframes loadBar { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } }
-
+ 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 640px) {
     .auth-card { padding: 32px 24px; }
@@ -739,16 +739,16 @@
 </style>
 </head>
 <body>
-
+ 
 <!-- Loading -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loader-logo">Stus<span>Mudd</span></div>
   <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
 </div>
-
+ 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
-
+ 
 <!-- ============================
      LANDING VIEW
 ============================= -->
@@ -762,7 +762,7 @@
     <button class="btn btn-outline" onclick="showAuth('login')">Sign In</button>
   </div>
 </div>
-
+ 
 <!-- ============================
      AUTH VIEW
 ============================= -->
@@ -770,13 +770,13 @@
   <div class="auth-card">
     <div class="auth-logo">Stus<span>Mudd</span></div>
     <div class="auth-subtitle">Football Scouting Platform</div>
-
+ 
     <!-- Tabs -->
     <div class="tab-row">
       <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
       <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
     </div>
-
+ 
     <!-- LOGIN FORM -->
     <div id="form-login">
       <div class="alert alert-error" id="login-error"></div>
@@ -793,12 +793,12 @@
         <p>Don't have an account? <button class="btn-ghost" onclick="switchTab('register')">Register</button></p>
       </div>
     </div>
-
+ 
     <!-- REGISTER FORM -->
     <div id="form-register" style="display:none">
       <div class="alert alert-error" id="register-error"></div>
       <div class="alert alert-success" id="register-success"></div>
-
+ 
       <!-- Role Selection -->
       <div class="form-group">
         <label class="form-label">I am a...</label>
@@ -809,7 +809,7 @@
           <label for="role-scout" class="role-label"><span class="role-icon">🔭</span> Scout</label>
         </div>
       </div>
-
+ 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">First Name</label>
@@ -820,17 +820,17 @@
           <input type="text" class="form-input" id="reg-lastname" placeholder="Smith">
         </div>
       </div>
-
+ 
       <div class="form-group">
         <label class="form-label">Email</label>
         <input type="email" class="form-input" id="reg-email" placeholder="your@email.com">
       </div>
-
+ 
       <div class="form-group">
         <label class="form-label">Password</label>
         <input type="password" class="form-input" id="reg-password" placeholder="Min. 6 characters">
       </div>
-
+ 
       <!-- Player-only fields -->
       <div id="player-fields">
         <div class="form-row">
@@ -879,7 +879,7 @@
           <input type="text" class="form-input" id="reg-bio" placeholder="e.g. Fast, technical winger with 3 years pro experience">
         </div>
       </div>
-
+ 
       <!-- Scout-only fields -->
       <div id="scout-fields" style="display:none">
         <div class="form-group">
@@ -891,19 +891,19 @@
           <input type="text" class="form-input" id="reg-country" placeholder="e.g. England">
         </div>
       </div>
-
+ 
       <button class="btn btn-primary form-submit" onclick="handleRegister()">Create Account →</button>
       <div class="form-footer">
         <p>Already registered? <button class="btn-ghost" onclick="switchTab('login')">Sign In</button></p>
       </div>
     </div>
-
+ 
     <div style="margin-top:24px; text-align:center;">
       <button class="btn-ghost" onclick="showView('landing')">← Back to Home</button>
     </div>
   </div>
 </div>
-
+ 
 <!-- ============================
      DASHBOARD VIEW
 ============================= -->
@@ -919,9 +919,9 @@
       <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
     </div>
   </div>
-
+ 
   <div class="dash-body">
-
+ 
     <!-- Setup Banner (shown when Sheets not configured) -->
     <div class="setup-banner" id="setup-banner">
       <h3>⚙️ Connect Google Sheets Backend</h3>
@@ -935,7 +935,7 @@
       <p style="margin-top:12px;">3. Use <strong>Demo Mode</strong> (no persistence) until connected — data resets on refresh.</p>
       <p style="margin-top:8px; font-size:12px; color: var(--white-dim);">Apps Script code snippet: see the <code>&lt;script&gt;</code> block in this file for the full <code>GAS_CODE</code> constant.</p>
     </div>
-
+ 
     <!-- SCOUT DASHBOARD -->
     <div id="scout-dash" style="display:none">
       <div class="dash-header">
@@ -945,7 +945,7 @@
         </div>
         <button class="btn btn-outline btn-sm" onclick="loadPlayers()">↻ Refresh</button>
       </div>
-
+ 
       <div class="filters-bar">
         <input type="text" class="search-input" id="search-input" placeholder="🔍  Search players..." oninput="filterPlayers()">
         <select class="filter-select" id="filter-position" onchange="filterPlayers()">
@@ -969,10 +969,10 @@
           <option value="30+">30+</option>
         </select>
       </div>
-
+ 
       <div class="players-grid" id="players-grid"></div>
     </div>
-
+ 
     <!-- PLAYER DASHBOARD -->
     <div id="player-dash" style="display:none">
       <div class="dash-header">
@@ -980,10 +980,10 @@
       </div>
       <div class="profile-card" id="player-profile-card"></div>
     </div>
-
+ 
   </div>
 </div>
-
+ 
 <!-- ============================
      APPS SCRIPT CODE (for user reference)
 ============================= -->
@@ -992,12 +992,12 @@
    GOOGLE APPS SCRIPT — Paste this into script.google.com
    Deploy > New Deployment > Web App > Anyone can access
    ============================================================
-
+ 
 function doPost(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var data = JSON.parse(e.postData.contents);
   var action = data.action;
-
+ 
   if (action === 'register') {
     var sheet = ss.getSheetByName('Users') || ss.insertSheet('Users');
     if (sheet.getLastRow() === 0) {
@@ -1014,7 +1014,7 @@ function doPost(e) {
     ]);
     return output({success:true});
   }
-
+ 
   if (action === 'login') {
     var sheet = ss.getSheetByName('Users');
     if (!sheet) return output({success:false, error:'No users yet'});
@@ -1031,7 +1031,7 @@ function doPost(e) {
     }
     return output({success:false, error:'Invalid email or password'});
   }
-
+ 
   if (action === 'getPlayers') {
     var sheet = ss.getSheetByName('Users');
     if (!sheet) return output({players:[]});
@@ -1049,27 +1049,27 @@ function doPost(e) {
     return output({players: players});
   }
 }
-
+ 
 function output(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
 */
 </script>
-
+ 
 <script>
 // ============================================================
 //  CONFIG
 // ============================================================
 const GAS_URL_KEY = 'stusMudd_gasUrl';
 let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbw0A79OfKKXt5hfPh_i3sIGV1-yxKdA0AQ1YAPDKpzEiLTMPaRScRPiatPJ8g70u80L/exec';
-
+ 
 // Demo in-memory store (used when no GAS URL)
 let demoStore = { users: [], players: [] };
-
+ 
 let currentUser = null;
 let allPlayers = [];
-
+ 
 // ============================================================
 //  INIT
 // ============================================================
@@ -1084,7 +1084,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 1200);
 });
-
+ 
 // ============================================================
 //  VIEW MANAGEMENT
 // ============================================================
@@ -1092,12 +1092,12 @@ function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
 }
-
+ 
 function showAuth(tab) {
   showView('auth');
   switchTab(tab);
 }
-
+ 
 function switchTab(tab) {
   document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
@@ -1105,13 +1105,13 @@ function switchTab(tab) {
   document.getElementById('tab-register').classList.toggle('active', tab === 'register');
   clearAlerts();
 }
-
+ 
 function showDashboard() {
   showView('dashboard');
   document.getElementById('topbar-name').textContent = currentUser.firstname + ' ' + currentUser.lastname;
   document.getElementById('topbar-email').textContent = currentUser.email;
   document.getElementById('topbar-role').textContent = currentUser.role === 'scout' ? '🔭 Scout' : '⚽ Player';
-
+ 
   if (currentUser.role === 'scout') {
     document.getElementById('scout-dash').style.display = 'block';
     document.getElementById('player-dash').style.display = 'none';
@@ -1123,7 +1123,7 @@ function showDashboard() {
     renderPlayerProfile();
   }
 }
-
+ 
 // ============================================================
 //  ROLE TOGGLE (register form)
 // ============================================================
@@ -1134,7 +1134,7 @@ document.querySelectorAll('input[name="reg-role"]').forEach(radio => {
     document.getElementById('scout-fields').style.display = isPlayer ? 'none' : 'block';
   });
 });
-
+ 
 // ============================================================
 //  API CALLS
 // ============================================================
@@ -1151,7 +1151,7 @@ async function apiCall(payload) {
     return demoDB(payload);
   }
 }
-
+ 
 function demoDB(payload) {
   if (payload.action === 'register') {
     if (demoStore.users.find(u => u.email === payload.email)) return { success: false, error: 'Email already registered' };
@@ -1168,7 +1168,7 @@ function demoDB(payload) {
     return { players: demoStore.players };
   }
 }
-
+ 
 // ============================================================
 //  AUTH HANDLERS
 // ============================================================
@@ -1177,19 +1177,19 @@ async function handleLogin() {
   const email = v('login-email').trim();
   const password = v('login-password');
   if (!email || !password) return showAlert('login-error', 'Please fill in all fields');
-
+ 
   setLoading(true);
   const res = await apiCall({ action: 'login', email, password });
   setLoading(false);
-
+ 
   if (!res.success) return showAlert('login-error', res.error || 'Login failed');
-
+ 
   currentUser = res.user;
   sessionStorage.setItem('stusMudd_user', JSON.stringify(currentUser));
   showToast('Welcome back, ' + currentUser.firstname + '!', true);
   showDashboard();
 }
-
+ 
 async function handleRegister() {
   clearAlerts();
   const role = document.querySelector('input[name="reg-role"]:checked').value;
@@ -1197,12 +1197,12 @@ async function handleRegister() {
   const lastname = v('reg-lastname').trim();
   const email = v('reg-email').trim();
   const password = v('reg-password');
-
+ 
   if (!firstname || !lastname || !email || !password) return showAlert('register-error', 'Please fill in all required fields');
   if (password.length < 6) return showAlert('register-error', 'Password must be at least 6 characters');
-
+ 
   const payload = { action: 'register', role, firstname, lastname, email, password };
-
+ 
   if (role === 'player') {
     payload.position = v('reg-position');
     payload.age = v('reg-age');
@@ -1216,17 +1216,17 @@ async function handleRegister() {
     payload.org = v('reg-org').trim();
     payload.country = v('reg-country').trim();
   }
-
+ 
   setLoading(true);
   const res = await apiCall(payload);
   setLoading(false);
-
+ 
   if (!res.success) return showAlert('register-error', res.error || 'Registration failed');
-
+ 
   showAlert('register-success', '✓ Account created! You can now sign in.');
   setTimeout(() => switchTab('login'), 2000);
 }
-
+ 
 function handleLogout() {
   currentUser = null;
   sessionStorage.removeItem('stusMudd_user');
@@ -1234,7 +1234,7 @@ function handleLogout() {
   showView('landing');
   showToast('Signed out successfully');
 }
-
+ 
 // ============================================================
 //  SCOUT: LOAD PLAYERS
 // ============================================================
@@ -1246,12 +1246,12 @@ async function loadPlayers() {
   document.getElementById('player-count').textContent = allPlayers.length;
   filterPlayers();
 }
-
+ 
 function filterPlayers() {
   const q = document.getElementById('search-input').value.toLowerCase();
   const pos = document.getElementById('filter-position').value;
   const ageFilter = document.getElementById('filter-age').value;
-
+ 
   let filtered = allPlayers.filter(p => {
     const nameMatch = (p.firstname + ' ' + p.lastname + ' ' + (p.club||'')).toLowerCase().includes(q);
     const posMatch = !pos || p.position === pos;
@@ -1265,10 +1265,10 @@ function filterPlayers() {
     }
     return nameMatch && posMatch && ageMatch;
   });
-
+ 
   renderPlayersGrid(filtered);
 }
-
+ 
 function renderPlayersGrid(players) {
   const grid = document.getElementById('players-grid');
   if (!players.length) {
@@ -1279,7 +1279,7 @@ function renderPlayersGrid(players) {
     </div>`;
     return;
   }
-
+ 
   grid.innerHTML = players.map((p, i) => `
     <div class="player-card">
       <div class="card-number">${String(i+1).padStart(2,'0')}</div>
@@ -1317,12 +1317,12 @@ function renderPlayersGrid(players) {
     </div>
   `).join('');
 }
-
+ 
 function toggleContact(i) {
   const el = document.getElementById('contact-' + i);
   el.classList.toggle('visible');
 }
-
+ 
 // ============================================================
 //  PLAYER: OWN PROFILE
 // ============================================================
@@ -1351,7 +1351,7 @@ function renderPlayerProfile() {
     </div>
   `;
 }
-
+ 
 // ============================================================
 //  SHEETS URL CONFIG
 // ============================================================
@@ -1364,27 +1364,27 @@ function saveSheetUrl() {
   showToast('Google Sheets connected!', true);
   loadPlayers();
 }
-
+ 
 // ============================================================
 //  HELPERS
 // ============================================================
 function v(id) { return document.getElementById(id).value; }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+ 
 function showAlert(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg;
   el.classList.add('show');
 }
-
+ 
 function clearAlerts() {
   document.querySelectorAll('.alert').forEach(el => el.classList.remove('show'));
 }
-
+ 
 function setLoading(on) {
   document.getElementById('loadingOverlay').classList.toggle('hidden', !on);
 }
-
+ 
 let toastTimer;
 function showToast(msg, success = false) {
   const t = document.getElementById('toast');
