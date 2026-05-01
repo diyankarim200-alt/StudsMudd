@@ -989,69 +989,89 @@
 ============================= -->
 <script id="gas-reference" type="text/plain">
 /* ============================================================
-   GOOGLE APPS SCRIPT — Paste this into script.google.com
-   Deploy > New Deployment > Web App > Anyone can access
+   GOOGLE APPS SCRIPT — FINAL VERSION WITH JSONP SUPPORT
+   Paste into script.google.com → Deploy as Web App → Anyone
    ============================================================
  
-function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
-  var action = data.action;
+function doGet(e) {
+  var ss = SpreadsheetApp.openById('YOUR_SPREADSHEET_ID');
+  var action = e.parameter.action;
+  var cb = e.parameter.callback || '';
+  var result = {};
  
   if (action === 'register') {
     var sheet = ss.getSheetByName('Users') || ss.insertSheet('Users');
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(['timestamp','role','firstname','lastname','email','password','position','age','nationality','club','phone','video','bio','org','country']);
     }
-    // Check duplicate
-    var emails = sheet.getRange(2, 5, Math.max(1,sheet.getLastRow()-1), 1).getValues().flat();
-    if (emails.includes(data.email)) return output({success:false, error:'Email already registered'});
-    sheet.appendRow([
-      new Date().toISOString(), data.role, data.firstname, data.lastname,
-      data.email, data.password, data.position||'', data.age||'',
-      data.nationality||'', data.club||'', data.phone||'', data.video||'',
-      data.bio||'', data.org||'', data.country||''
-    ]);
-    return output({success:true});
-  }
- 
-  if (action === 'login') {
-    var sheet = ss.getSheetByName('Users');
-    if (!sheet) return output({success:false, error:'No users yet'});
-    var rows = sheet.getDataRange().getValues();
-    for (var i=1; i<rows.length; i++) {
-      if (rows[i][4] === data.email && rows[i][5] === data.password) {
-        return output({success:true, user:{
-          role: rows[i][1], firstname: rows[i][2], lastname: rows[i][3],
-          email: rows[i][4], position: rows[i][6], age: rows[i][7],
-          nationality: rows[i][8], club: rows[i][9], phone: rows[i][10],
-          video: rows[i][11], bio: rows[i][12], org: rows[i][13], country: rows[i][14]
-        }});
-      }
+    var lastRow = sheet.getLastRow();
+    var emails = lastRow > 1 ? sheet.getRange(2, 5, lastRow - 1, 1).getValues().flat() : [];
+    if (emails.indexOf(e.parameter.email) !== -1) {
+      result = {success: false, error: 'Email already registered'};
+    } else {
+      sheet.appendRow([
+        new Date().toISOString(), e.parameter.role, e.parameter.firstname, e.parameter.lastname,
+        e.parameter.email, e.parameter.password, e.parameter.position || '', e.parameter.age || '',
+        e.parameter.nationality || '', e.parameter.club || '', e.parameter.phone || '', e.parameter.video || '',
+        e.parameter.bio || '', e.parameter.org || '', e.parameter.country || ''
+      ]);
+      result = {success: true};
     }
-    return output({success:false, error:'Invalid email or password'});
   }
  
-  if (action === 'getPlayers') {
+  else if (action === 'login') {
     var sheet = ss.getSheetByName('Users');
-    if (!sheet) return output({players:[]});
-    var rows = sheet.getDataRange().getValues();
-    var players = [];
-    for (var i=1; i<rows.length; i++) {
-      if (rows[i][1] === 'player') {
-        players.push({
-          firstname: rows[i][2], lastname: rows[i][3], email: rows[i][4],
-          position: rows[i][6], age: rows[i][7], nationality: rows[i][8],
-          club: rows[i][9], phone: rows[i][10], video: rows[i][11], bio: rows[i][12]
-        });
+    if (!sheet) {
+      result = {success: false, error: 'No users yet'};
+    } else {
+      var rows = sheet.getDataRange().getValues();
+      var found = false;
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][4] === e.parameter.email && rows[i][5] === e.parameter.password) {
+          result = {success: true, user: {
+            role: rows[i][1], firstname: rows[i][2], lastname: rows[i][3],
+            email: rows[i][4], position: rows[i][6], age: rows[i][7],
+            nationality: rows[i][8], club: rows[i][9], phone: rows[i][10],
+            video: rows[i][11], bio: rows[i][12], org: rows[i][13], country: rows[i][14]
+          }};
+          found = true;
+          break;
+        }
       }
+      if (!found) result = {success: false, error: 'Invalid email or password'};
     }
-    return output({players: players});
   }
-}
  
-function output(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
+  else if (action === 'getPlayers') {
+    var sheet = ss.getSheetByName('Users');
+    if (!sheet) {
+      result = {players: []};
+    } else {
+      var rows = sheet.getDataRange().getValues();
+      var players = [];
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][1] === 'player') {
+          players.push({
+            firstname: rows[i][2], lastname: rows[i][3], email: rows[i][4],
+            position: rows[i][6], age: rows[i][7], nationality: rows[i][8],
+            club: rows[i][9], phone: rows[i][10], video: rows[i][11], bio: rows[i][12]
+          });
+        }
+      }
+      result = {players: players};
+    }
+  }
+ 
+  else {
+    result = {error: 'Unknown action'};
+  }
+ 
+  var json = JSON.stringify(result);
+  if (cb) {
+    return ContentService.createTextOutput(cb + '(' + json + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
 }
 */
@@ -1062,7 +1082,7 @@ function output(obj) {
 //  CONFIG
 // ============================================================
 const GAS_URL_KEY = 'stusMudd_gasUrl';
-let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbw0A79OfKKXt5hfPh_i3sIGV1-yxKdA0AQ1YAPDKpzEiLTMPaRScRPiatPJ8g70u80L/exec';
+let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbwsWYiJ5sWQA7XRgf9LueV5-IHhjTCzntpN1v4plRqp8gwMB1NeGJsTUlrTUXIm6bO3/exec';
  
 // Demo in-memory store (used when no GAS URL)
 let demoStore = { users: [], players: [] };
@@ -1136,20 +1156,42 @@ document.querySelectorAll('input[name="reg-role"]').forEach(radio => {
 });
  
 // ============================================================
-//  API CALLS
+//  API CALLS — JSONP to bypass CORS (works from local files)
 // ============================================================
-async function apiCall(payload) {
-  if (!GAS_URL) return demoDB(payload);
-  try {
+function apiCall(payload) {
+  if (!GAS_URL) return Promise.resolve(demoDB(payload));
+  return new Promise((resolve) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+    const script = document.createElement('script');
     const params = new URLSearchParams(payload);
-    const url = GAS_URL + '?' + params.toString();
-    const res = await fetch(url, { redirect: 'follow' });
-    const text = await res.text();
-    return JSON.parse(text);
-  } catch (err) {
-    showToast('Connection error — using demo mode', false);
-    return demoDB(payload);
-  }
+    params.set('callback', cbName);
+    script.src = GAS_URL + '?' + params.toString();
+ 
+    const timer = setTimeout(() => {
+      cleanup();
+      showToast('Connection timed out — using demo mode', false);
+      resolve(demoDB(payload));
+    }, 12000);
+ 
+    window[cbName] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+ 
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+ 
+    script.onerror = () => {
+      cleanup();
+      showToast('Connection error — using demo mode', false);
+      resolve(demoDB(payload));
+    };
+ 
+    document.head.appendChild(script);
+  });
 }
  
 function demoDB(payload) {
