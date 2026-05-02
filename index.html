@@ -21,10 +21,10 @@
       --font-heading: 'Barlow Condensed', sans-serif;
       --font-body: 'Barlow', sans-serif;
     }
- 
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
- 
+
     body {
       font-family: var(--font-body);
       background: var(--black);
@@ -32,7 +32,7 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
- 
+
     body::before {
       content: '';
       position: fixed;
@@ -42,7 +42,7 @@
       z-index: 9999;
       opacity: 0.5;
     }
- 
+
     .bg-grid {
       position: fixed; inset: 0;
       background-image:
@@ -51,14 +51,14 @@
       background-size: 60px 60px;
       pointer-events: none; z-index: 0;
     }
- 
+
     .bg-stripe {
       position: fixed; top: -40%; right: -15%;
       width: 55%; height: 180%;
       background: linear-gradient(135deg, transparent 45%, rgba(232,0,13,0.035) 45%, rgba(232,0,13,0.035) 55%, transparent 55%);
       pointer-events: none; z-index: 0; transform: skewX(-8deg);
     }
- 
+
     /* ── PAGES ── */
     .page {
       position: relative; z-index: 1;
@@ -68,10 +68,10 @@
       padding: 2rem 1.5rem;
     }
     .page.active { display: flex; }
- 
+
     /* ── LANDING ── */
     #page-landing { text-align: center; overflow: hidden; }
- 
+
     .landing-eyebrow {
       font-family: var(--font-heading);
       font-size: 0.75rem; font-weight: 600;
@@ -79,12 +79,12 @@
       text-transform: uppercase; margin-bottom: 1.2rem;
       opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards;
     }
- 
+
     .logo-wrap {
       display: inline-block;
       opacity: 0; animation: fadeUp 0.7s ease 0.4s forwards;
     }
- 
+
     .logo-title {
       font-family: var(--font-display);
       font-size: clamp(5rem, 14vw, 11rem);
@@ -92,7 +92,7 @@
       text-shadow: 0 0 80px rgba(232,0,13,0.4), 0 4px 0 var(--red-dark), 0 8px 0 rgba(0,0,0,0.6);
     }
     .logo-title span { color: var(--red); }
- 
+
     .tagline {
       font-family: var(--font-heading);
       font-size: clamp(0.95rem, 2.5vw, 1.25rem);
@@ -102,7 +102,7 @@
       opacity: 0; animation: fadeUp 0.7s ease 0.65s forwards;
     }
     .tagline strong { color: var(--white); font-weight: 700; }
- 
+
     .divider {
       display: flex; align-items: center; gap: 1rem;
       margin: 2.5rem auto; width: min(360px, 80%);
@@ -113,12 +113,12 @@
       background: linear-gradient(90deg, transparent, rgba(232,0,13,0.5), transparent);
     }
     .divider-icon { color: var(--red); font-size: 1.2rem; }
- 
+
     .cta-group {
       display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center;
       opacity: 0; animation: fadeUp 0.7s ease 1.0s forwards;
     }
- 
+
     .already-link {
       margin-top: 1.4rem;
       font-family: var(--font-heading); font-size: 0.85rem;
@@ -130,7 +130,7 @@
       font-weight: 700; transition: opacity 0.2s;
     }
     .already-link a:hover { opacity: 0.75; }
- 
+
     .stats-strip {
       position: absolute; bottom: 2.5rem; left: 50%;
       transform: translateX(-50%);
@@ -144,7 +144,7 @@
       letter-spacing: 0.25em; color: var(--white-dim);
       text-transform: uppercase; margin-top: 0.3rem;
     }
- 
+
     /* ── BUTTONS ── */
     .btn {
       font-family: var(--font-heading); font-size: 1rem;
@@ -162,13 +162,13 @@
     .btn:hover::before { opacity: 1; }
     .btn:hover { transform: translateY(-3px); }
     .btn:active { transform: translateY(0) scale(0.97); }
- 
+
     .btn-player {
       background: var(--red); color: var(--white);
       box-shadow: 0 6px 30px rgba(232,0,13,0.4);
     }
     .btn-player:hover { box-shadow: 0 12px 40px rgba(232,0,13,0.6); }
- 
+
     .btn-scout {
       background: transparent; color: var(--white);
       border: 2px solid rgba(245,240,235,0.4);
@@ -178,15 +178,15 @@
       border-color: var(--red); background: rgba(232,0,13,0.12);
       box-shadow: 0 8px 30px rgba(232,0,13,0.3);
     }
- 
+
     /* ── FORM PAGES (signup & login share this layout) ── */
     #page-signup, #page-login { padding: 0; justify-content: flex-start; }
- 
+
     .form-layout {
       display: grid; grid-template-columns: 1fr 1fr;
       min-height: 100vh; width: 100%;
     }
- 
+
     .form-panel-left {
       background: linear-gradient(160deg, var(--black-2) 0%, var(--black-3) 100%);
       border-right: 1px solid rgba(232,0,13,0.2);
@@ -199,7 +199,7 @@
       background: radial-gradient(ellipse at center, rgba(232,0,13,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
- 
+
     .back-btn {
       position: absolute; top: 2rem; left: 2rem;
       font-family: var(--font-heading); font-size: 0.8rem; font-weight: 600;
@@ -211,7 +211,7 @@
     .back-btn:hover { color: var(--red); }
     .back-btn svg { width: 14px; transition: transform 0.2s; }
     .back-btn:hover svg { transform: translateX(-3px); }
- 
+
     .panel-role-badge {
       display: inline-flex; align-items: center; gap: 0.5rem;
       background: rgba(232,0,13,0.15); border: 1px solid rgba(232,0,13,0.3);
@@ -224,7 +224,7 @@
       width: 6px; height: 6px; border-radius: 50%;
       background: var(--red); animation: pulse 1.5s infinite;
     }
- 
+
     .panel-title {
       font-family: var(--font-display);
       font-size: clamp(3.5rem, 6vw, 5.5rem);
@@ -235,7 +235,7 @@
       font-size: 0.95rem; color: var(--white-dim); line-height: 1.7;
       max-width: 380px; margin-bottom: 2.5rem;
     }
- 
+
     .panel-perks { display: flex; flex-direction: column; gap: 0.75rem; }
     .perk {
       display: flex; align-items: center; gap: 0.8rem;
@@ -247,14 +247,14 @@
       border-radius: 2px; display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; flex-shrink: 0; background: rgba(232,0,13,0.06);
     }
- 
+
     /* FORM RIGHT */
     .form-panel-right {
       background: var(--black);
       display: flex; flex-direction: column; justify-content: center;
       padding: 4rem 3.5rem; position: relative;
     }
- 
+
     .form-header { margin-bottom: 2.5rem; }
     .form-eyebrow {
       font-family: var(--font-heading); font-size: 0.7rem; font-weight: 700;
@@ -265,7 +265,7 @@
       font-family: var(--font-display); font-size: 2.8rem;
       line-height: 1; color: var(--white);
     }
- 
+
     .form-group { margin-bottom: 1.4rem; position: relative; }
     .form-label {
       display: block; font-family: var(--font-heading);
@@ -273,7 +273,7 @@
       text-transform: uppercase; color: var(--white-dim); margin-bottom: 0.5rem;
     }
     .form-input-wrap { position: relative; }
- 
+
     .form-input {
       width: 100%; background: var(--black-3);
       border: 1px solid rgba(245,240,235,0.12); color: var(--white);
@@ -290,14 +290,14 @@
     }
     .form-input.error { border-color: #ff6b6b; box-shadow: 0 0 0 3px rgba(255,107,107,0.15); }
     .form-input.success { border-color: #4caf82; box-shadow: 0 0 0 3px rgba(76,175,130,0.12); }
- 
+
     .input-icon {
       position: absolute; left: 0.9rem; top: 50%;
       transform: translateY(-50%); color: rgba(245,240,235,0.3);
       font-size: 0.9rem; pointer-events: none; transition: color 0.25s;
     }
     .form-input:focus ~ .input-icon { color: var(--red); }
- 
+
     .toggle-pass {
       position: absolute; right: 0.9rem; top: 50%;
       transform: translateY(-50%); background: none; border: none;
@@ -305,13 +305,13 @@
       padding: 0.2rem; transition: color 0.2s;
     }
     .toggle-pass:hover { color: var(--white); }
- 
+
     .field-error {
       font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600;
       color: #ff6b6b; letter-spacing: 0.05em; margin-top: 0.4rem; display: none;
     }
     .field-error.show { display: block; }
- 
+
     /* ROLE CHIPS */
     .role-display { display: flex; gap: 0.8rem; margin-bottom: 1.4rem; }
     .role-chip {
@@ -324,14 +324,14 @@
       clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
     }
     .role-chip.active { border-color: var(--red); background: rgba(232,0,13,0.12); color: var(--white); }
- 
+
     /* PASSWORD STRENGTH */
     .strength-bar-wrap { margin-top: 0.5rem; display: none; }
     .strength-bar-wrap.show { display: block; }
     .strength-bar-track { height: 3px; background: rgba(245,240,235,0.1); border-radius: 2px; overflow: hidden; }
     .strength-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s ease, background 0.3s ease; width: 0%; }
     .strength-label { font-family: var(--font-heading); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.25rem; transition: color 0.3s; }
- 
+
     /* SUBMIT BUTTON */
     .btn-submit {
       width: 100%; padding: 1.1rem;
@@ -347,14 +347,14 @@
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(232,0,13,0.55); }
     .btn-submit:active { transform: scale(0.98); }
     .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
- 
+
     .btn-shimmer {
       position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
       opacity: 0; transition: opacity 0.3s;
     }
     .btn-submit:hover .btn-shimmer { opacity: 1; }
- 
+
     /* SPINNER */
     .spinner {
       width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
@@ -363,7 +363,7 @@
     }
     .loading .spinner { display: block; }
     .loading .btn-text { display: none; }
- 
+
     .form-switch {
       margin-top: 1.5rem; text-align: center;
       font-size: 0.85rem; color: var(--white-dim);
@@ -373,29 +373,29 @@
       font-weight: 500; transition: opacity 0.2s;
     }
     .form-switch a:hover { opacity: 0.75; }
- 
+
     /* ── DASHBOARD ── */
     #page-dashboard {
       text-align: center; padding: 3rem 1.5rem;
     }
- 
+
     .dash-header {
       margin-bottom: 3rem;
       opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards;
     }
- 
+
     .dash-welcome {
       font-family: var(--font-heading); font-size: 0.8rem; font-weight: 700;
       letter-spacing: 0.3em; text-transform: uppercase; color: var(--red);
       margin-bottom: 0.5rem;
     }
- 
+
     .dash-title {
       font-family: var(--font-display);
       font-size: clamp(3rem, 7vw, 5.5rem); line-height: 0.95;
     }
     .dash-title span { color: var(--red); }
- 
+
     .dash-role-tag {
       display: inline-block; margin-top: 1rem;
       background: rgba(232,0,13,0.12); border: 1px solid rgba(232,0,13,0.3);
@@ -403,13 +403,13 @@
       letter-spacing: 0.25em; text-transform: uppercase; color: var(--red);
       padding: 0.45rem 1.1rem; border-radius: 2px;
     }
- 
+
     .dash-cards {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.2rem; max-width: 900px; width: 100%; margin: 0 auto 2.5rem;
       opacity: 0; animation: fadeUp 0.5s ease 0.3s forwards;
     }
- 
+
     .dash-card {
       background: var(--black-3); border: 1px solid rgba(232,0,13,0.15);
       padding: 1.8rem 1.5rem; text-align: left; position: relative; overflow: hidden;
@@ -421,7 +421,7 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--red), transparent);
     }
- 
+
     .card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
     .card-title {
       font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700;
@@ -432,12 +432,12 @@
       font-family: var(--font-display); font-size: 2rem; color: var(--white); line-height: 1;
     }
     .card-sub { font-size: 0.8rem; color: var(--white-dim); margin-top: 0.3rem; }
- 
+
     .dash-actions {
       display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
       opacity: 0; animation: fadeUp 0.5s ease 0.5s forwards;
     }
- 
+
     .btn-logout {
       font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700;
       letter-spacing: 0.2em; text-transform: uppercase;
@@ -447,7 +447,7 @@
       clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
     }
     .btn-logout:hover { border-color: var(--red); color: var(--red); }
- 
+
     /* ── TOAST ── */
     .toast {
       position: fixed; bottom: 2rem; left: 50%;
@@ -462,7 +462,7 @@
     .toast.toast-success { background: #1a2e20; border: 1px solid #4caf82; border-left: 3px solid #4caf82; }
     .toast.toast-error   { background: var(--black-4); border: 1px solid rgba(232,0,13,0.4); border-left: 3px solid var(--red); }
     .toast.toast-info    { background: var(--black-4); border: 1px solid rgba(245,240,235,0.2); border-left: 3px solid rgba(245,240,235,0.5); }
- 
+
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
@@ -481,7 +481,7 @@
       60% { transform: translateX(-5px); }
       80% { transform: translateX(5px); }
     }
- 
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .form-layout { grid-template-columns: 1fr; }
@@ -503,31 +503,31 @@
 <body>
   <div class="bg-grid"></div>
   <div class="bg-stripe"></div>
- 
+
   <!-- ══════════════════════════════════════
        LANDING PAGE
   ══════════════════════════════════════ -->
   <div id="page-landing" class="page active">
     <p class="landing-eyebrow">⚽ &nbsp;Football Scouting Platform</p>
- 
+
     <div class="logo-wrap">
       <h1 class="logo-title">STUDS<br><span>MUDD</span></h1>
     </div>
- 
+
     <p class="tagline">
       Where raw talent meets <strong>elite opportunity</strong>.<br>
       Scouts discover. Players rise.
     </p>
- 
+
     <div class="divider"><span class="divider-icon">⬡</span></div>
- 
+
     <div class="cta-group">
       <button class="btn btn-player" onclick="goToSignup('player')">⚽ &nbsp;Sign Up as Player</button>
       <button class="btn btn-scout" onclick="goToSignup('scout')">🔭 &nbsp;Sign Up as Scout</button>
     </div>
- 
+
     <p class="already-link">Already have an account? <a href="#" onclick="goToLogin(); return false;">Log in here →</a></p>
- 
+
     <div class="stats-strip">
       <div class="stat-item"><div class="stat-num" data-count="12400">0</div><div class="stat-label">Players</div></div>
       <div class="stat-item"><div class="stat-num" data-count="3200">0</div><div class="stat-label">Scouts</div></div>
@@ -535,13 +535,13 @@
       <div class="stat-item"><div class="stat-num" data-count="94">0</div><div class="stat-label">Countries</div></div>
     </div>
   </div>
- 
+
   <!-- ══════════════════════════════════════
        SIGN UP PAGE
   ══════════════════════════════════════ -->
   <div id="page-signup" class="page">
     <div class="form-layout">
- 
+
       <!-- LEFT -->
       <div class="form-panel-left">
         <button class="back-btn" onclick="goToLanding()">
@@ -558,14 +558,14 @@
           <div class="perk"><div class="perk-icon">✦</div><span>Receive direct trial invitations</span></div>
         </div>
       </div>
- 
+
       <!-- RIGHT -->
       <div class="form-panel-right">
         <div class="form-header">
           <p class="form-eyebrow">Create Account</p>
           <h3 class="form-title">GET<br>STARTED</h3>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Username</label>
           <div class="form-input-wrap">
@@ -574,7 +574,7 @@
           </div>
           <span class="field-error" id="su-err-username"></span>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Role</label>
           <div class="role-display">
@@ -583,7 +583,7 @@
           </div>
           <input type="hidden" id="su-role" value="player"/>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Password</label>
           <div class="form-input-wrap">
@@ -597,7 +597,7 @@
           </div>
           <span class="field-error" id="su-err-password"></span>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Confirm Password</label>
           <div class="form-input-wrap">
@@ -607,24 +607,24 @@
           </div>
           <span class="field-error" id="su-err-confirm"></span>
         </div>
- 
+
         <button id="su-submit-btn" class="btn-submit" onclick="handleSignup()">
           <span class="btn-shimmer"></span>
           <div class="spinner"></div>
           <span class="btn-text">Create My Account →</span>
         </button>
- 
+
         <p class="form-switch">Already have an account? <a href="#" onclick="goToLogin(); return false;">Log in here →</a></p>
       </div>
     </div>
   </div>
- 
+
   <!-- ══════════════════════════════════════
        LOG IN PAGE
   ══════════════════════════════════════ -->
   <div id="page-login" class="page">
     <div class="form-layout">
- 
+
       <!-- LEFT -->
       <div class="form-panel-left">
         <button class="back-btn" onclick="goToLanding()">
@@ -641,14 +641,14 @@
           <div class="perk"><div class="perk-icon">✦</div><span>Check notifications & messages</span></div>
         </div>
       </div>
- 
+
       <!-- RIGHT -->
       <div class="form-panel-right">
         <div class="form-header">
           <p class="form-eyebrow">Log In</p>
           <h3 class="form-title">WELCOME<br>BACK</h3>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Username</label>
           <div class="form-input-wrap">
@@ -657,7 +657,7 @@
           </div>
           <span class="field-error" id="li-err-username"></span>
         </div>
- 
+
         <div class="form-group">
           <label class="form-label">Password</label>
           <div class="form-input-wrap">
@@ -667,18 +667,18 @@
           </div>
           <span class="field-error" id="li-err-password"></span>
         </div>
- 
+
         <button id="li-submit-btn" class="btn-submit" onclick="handleLogin()">
           <span class="btn-shimmer"></span>
           <div class="spinner"></div>
           <span class="btn-text">Log In →</span>
         </button>
- 
+
         <p class="form-switch">Don't have an account? <a href="#" onclick="goToSignup('player'); return false;">Sign up here →</a></p>
       </div>
     </div>
   </div>
- 
+
   <!-- ══════════════════════════════════════
        DASHBOARD PAGE
   ══════════════════════════════════════ -->
@@ -688,7 +688,7 @@
       <h2 class="dash-title">HEY, <span id="dash-name">PLAYER</span>!</h2>
       <div class="dash-role-tag" id="dash-role-tag">⚽ Player</div>
     </div>
- 
+
     <div class="dash-cards">
       <div class="dash-card">
         <div class="card-icon">📋</div>
@@ -715,48 +715,48 @@
         <div class="card-sub">New inbox</div>
       </div>
     </div>
- 
+
     <div class="dash-actions">
       <button class="btn btn-player" onclick="showToast('Profile editor coming soon!','info')">Edit Profile</button>
       <button class="btn-logout" onclick="handleLogout()">← Log Out</button>
     </div>
   </div>
- 
+
   <div class="toast" id="toast"></div>
- 
+
   <script>
     // ══════════════════════════════════════
     // ⚙️  CONFIGURATION — paste your URL here
     // ══════════════════════════════════════
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcKbQmu-l8ye7_Qea9aeN7cQ7Lui61GImO9C7yyjh3Gsn8wvhgF9Qge9OYI53DGd8/exec";
     // Example: "https://script.google.com/macros/s/AKfy.../exec"
- 
+
     // ── SESSION ──
     let currentSession = JSON.parse(sessionStorage.getItem('sm_session') || 'null');
- 
+
     // ── PAGE ROUTING ──
     function showPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       window.scrollTo(0, 0);
     }
- 
+
     function goToLanding() {
       showPage('page-landing');
       animateCounters();
     }
- 
+
     function goToSignup(role) {
       setRole(role);
       clearAllErrors();
       showPage('page-signup');
     }
- 
+
     function goToLogin() {
       clearAllErrors();
       showPage('page-login');
     }
- 
+
     function goToDashboard(user) {
       document.getElementById('dash-name').textContent = user.username.toUpperCase();
       const isPlayer = user.role === 'player';
@@ -765,7 +765,7 @@
       document.getElementById('dash-shortlists').textContent = Math.floor(Math.random() * 15 + 1);
       showPage('page-dashboard');
     }
- 
+
     // ── AUTO-LOGIN ON LOAD ──
     window.addEventListener('load', () => {
       if (currentSession) {
@@ -775,16 +775,16 @@
       }
       animateCounters();
     });
- 
+
     // ── ROLE MANAGEMENT ──
     let currentRole = 'player';
- 
+
     function setRole(role) {
       currentRole = role;
       document.getElementById('su-role').value = role;
       document.getElementById('su-chip-player').classList.toggle('active', role === 'player');
       document.getElementById('su-chip-scout').classList.toggle('active', role === 'scout');
- 
+
       const isPlayer = role === 'player';
       document.getElementById('su-badge-text').textContent = isPlayer ? 'Player Registration' : 'Scout Registration';
       document.getElementById('su-panel-title').innerHTML = isPlayer
@@ -793,16 +793,16 @@
       document.getElementById('su-panel-desc').textContent = isPlayer
         ? 'Build your profile, showcase your skills, and get discovered by top scouts from clubs around the world.'
         : 'Find the next generation of football talent. Search, filter, and connect with players that match your criteria.';
- 
+
       const perks = isPlayer
         ? ['Create your verified player profile','Upload match highlights & stats','Get matched with scouts & clubs','Receive direct trial invitations']
         : ['Access thousands of verified players','Advanced search & filtering tools','Send direct trial & contact requests','Build and manage your shortlist'];
- 
+
       document.getElementById('su-panel-perks').innerHTML = perks.map(p =>
         `<div class="perk"><div class="perk-icon">✦</div><span>${p}</span></div>`
       ).join('');
     }
- 
+
     // ── TOGGLE PASSWORD ──
     function togglePass(id, btn) {
       const input = document.getElementById(id);
@@ -810,7 +810,7 @@
       input.type = isText ? 'password' : 'text';
       btn.textContent = isText ? '👁' : '🙈';
     }
- 
+
     // ── PASSWORD STRENGTH ──
     function checkStrength() {
       const pw = document.getElementById('su-password').value;
@@ -836,7 +836,7 @@
       label.textContent = l.text;
       label.style.color = l.color;
     }
- 
+
     // ── ERROR HELPERS ──
     function showFieldError(inputId, errId, msg) {
       const input = document.getElementById(inputId);
@@ -859,14 +859,14 @@
       document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
       document.getElementById('strength-wrap').classList.remove('show');
     }
- 
+
     // ── LOADING STATE ──
     function setLoading(btnId, isLoading) {
       const btn = document.getElementById(btnId);
       btn.disabled = isLoading;
       btn.classList.toggle('loading', isLoading);
     }
- 
+
     // ── SIGN UP ──
     async function handleSignup() {
       const username = document.getElementById('su-username').value.trim();
@@ -874,33 +874,31 @@
       const confirm  = document.getElementById('su-confirm').value;
       const role     = document.getElementById('su-role').value;
       let valid = true;
- 
+
       if (!username) { showFieldError('su-username','su-err-username','Username cannot be empty.'); valid = false; }
       else markSuccess('su-username');
- 
+
       if (!password) { showFieldError('su-password','su-err-password','Password is required.'); valid = false; }
       else markSuccess('su-password');
- 
+
       if (!confirm) { showFieldError('su-confirm','su-err-confirm','Please confirm your password.'); valid = false; }
       else if (password !== confirm) { showFieldError('su-confirm','su-err-confirm','Passwords do not match.'); valid = false; }
       else markSuccess('su-confirm');
- 
+
       if (!valid) { shakeForm('page-signup'); return; }
- 
+
       if (APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
         showToast('⚠️ Please set your Apps Script URL first!', 'error');
         return;
       }
- 
+
       setLoading('su-submit-btn', true);
- 
+
       try {
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'signup', username, password, role }),
-        });
+        const url = `${APPS_SCRIPT_URL}?action=signup&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}`;
+        const res = await fetch(url);
         const data = await res.json();
- 
+
         if (data.success) {
           const session = { username, role };
           sessionStorage.setItem('sm_session', JSON.stringify(session));
@@ -918,35 +916,33 @@
         setLoading('su-submit-btn', false);
       }
     }
- 
+
     // ── LOG IN ──
     async function handleLogin() {
       const username = document.getElementById('li-username').value.trim();
       const password = document.getElementById('li-password').value;
       let valid = true;
- 
+
       if (!username) { showFieldError('li-username','li-err-username','Username cannot be empty.'); valid = false; }
       else markSuccess('li-username');
- 
+
       if (!password) { showFieldError('li-password','li-err-password','Password is required.'); valid = false; }
       else markSuccess('li-password');
- 
+
       if (!valid) { shakeForm('page-login'); return; }
- 
+
       if (APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
         showToast('⚠️ Please set your Apps Script URL first!', 'error');
         return;
       }
- 
+
       setLoading('li-submit-btn', true);
- 
+
       try {
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'login', username, password }),
-        });
+        const url = `${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+        const res = await fetch(url);
         const data = await res.json();
- 
+
         if (data.success) {
           const session = { username: data.username, role: data.role };
           sessionStorage.setItem('sm_session', JSON.stringify(session));
@@ -965,7 +961,7 @@
         setLoading('li-submit-btn', false);
       }
     }
- 
+
     // ── LOG OUT ──
     function handleLogout() {
       sessionStorage.removeItem('sm_session');
@@ -973,7 +969,7 @@
       showToast('You\'ve been logged out.', 'info');
       goToLanding();
     }
- 
+
     // ── SHAKE ANIMATION ──
     function shakeForm(pageId) {
       const page = document.getElementById(pageId);
@@ -983,7 +979,7 @@
       right.style.animation = 'shake 0.4s ease';
       setTimeout(() => { right.style.animation = ''; }, 400);
     }
- 
+
     // ── TOAST ──
     let toastTimer = null;
     function showToast(msg, type = 'info') {
@@ -993,7 +989,7 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
     }
- 
+
     // ── COUNTER ANIMATION ──
     function animateCounters() {
       document.querySelectorAll('.stat-num[data-count]').forEach(el => {
